@@ -1,21 +1,27 @@
 {
-  "name": "songkran-online-api",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "dependencies": {
-    "cors": "^2.8.6",
-    "dotenv": "^17.3.1",
-    "express": "^5.2.1"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.14"
-  }
+	"name": "songkran-online-api",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "node src/server.js",
+		"dev": "nodemon src/server.js",
+		"prisma:generate": "npx prisma generate",
+		"prisma:migrate": "npx prisma migrate deploy"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"type": "commonjs",
+	"dependencies": {
+		"cors": "^2.8.6",
+		"dotenv": "^17.3.1",
+		"express": "^5.2.1",
+		"@prisma/client": "^5.11.0"
+	},
+	"devDependencies": {
+		"nodemon": "^3.1.14",
+		"prisma": "^5.11.0"
+	}
 }
