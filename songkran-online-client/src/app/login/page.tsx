@@ -217,7 +217,7 @@ export default function LoginPage() {
 	const [loading, setLoading] = useState(false);
 
 	const handleLogin = () => setLoading(true);
-	const handleComplete = () => router.push('/');
+	const handleComplete = () => router.push('/home');
 
 	return (
 		<>
