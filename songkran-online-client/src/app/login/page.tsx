@@ -1,21 +1,25 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import LoadingScreen from './loading-screen';
 
-// Figma asset URLs — valid for 7 days from generation
 const ASSETS = {
-	bg: 'https://www.figma.com/api/mcp/asset/2fa917bb-a165-464b-91ef-24bd008b2ecf',
-	wave: 'https://www.figma.com/api/mcp/asset/0dd6ceb0-c92b-4f48-ab66-5391b9e33a83',
-	pastelCity: 'https://www.figma.com/api/mcp/asset/b406a640-b477-43c3-9e2b-562c63b5f539',
-	bottomBar: 'https://www.figma.com/api/mcp/asset/9b9238da-17d2-4aa6-bdd9-9c09fd8060c9',
-	temple: 'https://www.figma.com/api/mcp/asset/2b81766f-cb13-4753-8ff7-e2161368a2c9',
-	flowers: 'https://www.figma.com/api/mcp/asset/d1c513b6-c235-4f3e-b381-c25e314343cc',
-	logo: 'https://www.figma.com/api/mcp/asset/38af35ec-faf3-4981-8597-4b74c8506735',
-	mail: 'https://www.figma.com/api/mcp/asset/c9193ab9-8559-4eaa-91ae-456e9e29a8a1',
-	lock: 'https://www.figma.com/api/mcp/asset/c36620ee-80c7-4db5-9e2f-5dd8b62a247e',
-	facebook: 'https://www.figma.com/api/mcp/asset/41826331-b154-427b-b5a5-600bd9038187',
-	google: 'https://www.figma.com/api/mcp/asset/cd0d2554-ae5c-4a63-8110-d816ef9e49ea',
-	line: 'https://www.figma.com/api/mcp/asset/5541ab73-dbd7-47d4-baf0-2429e7cdd9f0',
+	bg:             '/assets/login/bg.png',
+	wave:           '/assets/login/wave.svg',
+	pastelCity:     '/assets/login/pastel-city.png',
+	childrenLeft:   '/assets/login/children-left.png',
+	childrenRight:  '/assets/login/children-right.png',
+	kite:           '/assets/login/kite.png',
+	bottomBar:      '/assets/login/bottom-bar.png',
+	temple:         '/assets/login/temple.png',
+	flowers:        '/assets/login/flowers.png',
+	logo:           '/assets/login/logo.png',
+	mail:           '/assets/login/mail.svg',
+	lock:           '/assets/login/lock.svg',
+	facebook:       '/assets/login/facebook.jpg',
+	google:         '/assets/login/google.jpg',
+	line:           '/assets/login/line.png',
 };
 
 const poppins = { fontFamily: 'Poppins, sans-serif' };
@@ -71,17 +75,39 @@ function Artwork() {
 				style={{ top: '71.36%' }}
 			/>
 
-			<img
-				src={ASSETS.bottomBar}
-				alt=""
-				className="absolute left-0 w-full pointer-events-none select-none"
-				style={{ top: '87.56%' }}
-			/>
+			{/* Kite — node 419:1019, right edge */}
+			<div className="absolute pointer-events-none select-none"
+				style={{ top: '78.62%', left: '87.01%', right: '3.68%', bottom: '14.75%' }}>
+				<img src={ASSETS.kite} alt="" className="w-full h-full object-contain" style={{ transform: 'scaleX(-1)' }} />
+			</div>
+
+			{/* Sand — node 419:966, container at y=746/852 */}
+			<div className="absolute left-0 right-0 bottom-0 overflow-hidden pointer-events-none select-none"
+				style={{ top: '87.56%' }}>
+				<img
+					src={ASSETS.bottomBar}
+					alt=""
+					className="absolute left-0 w-full max-w-none"
+					style={{ height: '371.23%', top: '-271.23%' }}
+				/>
+			</div>
+
+			{/* 3 children — node 419:971, left group */}
+			<div className="absolute pointer-events-none select-none"
+				style={{ top: '83.55%', left: '13.74%', right: '40.97%', bottom: '2.95%' }}>
+				<img src={ASSETS.childrenLeft} alt="" className="w-full h-full object-contain" />
+			</div>
+
+			{/* 1 boy — node 419:983, right group */}
+			<div className="absolute pointer-events-none select-none"
+				style={{ top: '83.43%', left: '59.28%', right: '15.22%', bottom: '3.25%' }}>
+				<img src={ASSETS.childrenRight} alt="" className="w-full h-full object-contain" style={{ transform: 'scaleX(-1)' }} />
+			</div>
 		</>
 	);
 }
 
-function LoginForm() {
+function LoginForm({ onLogin }: { onLogin: () => void }) {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 
@@ -112,6 +138,7 @@ function LoginForm() {
 			</div>
 
 			<button
+				onClick={onLogin}
 				style={poppins}
 				className="bg-[#4da8fe] rounded-[15px] h-[45px] w-full flex items-center justify-center text-white text-[16px] font-semibold mt-[10px] hover:bg-[#3a97ed] active:scale-[0.98] transition-all cursor-pointer"
 			>
@@ -146,19 +173,19 @@ function LoginForm() {
 	);
 }
 
-function MobileLayout() {
+function MobileLayout({ onLogin }: { onLogin: () => void }) {
 	return (
 		<div className="relative h-screen w-full overflow-hidden bg-sky-200">
 			<Artwork />
 
 			<div className="absolute inset-x-0 px-[15.5%]" style={{ top: '49%' }}>
-				<LoginForm />
+				<LoginForm onLogin={onLogin} />
 			</div>
 		</div>
 	);
 }
 
-function DesktopLayout() {
+function DesktopLayout({ onLogin }: { onLogin: () => void }) {
 	return (
 		<div className="flex h-screen">
 			<div className="relative flex-1 h-screen overflow-hidden bg-sky-200">
@@ -178,7 +205,7 @@ function DesktopLayout() {
 					SIGN IN TO YOUR ACCOUNT
 				</p>
 				<div className="w-full max-w-[320px]">
-					<LoginForm />
+					<LoginForm onLogin={onLogin} />
 				</div>
 			</div>
 		</div>
@@ -186,13 +213,21 @@ function DesktopLayout() {
 }
 
 export default function LoginPage() {
+	const router = useRouter();
+	const [loading, setLoading] = useState(false);
+
+	const handleLogin = () => setLoading(true);
+	const handleComplete = () => router.push('/');
+
 	return (
 		<>
+			{loading && <LoadingScreen onComplete={handleComplete} />}
+
 			<div className="lg:hidden">
-				<MobileLayout />
+				<MobileLayout onLogin={handleLogin} />
 			</div>
 			<div className="hidden lg:block">
-				<DesktopLayout />
+				<DesktopLayout onLogin={handleLogin} />
 			</div>
 		</>
 	);
