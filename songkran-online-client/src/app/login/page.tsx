@@ -25,21 +25,23 @@ const ASSETS = {
 
 const poppins = { fontFamily: 'Poppins, sans-serif' };
 
-function Artwork() {
+function Artwork({ showBg = true }: { showBg?: boolean }) {
 	return (
 		<>
-			<img
-				src={ASSETS.bg}
-				alt=""
-				className="absolute inset-0 w-full h-full object-cover object-left pointer-events-none select-none"
-			/>
+			{showBg && (
+				<img
+					src={ASSETS.bg}
+					alt=""
+					className="absolute inset-0 w-full h-full object-cover object-left pointer-events-none select-none"
+				/>
+			)}
 
 			<img
 				src={ASSETS.wave}
 				alt=""
 				className="absolute max-w-none pointer-events-none select-none"
 				style={{
-					top: 'calc(50% + 69.5px)',
+					top: '58.16%',
 					left: '-6.62%',
 					right: '-6.11%',
 					width: '112.73%',
@@ -176,19 +178,11 @@ function LoginForm({ onLogin }: { onLogin: () => void }) {
 
 function MobileLayout({ onLogin }: { onLogin: () => void }) {
 	return (
-		<div className="flex items-center justify-center h-screen w-full overflow-hidden bg-black">
-			<div
-				className="relative overflow-hidden bg-sky-200"
-				style={{
-					width: 'min(100vw, calc(100vh * 393 / 852))',
-					height: 'min(100vh, calc(100vw * 852 / 393))',
-				}}
-			>
-				<Artwork />
+		<div className="relative h-screen w-full overflow-hidden">
+			<Artwork />
 
-				<div className="absolute inset-x-0 px-[15.5%]" style={{ top: '49%' }}>
-					<LoginForm onLogin={onLogin} />
-				</div>
+			<div className="absolute inset-x-0 px-[15.5%]" style={{ top: '49%' }}>
+				<LoginForm onLogin={onLogin} />
 			</div>
 		</div>
 	);

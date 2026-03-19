@@ -61,21 +61,23 @@ function LangToggleButton({ lang, onToggle }: { lang: Lang; onToggle: () => void
 	);
 }
 
-function HomeBackground() {
+function HomeBackground({ showBg = true }: { showBg?: boolean }) {
 	return (
 		<>
-			<img
-				src={BG.bg}
-				alt=""
-				className="absolute inset-0 w-full h-full object-cover object-left pointer-events-none select-none"
-			/>
+			{showBg && (
+				<img
+					src={BG.bg}
+					alt=""
+					className="absolute inset-0 w-full h-full object-cover object-left pointer-events-none select-none"
+				/>
+			)}
 
 			<img
 				src={BG.wave}
 				alt=""
 				className="absolute max-w-none pointer-events-none select-none"
 				style={{
-					top: 'calc(50% + 69.5px)',
+					top: '58.16%',
 					left: '-6.62%',
 					right: '-6.11%',
 					width: '112.73%',
@@ -88,7 +90,7 @@ function HomeBackground() {
 				src={BG.temple}
 				alt=""
 				className="absolute left-0 w-full pointer-events-none select-none"
-				style={{ top: '-12%' }}
+				style={{ top: '-20%' }}
 			/>
 
 			<img
@@ -102,7 +104,7 @@ function HomeBackground() {
 				src={BG.logo}
 				alt="Amazing Songkran Festival 2026"
 				className="absolute max-w-none pointer-events-none select-none"
-				style={{ top: '10.2%', left: '-17.05%', width: '141.17%' }}
+				style={{ top: '8%', left: '-17.05%', width: '141.17%' }}
 			/>
 
 			<img
@@ -193,28 +195,20 @@ function MobileCanvas({ lang, onToggle }: { lang: Lang; onToggle: () => void }) 
 	const router = useRouter();
 
 	return (
-		<div className="flex items-center justify-center h-screen w-full overflow-hidden bg-black">
-			<div
-				className="relative overflow-hidden bg-sky-200"
-				style={{
-					width: 'min(100vw, calc(100vh * 393 / 852))',
-					height: 'min(100vh, calc(100vw * 852 / 393))',
-				}}
-			>
-				<HomeBackground />
+		<div className="relative h-screen w-full overflow-hidden">
+			<HomeBackground />
 
-				<LangToggleButton lang={lang} onToggle={onToggle} />
+			<LangToggleButton lang={lang} onToggle={onToggle} />
 
-				{BUTTONS.map((btn, i) => (
-					<ButtonCard
-						key={i}
-						index={i}
-						btn={btn}
-						lang={lang}
-						onClick={() => router.push(btn.route)}
-					/>
-				))}
-			</div>
+			{BUTTONS.map((btn, i) => (
+				<ButtonCard
+					key={i}
+					index={i}
+					btn={btn}
+					lang={lang}
+					onClick={() => router.push(btn.route)}
+				/>
+			))}
 		</div>
 	);
 }
