@@ -2,6 +2,23 @@
 
 import { useEffect, useState } from 'react';
 
+/** iPhone SE and similar small phones: width ≤ 390px or height ≤ 700px */
+export function useIsSmallPhone(): boolean {
+	const [isSmall, setIsSmall] = useState(false);
+
+	useEffect(() => {
+		const mql = window.matchMedia('(max-width: 390px), (max-height: 700px)');
+		setIsSmall(mql.matches);
+
+		const handler = (e: MediaQueryListEvent) => setIsSmall(e.matches);
+		mql.addEventListener('change', handler);
+		return () => mql.removeEventListener('change', handler);
+	}, []);
+
+	return isSmall;
+}
+
+/** Returns true when viewport width is below the given breakpoint (default 1024px) */
 export function useMobile(breakpoint = 1024): boolean {
 	const [isMobile, setIsMobile] = useState(true);
 

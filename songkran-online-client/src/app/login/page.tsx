@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import LoadingScreen from './loading-screen';
-import { useMobile } from '@/src/shared/hooks/useMobile';
+import { useMobile, useIsSmallPhone } from '@/src/shared/hooks/useMobile';
 
 const ASSETS = {
 	bg:             '/assets/login/bg.png',
@@ -25,7 +25,7 @@ const ASSETS = {
 
 const poppins = { fontFamily: 'Poppins, sans-serif' };
 
-function Artwork({ showBg = true }: { showBg?: boolean }) {
+function Artwork({ showBg = true, isSmall = false }: { showBg?: boolean; isSmall?: boolean }) {
 	return (
 		<>
 			{showBg && (
@@ -54,7 +54,7 @@ function Artwork({ showBg = true }: { showBg?: boolean }) {
 				src={ASSETS.temple}
 				alt=""
 				className="absolute left-0 w-full pointer-events-none select-none"
-				style={{ top: '-12%' }}
+				style={{ top: isSmall ? '-23%' : '-12%' }}
 			/>
 
 			<img
@@ -68,7 +68,7 @@ function Artwork({ showBg = true }: { showBg?: boolean }) {
 				src={ASSETS.logo}
 				alt="Amazing Songkran Festival 2026"
 				className="absolute max-w-none pointer-events-none select-none"
-				style={{ top: '10.2%', left: '-17.05%', width: '141.17%' }}
+				style={{ top: isSmall ? '3%' : '10.2%', left: '-17.05%', width: '141.17%' }}
 			/>
 
 			<img
@@ -177,11 +177,13 @@ function LoginForm({ onLogin }: { onLogin: () => void }) {
 }
 
 function MobileLayout({ onLogin }: { onLogin: () => void }) {
+	const isSmall = useIsSmallPhone();
+
 	return (
 		<div className="relative h-screen w-full overflow-hidden">
-			<Artwork />
+			<Artwork isSmall={isSmall} />
 
-			<div className="absolute inset-x-0 px-[15.5%]" style={{ top: '49%' }}>
+			<div className="absolute inset-x-0 px-[15.5%]" style={{ top: isSmall ? '43%' : '49%' }}>
 				<LoginForm onLogin={onLogin} />
 			</div>
 		</div>
