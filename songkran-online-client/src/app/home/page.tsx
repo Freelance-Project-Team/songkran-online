@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useMobile } from '@/src/shared/hooks/useMobile';
 
 type Lang = 'th' | 'en';
 
@@ -192,20 +193,28 @@ function MobileCanvas({ lang, onToggle }: { lang: Lang; onToggle: () => void }) 
 	const router = useRouter();
 
 	return (
-		<div className="relative h-screen w-full overflow-hidden bg-sky-200">
-			<HomeBackground />
+		<div className="flex items-center justify-center h-screen w-full overflow-hidden bg-black">
+			<div
+				className="relative overflow-hidden bg-sky-200"
+				style={{
+					width: 'min(100vw, calc(100vh * 393 / 852))',
+					height: 'min(100vh, calc(100vw * 852 / 393))',
+				}}
+			>
+				<HomeBackground />
 
-			<LangToggleButton lang={lang} onToggle={onToggle} />
+				<LangToggleButton lang={lang} onToggle={onToggle} />
 
-			{BUTTONS.map((btn, i) => (
-				<ButtonCard
-					key={i}
-					index={i}
-					btn={btn}
-					lang={lang}
-					onClick={() => router.push(btn.route)}
-				/>
-			))}
+				{BUTTONS.map((btn, i) => (
+					<ButtonCard
+						key={i}
+						index={i}
+						btn={btn}
+						lang={lang}
+						onClick={() => router.push(btn.route)}
+					/>
+				))}
+			</div>
 		</div>
 	);
 }
@@ -253,16 +262,12 @@ function DesktopCanvas({ lang, onToggle }: { lang: Lang; onToggle: () => void })
 
 export default function HomePage() {
 	const [lang, setLang] = useState<Lang>('th');
+	const isMobile = useMobile();
 	const toggle = () => setLang((l) => (l === 'th' ? 'en' : 'th'));
 
-	return (
-		<>
-			<div className="lg:hidden">
-				<MobileCanvas lang={lang} onToggle={toggle} />
-			</div>
-			<div className="hidden lg:block">
-				<DesktopCanvas lang={lang} onToggle={toggle} />
-			</div>
-		</>
+	return isMobile ? (
+		<MobileCanvas lang={lang} onToggle={toggle} />
+	) : (
+		<DesktopCanvas lang={lang} onToggle={toggle} />
 	);
 }

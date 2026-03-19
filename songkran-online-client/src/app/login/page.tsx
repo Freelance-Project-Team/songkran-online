@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import LoadingScreen from './loading-screen';
+import { useMobile } from '@/src/shared/hooks/useMobile';
 
 const ASSETS = {
 	bg:             '/assets/login/bg.png',
@@ -175,11 +176,19 @@ function LoginForm({ onLogin }: { onLogin: () => void }) {
 
 function MobileLayout({ onLogin }: { onLogin: () => void }) {
 	return (
-		<div className="relative h-screen w-full overflow-hidden bg-sky-200">
-			<Artwork />
+		<div className="flex items-center justify-center h-screen w-full overflow-hidden bg-black">
+			<div
+				className="relative overflow-hidden bg-sky-200"
+				style={{
+					width: 'min(100vw, calc(100vh * 393 / 852))',
+					height: 'min(100vh, calc(100vw * 852 / 393))',
+				}}
+			>
+				<Artwork />
 
-			<div className="absolute inset-x-0 px-[15.5%]" style={{ top: '49%' }}>
-				<LoginForm onLogin={onLogin} />
+				<div className="absolute inset-x-0 px-[15.5%]" style={{ top: '49%' }}>
+					<LoginForm onLogin={onLogin} />
+				</div>
 			</div>
 		</div>
 	);
@@ -215,6 +224,7 @@ function DesktopLayout({ onLogin }: { onLogin: () => void }) {
 export default function LoginPage() {
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
+	const isMobile = useMobile();
 
 	const handleLogin = () => setLoading(true);
 	const handleComplete = () => router.push('/home');
@@ -222,13 +232,11 @@ export default function LoginPage() {
 	return (
 		<>
 			{loading && <LoadingScreen onComplete={handleComplete} />}
-
-			<div className="lg:hidden">
+			{isMobile ? (
 				<MobileLayout onLogin={handleLogin} />
-			</div>
-			<div className="hidden lg:block">
+			) : (
 				<DesktopLayout onLogin={handleLogin} />
-			</div>
+			)}
 		</>
 	);
 }
