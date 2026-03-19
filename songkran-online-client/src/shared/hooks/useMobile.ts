@@ -45,10 +45,7 @@ export function useDesignScale(designWidth = 393, designHeight = 852): number {
 
 	useEffect(() => {
 		const update = () => {
-			setScale(Math.max(
-				window.innerWidth / designWidth,
-				window.innerHeight / designHeight,
-			));
+			setScale(Math.max(window.innerWidth / designWidth, window.innerHeight / designHeight));
 		};
 		update();
 		window.addEventListener('resize', update);

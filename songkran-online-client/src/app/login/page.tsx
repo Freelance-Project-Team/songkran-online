@@ -6,21 +6,21 @@ import LoadingScreen from './loading-screen';
 import { useMobile, useIsSmallPhone } from '@/src/shared/hooks/useMobile';
 
 const ASSETS = {
-	bg:             '/assets/login/bg.png',
-	wave:           '/assets/login/wave.svg',
-	pastelCity:     '/assets/login/pastel-city.png',
-	childrenLeft:   '/assets/login/children-left.png',
-	childrenRight:  '/assets/login/children-right.png',
-	kite:           '/assets/login/kite.png',
-	bottomBar:      '/assets/login/bottom-bar.png',
-	temple:         '/assets/login/temple.png',
-	flowers:        '/assets/login/flowers.png',
-	logo:           '/assets/login/logo.png',
-	mail:           '/assets/login/mail.svg',
-	lock:           '/assets/login/lock.svg',
-	facebook:       '/assets/login/facebook.jpg',
-	google:         '/assets/login/google.jpg',
-	line:           '/assets/login/line.png',
+	bg: '/assets/login/bg.png',
+	wave: '/assets/login/wave.svg',
+	pastelCity: '/assets/login/pastel-city.png',
+	childrenLeft: '/assets/login/children-left.png',
+	childrenRight: '/assets/login/children-right.png',
+	kite: '/assets/login/kite.png',
+	bottomBar: '/assets/login/bottom-bar.png',
+	temple: '/assets/login/temple.png',
+	flowers: '/assets/login/flowers.png',
+	logo: '/assets/login/logo.png',
+	mail: '/assets/login/mail.svg',
+	lock: '/assets/login/lock.svg',
+	facebook: '/assets/login/facebook.jpg',
+	google: '/assets/login/google.jpg',
+	line: '/assets/login/line.png',
 };
 
 const poppins = { fontFamily: 'Poppins, sans-serif' };
@@ -79,14 +79,23 @@ function Artwork({ showBg = true, isSmall = false }: { showBg?: boolean; isSmall
 			/>
 
 			{/* Kite — node 419:1019, right edge */}
-			<div className="absolute pointer-events-none select-none"
-				style={{ top: '78.62%', left: '87.01%', right: '3.68%', bottom: '14.75%' }}>
-				<img src={ASSETS.kite} alt="" className="w-full h-full object-contain" style={{ transform: 'scaleX(-1)' }} />
+			<div
+				className="absolute pointer-events-none select-none"
+				style={{ top: '78.62%', left: '87.01%', right: '3.68%', bottom: '14.75%' }}
+			>
+				<img
+					src={ASSETS.kite}
+					alt=""
+					className="w-full h-full object-contain"
+					style={{ transform: 'scaleX(-1)' }}
+				/>
 			</div>
 
 			{/* Sand — node 419:966, container at y=746/852 */}
-			<div className="absolute left-0 right-0 bottom-0 overflow-hidden pointer-events-none select-none"
-				style={{ top: '87.56%' }}>
+			<div
+				className="absolute left-0 right-0 bottom-0 overflow-hidden pointer-events-none select-none"
+				style={{ top: '87.56%' }}
+			>
 				<img
 					src={ASSETS.bottomBar}
 					alt=""
@@ -96,15 +105,24 @@ function Artwork({ showBg = true, isSmall = false }: { showBg?: boolean; isSmall
 			</div>
 
 			{/* 3 children — node 419:971, left group */}
-			<div className="absolute pointer-events-none select-none"
-				style={{ top: '83.55%', left: '13.74%', right: '40.97%', bottom: '2.95%' }}>
+			<div
+				className="absolute pointer-events-none select-none"
+				style={{ top: '83.55%', left: '13.74%', right: '40.97%', bottom: '2.95%' }}
+			>
 				<img src={ASSETS.childrenLeft} alt="" className="w-full h-full object-contain" />
 			</div>
 
 			{/* 1 boy — node 419:983, right group */}
-			<div className="absolute pointer-events-none select-none"
-				style={{ top: '83.43%', left: '59.28%', right: '15.22%', bottom: '3.25%' }}>
-				<img src={ASSETS.childrenRight} alt="" className="w-full h-full object-contain" style={{ transform: 'scaleX(-1)' }} />
+			<div
+				className="absolute pointer-events-none select-none"
+				style={{ top: '83.43%', left: '59.28%', right: '15.22%', bottom: '3.25%' }}
+			>
+				<img
+					src={ASSETS.childrenRight}
+					alt=""
+					className="w-full h-full object-contain"
+					style={{ transform: 'scaleX(-1)' }}
+				/>
 			</div>
 		</>
 	);
@@ -150,7 +168,10 @@ function LoginForm({ onLogin }: { onLogin: () => void }) {
 
 			<div className="flex items-center gap-3 mt-[5px]">
 				<div className="flex-1 h-px bg-[#4b4137]/30" />
-				<span style={poppins} className="text-[11px] font-semibold text-[#4b4137] whitespace-nowrap">
+				<span
+					style={poppins}
+					className="text-[11px] font-semibold text-[#4b4137] whitespace-nowrap"
+				>
 					SIGN IN WITH
 				</span>
 				<div className="flex-1 h-px bg-[#4b4137]/30" />
@@ -158,7 +179,11 @@ function LoginForm({ onLogin }: { onLogin: () => void }) {
 
 			<div className="flex items-center justify-center gap-6 mt-[5px]">
 				<button className="rounded-[14px] shadow-md w-[50px] h-[50px] overflow-hidden hover:scale-105 active:scale-95 transition-transform cursor-pointer shrink-0">
-					<img src={ASSETS.facebook} alt="Facebook" className="w-full h-full object-cover" />
+					<img
+						src={ASSETS.facebook}
+						alt="Facebook"
+						className="w-full h-full object-cover"
+					/>
 				</button>
 				<button className="rounded-[14px] shadow-md w-[50px] h-[50px] overflow-hidden hover:scale-105 active:scale-95 transition-transform cursor-pointer shrink-0">
 					<img src={ASSETS.google} alt="Google" className="w-full h-full object-cover" />
@@ -168,7 +193,12 @@ function LoginForm({ onLogin }: { onLogin: () => void }) {
 						src={ASSETS.line}
 						alt="LINE"
 						className="absolute max-w-none"
-						style={{ height: '144.26%', left: '-26.02%', top: '-22.13%', width: '286.43%' }}
+						style={{
+							height: '144.26%',
+							left: '-26.02%',
+							top: '-22.13%',
+							width: '286.43%',
+						}}
 					/>
 				</button>
 			</div>

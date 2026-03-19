@@ -1,21 +1,66 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
-// Initial models
+enum OAuthProvider {
+    GOOGLE
+    LINE
+    FACEBOOK
+}
+
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+    id         Int            @id @default(autoincrement())
+    email      String?        @unique
+    name       String?
+    avatar     String?
+    password   String?
+    provider   OAuthProvider?
+    providerId String?
+    createdAt  DateTime       @default(now())
+    updatedAt  DateTime       @updatedAt
+
+    participations ActivityParticipant[]
+    accessLogs     ActivityAccessLog[]
+
+    @@unique([provider, providerId])
+}
+
+model Activity {
+    id          Int      @id @default(autoincrement())
+    name        String
+    description String?
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    participants ActivityParticipant[]
+    accessLogs   ActivityAccessLog[]
+}
+
+model ActivityParticipant {
+    id         Int      @id @default(autoincrement())
+    userId     Int
+    activityId Int
+    joinedAt   DateTime @default(now())
+
+    user     User     @relation(fields: [userId], references: [id])
+    activity Activity @relation(fields: [activityId], references: [id])
+
+    @@unique([userId, activityId])
+}
+
+model ActivityAccessLog {
+    id         Int      @id @default(autoincrement())
+    userId     Int?
+    activityId Int
+    ip         String?
+    userAgent  String?
+    createdAt  DateTime @default(now())
+
+    user     User?    @relation(fields: [userId], references: [id])
+    activity Activity @relation(fields: [activityId], references: [id])
 }
