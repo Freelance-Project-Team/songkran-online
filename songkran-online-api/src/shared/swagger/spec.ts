@@ -12,7 +12,7 @@ const options: swaggerJsdoc.Options = {
 			{
 				url:
 					process.env.NODE_ENV === 'production'
-						? 'https://api.songkranonline.com'
+						? 'https://api-songkran-aotsvb.continue-labs.com'
 						: 'http://localhost:4000',
 				description: process.env.NODE_ENV === 'production' ? 'Production' : 'Development',
 			},
