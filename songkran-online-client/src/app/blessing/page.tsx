@@ -3,14 +3,14 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMobile } from '@/src/shared/hooks/useMobile';
+import { GoBackButton } from '@/src/shared/ui/GoBackButton';
+import { LangToggleButton } from '@/src/shared/ui/LangToggleButton';
 
 type Lang = 'th' | 'en';
 type PourState = 'idle' | 'pouring' | 'blessed';
 
 const A = {
 	bg: '/assets/rodnamdumhua/bg.png',
-	changeLang: '/assets/shared/change-lang.png',
-	goBack: '/assets/shared/go-back-btn.png',
 	scene: '/assets/rodnamdumhua/scene.png',
 	bgText: '/assets/rodnamdumhua/bg-text.png',
 	text: '/assets/rodnamdumhua/text.png',
@@ -38,40 +38,7 @@ const STYLES = `
 }
 `;
 
-function LangToggle({ onClick }: { onClick: () => void }) {
-	return (
-		<button
-			onClick={onClick}
-			className="absolute z-10 cursor-pointer hover:scale-105 active:scale-95 transition-transform p-0 bg-transparent border-0"
-			style={{ left: '82.7%', top: '6.57%', width: '16.54%', aspectRatio: '1' }}
-			aria-label="เปลี่ยนภาษา / Change language"
-		>
-			<img
-				src={A.changeLang}
-				alt=""
-				className="w-full h-full select-none pointer-events-none"
-			/>
-		</button>
-	);
-}
 
-function GoBackButton({ lang, onClick }: { lang: Lang; onClick: () => void }) {
-	return (
-		<button
-			onClick={onClick}
-			className="absolute z-10 cursor-pointer hover:scale-105 active:scale-95 transition-transform p-0 bg-transparent border-0"
-			style={{ left: '30.8%', top: '83.8%', width: '38.4%', height: '14.4%' }}
-			aria-label={lang === 'th' ? 'กลับหน้าหลัก' : 'Back to home'}
-		>
-			<img
-				src={A.goBack}
-				alt=""
-				className="w-full h-full select-none pointer-events-none"
-				style={{ objectFit: 'fill' }}
-			/>
-		</button>
-	);
-}
 
 function BlessingCard() {
 	return (
@@ -169,7 +136,7 @@ function BlessingScene({
 
 			{pourState === 'blessed' && <BlessingCard />}
 
-			<LangToggle onClick={onToggleLang} />
+			<LangToggleButton lang={lang} onToggle={onToggleLang} />
 
 			<div
 				className="absolute"
@@ -188,7 +155,7 @@ function BlessingScene({
 				)}
 			</div>
 
-			<GoBackButton lang={lang} onClick={onBack} />
+			<GoBackButton lang={lang} onBack={onBack} />
 		</>
 	);
 }
@@ -207,7 +174,7 @@ function DesktopCanvas(props: Parameters<typeof BlessingScene>[0]) {
 	return (
 		<div className="flex h-screen">
 			<SceneFrame {...props} />
-			<div className="w-[440px] shrink-0 flex flex-col items-center justify-center bg-white px-10 py-12 shadow-2xl overflow-y-auto z-10">
+			<div className="w-110 shrink-0 flex flex-col items-center justify-center bg-white px-10 py-12 shadow-2xl overflow-y-auto z-10">
 				<img
 					src={A.text}
 					alt="รดน้ำดำหัว"
