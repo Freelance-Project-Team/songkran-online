@@ -12,7 +12,7 @@ type FlowStep = 'character' | 'location' | 'photo';
 
 function SceneFrame({ children }: { children: React.ReactNode }) {
 	return (
-		<div className="h-screen w-full flex items-center justify-center overflow-hidden bg-[#b8dff5]">
+		<div className="h-dvh w-full flex items-center justify-center overflow-hidden bg-[#b8dff5]">
 			<div className="relative h-full overflow-hidden" style={{ aspectRatio: '393 / 852' }}>
 				{children}
 			</div>
