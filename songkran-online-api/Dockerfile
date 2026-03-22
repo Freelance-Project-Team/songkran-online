@@ -3,6 +3,8 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 
+RUN apk add --no-cache openssl
+
 # Copy package files
 COPY package*.json ./
 COPY src/shared/prisma ./src/shared/prisma/
@@ -23,6 +25,8 @@ RUN npm run build
 FROM node:22-alpine
 
 WORKDIR /app
+
+RUN apk add --no-cache openssl
 
 # Copy built assets and production runtime files
 COPY --from=builder /app/package*.json ./
