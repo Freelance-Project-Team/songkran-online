@@ -5,6 +5,7 @@ import swaggerUi from 'swagger-ui-express';
 
 import authRoutes from '../features/auth/routes';
 import activityRoutes from '../features/activity/routes';
+import waterPlayRoutes from '../features/water-play/routes';
 import healthRoutes from '../features/health/routes';
 import { swaggerSpec } from '../shared/swagger/spec';
 
@@ -53,6 +54,7 @@ app.use((req, res, next) => {
 app.use('/health', healthRoutes);
 app.use('/auth', authRoutes);
 app.use('/activities', activityRoutes);
+app.use('/water-play', waterPlayRoutes);
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.get('/docs.json', (_req, res) => res.json(swaggerSpec));
 

@@ -26,6 +26,7 @@ model User {
 
     participations ActivityParticipant[]
     accessLogs     ActivityAccessLog[]
+    waterPlayLogs  WaterPlayLog[]
 
     @@unique([provider, providerId])
 }
@@ -63,4 +64,16 @@ model ActivityAccessLog {
 
     user     User?    @relation(fields: [userId], references: [id])
     activity Activity @relation(fields: [activityId], references: [id])
+}
+
+model WaterPlayLog {
+    id         Int      @id @default(autoincrement())
+    userId     Int?
+    character  String
+    locationId String
+    ip         String?
+    userAgent  String?
+    createdAt  DateTime @default(now())
+
+    user User? @relation(fields: [userId], references: [id])
 }
