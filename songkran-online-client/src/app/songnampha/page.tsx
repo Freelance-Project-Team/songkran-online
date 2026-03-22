@@ -4,13 +4,13 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMobile } from '@/src/shared/hooks/useMobile';
 import { GoBackButton } from '@/src/shared/ui/GoBackButton';
+import { LangToggleButton } from '@/src/shared/ui/LangToggleButton';
 
 type Lang = 'th' | 'en';
 type PourState = 'idle' | 'pouring' | 'blessed';
 
 const A = {
 	bg: '/assets/shared/bg.png',
-	changeLang: '/assets/shared/change-lang.png',
 	munk: '/assets/songnampha/munk.png',
 	bgText: '/assets/songnampha/bg-text.png',
 	text: '/assets/songnampha/text.png',
@@ -44,22 +44,6 @@ const STYLES = `
 }
 `;
 
-function LangToggle({ onClick }: { onClick: () => void }) {
-	return (
-		<button
-			onClick={onClick}
-			className="absolute z-10 cursor-pointer hover:scale-105 active:scale-95 transition-transform p-0 bg-transparent border-0"
-			style={{ left: '82.7%', top: '6.57%', width: '16.54%', aspectRatio: '1' }}
-			aria-label="เปลี่ยนภาษา / Change language"
-		>
-			<img
-				src={A.changeLang}
-				alt=""
-				className="w-full h-full select-none pointer-events-none"
-			/>
-		</button>
-	);
-}
 
 
 function BlessingCard() {
@@ -162,7 +146,7 @@ function SongnamphScene({
 
 			{pourState === 'blessed' && <BlessingCard />}
 
-			<LangToggle onClick={onToggleLang} />
+			<LangToggleButton lang={lang} onToggle={onToggleLang} />
 
 			<img
 				src={A.flower}
