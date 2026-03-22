@@ -78,7 +78,6 @@ function Artwork({ showBg = true, isSmall = false }: { showBg?: boolean; isSmall
 				style={{ top: '71.36%' }}
 			/>
 
-			{/* Kite — node 419:1019, right edge */}
 			<div
 				className="absolute pointer-events-none select-none"
 				style={{ top: '78.62%', left: '87.01%', right: '3.68%', bottom: '14.75%' }}
@@ -91,7 +90,6 @@ function Artwork({ showBg = true, isSmall = false }: { showBg?: boolean; isSmall
 				/>
 			</div>
 
-			{/* Sand — node 419:966, container at y=746/852 */}
 			<div
 				className="absolute left-0 right-0 bottom-0 overflow-hidden pointer-events-none select-none"
 				style={{ top: '87.56%' }}
@@ -104,7 +102,6 @@ function Artwork({ showBg = true, isSmall = false }: { showBg?: boolean; isSmall
 				/>
 			</div>
 
-			{/* 3 children — node 419:971, left group */}
 			<div
 				className="absolute pointer-events-none select-none"
 				style={{ top: '83.55%', left: '13.74%', right: '40.97%', bottom: '2.95%' }}
@@ -112,7 +109,6 @@ function Artwork({ showBg = true, isSmall = false }: { showBg?: boolean; isSmall
 				<img src={ASSETS.childrenLeft} alt="" className="w-full h-full object-contain" />
 			</div>
 
-			{/* 1 boy — node 419:983, right group */}
 			<div
 				className="absolute pointer-events-none select-none"
 				style={{ top: '83.43%', left: '59.28%', right: '15.22%', bottom: '3.25%' }}
