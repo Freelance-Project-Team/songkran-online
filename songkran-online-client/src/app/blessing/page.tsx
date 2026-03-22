@@ -8,39 +8,33 @@ type Lang = 'th' | 'en';
 type PourState = 'idle' | 'pouring' | 'blessed';
 
 const A = {
-	bg: '/assets/shared/bg.png',
+	bg: '/assets/rodnamdumhua/bg.png',
 	changeLang: '/assets/shared/change-lang.png',
 	goBack: '/assets/shared/go-back-btn.png',
-	munk: '/assets/songnampha/munk.png',
-	bgText: '/assets/songnampha/bg-text.png',
-	text: '/assets/songnampha/text.png',
-	flower: '/assets/songnampha/flower.png',
+	scene: '/assets/rodnamdumhua/scene.png',
+	bgText: '/assets/rodnamdumhua/bg-text.png',
+	text: '/assets/rodnamdumhua/text.png',
 } as const;
 
 const STYLES = `
-@keyframes snp-float {
+@keyframes bl-float {
   0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(-10px); }
+  50%       { transform: translateY(-8px); }
 }
-@keyframes snp-pour {
-  0%   { transform: scale(1)    rotate(0deg); }
-  20%  { transform: scale(1.1)  rotate(-8deg); }
-  40%  { transform: scale(1.1)  rotate(8deg); }
-  60%  { transform: scale(1.05) rotate(-4deg); }
-  80%  { transform: scale(1.02) rotate(2deg); }
-  100% { transform: scale(1)    rotate(0deg); }
+@keyframes bl-tap {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.07); }
+  60%  { transform: scale(0.96); }
+  80%  { transform: scale(1.03); }
+  100% { transform: scale(1); }
 }
-@keyframes snp-ripple {
-  0%   { transform: scale(0.2); opacity: 0.6; }
-  100% { transform: scale(2.4); opacity: 0; }
+@keyframes bl-ripple {
+  0%   { transform: scale(0.2); opacity: 0.55; }
+  100% { transform: scale(2.6); opacity: 0; }
 }
-@keyframes snp-card-in {
+@keyframes bl-card-in {
   from { opacity: 0; transform: translateY(-14px) scale(0.96); }
   to   { opacity: 1; transform: translateY(0)     scale(1); }
-}
-@keyframes snp-sway {
-  0%, 100% { transform: rotate(-7deg); }
-  50%       { transform: rotate(7deg); }
 }
 `;
 
@@ -84,11 +78,11 @@ function BlessingCard() {
 		<div
 			className="absolute z-20"
 			style={{
-				left: '7.89%',
-				top: '12.56%',
+				left: '7.38%',
+				top: '19.6%',
 				width: '85.24%',
-				height: '25.82%',
-				animation: 'snp-card-in 0.5s cubic-bezier(0.34,1.56,0.64,1) both',
+				height: '19.37%',
+				animation: 'bl-card-in 0.5s cubic-bezier(0.34,1.56,0.64,1) both',
 			}}
 		>
 			<img
@@ -97,7 +91,7 @@ function BlessingCard() {
 				className="absolute inset-0 w-full h-full select-none pointer-events-none"
 				style={{ objectFit: 'fill' }}
 			/>
-			<div className="absolute inset-0 flex items-center justify-center px-[6.7%] py-[10%]">
+			<div className="absolute inset-0 flex items-center justify-center px-[6%] py-[8%]">
 				<img
 					src={A.text}
 					alt="คำอวยพร"
@@ -111,11 +105,8 @@ function BlessingCard() {
 
 function WaterRipple() {
 	return (
-		<div
-			className="absolute inset-0 flex items-center justify-center pointer-events-none"
-			style={{ top: '10%' }}
-		>
-			<div style={{ position: 'relative', width: '55%', aspectRatio: '1' }}>
+		<div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+			<div style={{ position: 'relative', width: '50%', aspectRatio: '1' }}>
 				{[0, 0.22, 0.44].map((delay) => (
 					<div
 						key={delay}
@@ -123,8 +114,8 @@ function WaterRipple() {
 							position: 'absolute',
 							inset: 0,
 							borderRadius: '50%',
-							border: '3px solid rgba(100, 190, 255, 0.65)',
-							animation: `snp-ripple 1s ease-out ${delay}s both`,
+							border: '3px solid rgba(100, 190, 255, 0.6)',
+							animation: `bl-ripple 1s ease-out ${delay}s both`,
 						}}
 					/>
 				))}
@@ -133,27 +124,26 @@ function WaterRipple() {
 	);
 }
 
-function MunkImage({ pourState }: { pourState: PourState }) {
+function SceneOverlay({ pourState }: { pourState: PourState }) {
 	return (
 		<img
-			src={A.munk}
+			src={A.scene}
 			alt=""
-			className="w-full h-full select-none pointer-events-none"
+			className="absolute w-full h-full select-none pointer-events-none"
 			style={{
-				objectFit: 'contain',
-				objectPosition: 'bottom center',
+				objectFit: 'fill',
 				animation:
 					pourState === 'idle'
-						? 'snp-float 3s ease-in-out infinite'
+						? 'bl-float 3.5s ease-in-out infinite'
 						: pourState === 'pouring'
-							? 'snp-pour  0.9s ease-in-out both'
+							? 'bl-tap 0.9s ease-in-out both'
 							: 'none',
 			}}
 		/>
 	);
 }
 
-function SongnamphScene({
+function BlessingScene({
 	lang,
 	pourState,
 	onPour,
@@ -181,48 +171,20 @@ function SongnamphScene({
 
 			<LangToggle onClick={onToggleLang} />
 
-			<img
-				src={A.flower}
-				alt=""
-				className="absolute select-none pointer-events-none"
-				style={{
-					left: '1%',
-					bottom: '18%',
-					width: '23.4%',
-					animation: 'snp-sway 2.4s ease-in-out infinite',
-					transformOrigin: 'bottom center',
-				}}
-			/>
-			<img
-				src={A.flower}
-				alt=""
-				className="absolute select-none pointer-events-none"
-				style={{
-					right: '1%',
-					bottom: '18%',
-					width: '23.4%',
-					transform: 'scaleX(-1)',
-					animation: 'snp-sway 2.4s ease-in-out 0.6s infinite',
-					transformOrigin: 'bottom center',
-				}}
-			/>
-
 			<div
 				className="absolute"
-				style={{ left: '0', top: '38%', right: '0', bottom: '16.2%' }}
+				style={{ left: '18.03%', top: '54.23%', right: '16.77%', bottom: '17.44%' }}
 			>
 				{pourState === 'pouring' && <WaterRipple />}
 
-				{pourState === 'idle' ? (
+				<SceneOverlay pourState={pourState} />
+
+				{pourState === 'idle' && (
 					<button
 						onClick={onPour}
-						className="w-full h-full cursor-pointer bg-transparent border-0 p-0 active:scale-95 transition-transform duration-150"
-						aria-label={lang === 'th' ? 'สรงน้ำพระ' : 'Pour water on the Buddha'}
-					>
-						<MunkImage pourState={pourState} />
-					</button>
-				) : (
-					<MunkImage pourState={pourState} />
+						className="absolute inset-0 cursor-pointer bg-transparent border-0 p-0"
+						aria-label={lang === 'th' ? 'รดน้ำดำหัว' : 'Pour water blessing'}
+					/>
 				)}
 			</div>
 
@@ -231,24 +193,24 @@ function SongnamphScene({
 	);
 }
 
-function SceneFrame(props: Parameters<typeof SongnamphScene>[0]) {
+function SceneFrame(props: Parameters<typeof BlessingScene>[0]) {
 	return (
 		<div className="h-screen w-full flex items-center justify-center overflow-hidden bg-[#b8dff5]">
 			<div className="relative h-full overflow-hidden" style={{ aspectRatio: '393 / 852' }}>
-				<SongnamphScene {...props} />
+				<BlessingScene {...props} />
 			</div>
 		</div>
 	);
 }
 
-function DesktopCanvas(props: Parameters<typeof SongnamphScene>[0]) {
+function DesktopCanvas(props: Parameters<typeof BlessingScene>[0]) {
 	return (
 		<div className="flex h-screen">
 			<SceneFrame {...props} />
 			<div className="w-[440px] shrink-0 flex flex-col items-center justify-center bg-white px-10 py-12 shadow-2xl overflow-y-auto z-10">
 				<img
 					src={A.text}
-					alt="สรงน้ำพระ"
+					alt="รดน้ำดำหัว"
 					className="w-48 object-contain mb-6 select-none"
 				/>
 				<p
@@ -260,7 +222,7 @@ function DesktopCanvas(props: Parameters<typeof SongnamphScene>[0]) {
 							? 'ขอให้มีความสุข'
 							: 'Blessings to you'
 						: props.lang === 'th'
-							? 'แตะเพื่อสรงน้ำพระ'
+							? 'แตะเพื่อรดน้ำดำหัว'
 							: 'TAP TO POUR WATER'}
 				</p>
 			</div>
@@ -268,13 +230,13 @@ function DesktopCanvas(props: Parameters<typeof SongnamphScene>[0]) {
 	);
 }
 
-export default function SongnamphPage() {
+export default function BlessingPage() {
 	const router = useRouter();
 	const isMobile = useMobile();
 	const [lang, setLang] = useState<Lang>('th');
 	const [pourState, setPourState] = useState<PourState>('idle');
 
-	const handlePour = () => {
+	const handleTap = () => {
 		if (pourState !== 'idle') return;
 		setPourState('pouring');
 		setTimeout(() => setPourState('blessed'), 950);
@@ -283,7 +245,7 @@ export default function SongnamphPage() {
 	const props = {
 		lang,
 		pourState,
-		onPour: handlePour,
+		onPour: handleTap,
 		onToggleLang: () => setLang((l) => (l === 'th' ? 'en' : 'th')),
 		onBack: () => router.push('/home'),
 	};

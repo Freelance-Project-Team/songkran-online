@@ -4,16 +4,16 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMobile } from '@/src/shared/hooks/useMobile';
 
-type Lang      = 'th' | 'en';
+type Lang = 'th' | 'en';
 type PourState = 'idle' | 'pouring' | 'blessed';
 
 const A = {
-	bg:         '/assets/shared/bg.png',
+	bg: '/assets/shared/bg.png',
 	changeLang: '/assets/shared/change-lang.png',
-	goBack:     '/assets/shared/go-back-btn.png',
-	scene:      '/assets/newsongkran/scene.png',
-	bgText:     '/assets/newsongkran/bg-text.png',
-	text:       '/assets/newsongkran/text.png',
+	goBack: '/assets/shared/go-back-btn.png',
+	scene: '/assets/newsongkran/scene.png',
+	bgText: '/assets/newsongkran/bg-text.png',
+	text: '/assets/newsongkran/text.png',
 } as const;
 
 const STYLES = `
@@ -46,7 +46,11 @@ function LangToggle({ onClick }: { onClick: () => void }) {
 			style={{ left: '82.7%', top: '6.57%', width: '16.54%', aspectRatio: '1' }}
 			aria-label="เปลี่ยนภาษา / Change language"
 		>
-			<img src={A.changeLang} alt="" className="w-full h-full select-none pointer-events-none" />
+			<img
+				src={A.changeLang}
+				alt=""
+				className="w-full h-full select-none pointer-events-none"
+			/>
 		</button>
 	);
 }
@@ -59,7 +63,12 @@ function GoBackButton({ lang, onClick }: { lang: Lang; onClick: () => void }) {
 			style={{ left: '30.8%', top: '83.8%', width: '38.4%', height: '14.4%' }}
 			aria-label={lang === 'th' ? 'กลับหน้าหลัก' : 'Back to home'}
 		>
-			<img src={A.goBack} alt="" className="w-full h-full select-none pointer-events-none" style={{ objectFit: 'fill' }} />
+			<img
+				src={A.goBack}
+				alt=""
+				className="w-full h-full select-none pointer-events-none"
+				style={{ objectFit: 'fill' }}
+			/>
 		</button>
 	);
 }
@@ -69,13 +78,26 @@ function BlessingCard() {
 		<div
 			className="absolute z-20"
 			style={{
-				left: '7.89%', top: '12.56%', width: '85.24%', height: '25.82%',
+				left: '7.89%',
+				top: '12.56%',
+				width: '85.24%',
+				height: '25.82%',
 				animation: 'ns-card-in 0.5s cubic-bezier(0.34,1.56,0.64,1) both',
 			}}
 		>
-			<img src={A.bgText} alt="" className="absolute inset-0 w-full h-full select-none pointer-events-none" style={{ objectFit: 'fill' }} />
+			<img
+				src={A.bgText}
+				alt=""
+				className="absolute inset-0 w-full h-full select-none pointer-events-none"
+				style={{ objectFit: 'fill' }}
+			/>
 			<div className="absolute inset-0 flex items-center justify-center px-[6.7%] py-[10%]">
-				<img src={A.text} alt="คำอวยพร" className="w-full h-full select-none pointer-events-none" style={{ objectFit: 'contain' }} />
+				<img
+					src={A.text}
+					alt="คำอวยพร"
+					className="w-full h-full select-none pointer-events-none"
+					style={{ objectFit: 'contain' }}
+				/>
 			</div>
 		</div>
 	);
@@ -111,9 +133,11 @@ function SceneOverlay({ pourState }: { pourState: PourState }) {
 			style={{
 				objectFit: 'fill',
 				animation:
-					pourState === 'idle'    ? 'ns-float 3.5s ease-in-out infinite' :
-					pourState === 'pouring' ? 'ns-tap 0.9s ease-in-out both'       :
-					'none',
+					pourState === 'idle'
+						? 'ns-float 3.5s ease-in-out infinite'
+						: pourState === 'pouring'
+							? 'ns-tap 0.9s ease-in-out both'
+							: 'none',
 			}}
 		/>
 	);
@@ -190,8 +214,12 @@ function DesktopCanvas(props: Parameters<typeof NewSongkranScene>[0]) {
 					style={{ fontFamily: 'Sarabun, sans-serif' }}
 				>
 					{props.pourState === 'blessed'
-						? (props.lang === 'th' ? 'ขอให้มีความสุข' : 'Blessings to you')
-						: (props.lang === 'th' ? 'แตะเพื่อทำบุญตักบาตร' : 'TAP TO MAKE MERIT')}
+						? props.lang === 'th'
+							? 'ขอให้มีความสุข'
+							: 'Blessings to you'
+						: props.lang === 'th'
+							? 'แตะเพื่อทำบุญตักบาตร'
+							: 'TAP TO MAKE MERIT'}
 				</p>
 			</div>
 		</div>
@@ -199,9 +227,9 @@ function DesktopCanvas(props: Parameters<typeof NewSongkranScene>[0]) {
 }
 
 export default function NewSongkranPage() {
-	const router   = useRouter();
+	const router = useRouter();
 	const isMobile = useMobile();
-	const [lang, setLang]           = useState<Lang>('th');
+	const [lang, setLang] = useState<Lang>('th');
 	const [pourState, setPourState] = useState<PourState>('idle');
 
 	const handleTap = () => {
@@ -213,9 +241,9 @@ export default function NewSongkranPage() {
 	const props = {
 		lang,
 		pourState,
-		onPour:       handleTap,
+		onPour: handleTap,
 		onToggleLang: () => setLang((l) => (l === 'th' ? 'en' : 'th')),
-		onBack:       () => router.push('/home'),
+		onBack: () => router.push('/home'),
 	};
 
 	return isMobile ? <SceneFrame {...props} /> : <DesktopCanvas {...props} />;
