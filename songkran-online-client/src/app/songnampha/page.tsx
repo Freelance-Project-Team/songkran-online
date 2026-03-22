@@ -17,6 +17,7 @@ const A = {
 	flower: '/assets/songnampha/flower.png',
 } as const;
 
+
 const STYLES = `
 @keyframes snp-float {
   0%, 100% { transform: translateY(0); }
