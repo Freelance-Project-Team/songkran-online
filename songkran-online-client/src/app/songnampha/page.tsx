@@ -9,13 +9,15 @@ type PourState = 'idle' | 'pouring' | 'blessed';
 
 // ─── Asset paths ──────────────────────────────────────────────────────────────
 const A = {
-	bg:         '/assets/songnampha/bg.png',
+	// Shared across pages
+	bg:         '/assets/shared/bg.png',
+	changeLang: '/assets/shared/change-lang.png',
+	goBack:     '/assets/shared/go-back-btn.png',
+	// songnampha-specific
 	munk:       '/assets/songnampha/munk.png',
 	bgText:     '/assets/songnampha/bg-text.png',
 	text:       '/assets/songnampha/text.png',
 	flower:     '/assets/songnampha/flower.png',
-	changeLang: '/assets/songnampha/change-lang.png',
-	goBack:     '/assets/songnampha/go-back-btn.png',
 } as const;
 
 // ─── Keyframe definitions ─────────────────────────────────────────────────────
