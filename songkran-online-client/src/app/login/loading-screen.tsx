@@ -2,139 +2,147 @@
 
 import { useEffect, useState } from 'react';
 
-const BG = '/assets/loading/bg.png';
+const BG       = '/assets/loading/bg.png';
 const AOT_LOGO = '/assets/loading/aot-logo.png';
-const CLOUD = '/assets/loading/cloud.png';
-const PLANE = '/assets/loading/plane-3.svg';
+const CLOUD_L  = '/assets/loading/cloud-left.png';   // 520×484
+const CLOUD_R  = '/assets/loading/cloud-right.png';  // 567×528
+const PLANE    = '/assets/loading/plane-3.svg';
 
-const FADE_IN_MS = 300;
-const ADVANCE_MS = 750;
-const CLOUD_MS = 600;
-const FADE_MS = 400;
-const PLANE_MOVE_MS = ADVANCE_MS;
-const LOGO_DELAY_MS = FADE_IN_MS + ADVANCE_MS * 3 + 200;
-const DONE_MS = FADE_IN_MS + ADVANCE_MS * 3 + 2200;
+const PLANE_FRONT_MS  = 1400;
+const LOGO_MS         = 2000;
+const CLOUD_EXPAND_MS = 2700;
+const DONE_MS         = 3900;
 
-const PLANE_TRANSFORMS = [
-	'scale(0.50) translate(-88%, 56%)',
-	'scale(0.65) translate(-38%, 23%)',
-	'scale(1.00) translate(0%, 0%)',
-	'scale(1.75) translate(27%, -11%)',
-] as const;
-
-const CLOUD_UPPER = [
-	{ top: '20.77%', right: '-7.55%', bottom: '22.42%', left: '-24.68%' },
-	{ top: '0%', right: '-55.9%', bottom: '22.42%', left: '-24.68%' },
-	{ top: '-16.2%', right: '-134.86%', bottom: '9.94%', left: '-12.47%' },
-	{ top: '-24.18%', right: '-212.81%', bottom: '-10.21%', left: '0%' },
-] as const;
-
-const CLOUD_LOWER = [
-	{ top: '35.92%', right: '-11.25%', bottom: '-11.58%', left: '-64.89%' },
-	{ top: '49.69%', right: '-11.25%', bottom: '-11.58%', left: '-32.82%' },
-	{ top: '27.7%', right: '-6.03%', bottom: '-35.56%', left: '-145.04%' },
-	{ top: '24.88%', right: '-0.09%', bottom: '-51.29%', left: '-194.15%' },
-] as const;
-
-interface LoadingScreenProps {
-	onComplete: () => void;
+const STYLES = `
+@keyframes ld-fly {
+  0%   { transform: scale(0.22) translate(-105%, 100%); opacity: 0; }
+  12%  { opacity: 1; }
+  100% { transform: scale(2.2) translate(22%, -32%); opacity: 1; }
 }
+@keyframes ld-logo-in {
+  0%   { transform: scale(0.3); opacity: 0; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+@keyframes ld-cloud-r-in {
+  from { transform: scale(0); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+@keyframes ld-cloud-l-in {
+  from { transform: scale(0); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+@keyframes ld-cloud-r-expand {
+  from { transform: scale(1); }
+  to   { transform: scale(5); }
+}
+@keyframes ld-cloud-l-expand {
+  from { transform: scale(1); }
+  to   { transform: scale(5); }
+}
+`;
 
-export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
-	const [frame, setFrame] = useState(-1);
-	const [showLogo, setShowLogo] = useState(false);
+export default function LoadingScreen({ onComplete }: { onComplete: () => void }) {
+	const [started, setStarted]           = useState(false);
+	const [planeOnTop, setPlaneOnTop]     = useState(false);
+	const [showLogo, setShowLogo]         = useState(false);
+	const [cloudExpand, setCloudExpand]   = useState(false);
 
 	useEffect(() => {
-		const timers = [
-			setTimeout(() => setFrame(0), FADE_IN_MS),
-			setTimeout(() => setFrame(1), FADE_IN_MS + ADVANCE_MS),
-			setTimeout(() => setFrame(2), FADE_IN_MS + ADVANCE_MS * 2),
-			setTimeout(() => setFrame(3), FADE_IN_MS + ADVANCE_MS * 3),
-			setTimeout(() => setShowLogo(true), LOGO_DELAY_MS),
-			setTimeout(onComplete, DONE_MS),
-		];
-		return () => timers.forEach(clearTimeout);
+		const t0 = setTimeout(() => setStarted(true), 60);
+		const t1 = setTimeout(() => setPlaneOnTop(true), PLANE_FRONT_MS);
+		const t2 = setTimeout(() => setShowLogo(true), LOGO_MS);
+		const t3 = setTimeout(() => setCloudExpand(true), CLOUD_EXPAND_MS);
+		const t4 = setTimeout(onComplete, DONE_MS);
+		return () => [t0, t1, t2, t3, t4].forEach(clearTimeout);
 	}, [onComplete]);
 
-	const ci = frame < 0 ? 0 : frame;
-	const cloudVisible = frame >= 0;
-	const cloudTransition = `top ${CLOUD_MS}ms ease, right ${CLOUD_MS}ms ease, bottom ${CLOUD_MS}ms ease, left ${CLOUD_MS}ms ease, opacity ${FADE_MS}ms ease`;
+	const cloudRStyle: React.CSSProperties = {
+		position: 'absolute',
+		top: '-8%',
+		right: '-15%',
+		width: '90%',
+		height: 'auto',
+		transformOrigin: 'top right',
+		zIndex: cloudExpand ? 10 : 3,
+		pointerEvents: 'none',
+		animation: cloudExpand
+			? 'ld-cloud-r-expand 900ms ease-in forwards'
+			: started
+				? 'ld-cloud-r-in 900ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards'
+				: undefined,
+	};
+
+	const cloudLStyle: React.CSSProperties = {
+		position: 'absolute',
+		bottom: '-8%',
+		left: '-14%',
+		width: '85%',
+		height: 'auto',
+		transformOrigin: 'bottom left',
+		zIndex: cloudExpand ? 10 : 3,
+		pointerEvents: 'none',
+		animation: cloudExpand
+			? 'ld-cloud-l-expand 900ms ease-in forwards'
+			: started
+				? 'ld-cloud-l-in 900ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards'
+				: undefined,
+	};
 
 	return (
 		<div className="fixed inset-0 z-50 overflow-hidden">
+			<style>{STYLES}</style>
+
 			<img
 				src={BG}
 				alt=""
 				className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
 			/>
 
-			<div
-				className="absolute overflow-hidden pointer-events-none select-none"
-				style={{
-					top: CLOUD_UPPER[ci].top,
-					right: CLOUD_UPPER[ci].right,
-					bottom: CLOUD_UPPER[ci].bottom,
-					left: CLOUD_UPPER[ci].left,
-					opacity: cloudVisible ? 1 : 0,
+			{/* Upper-right cloud — grows from top-right corner */}
+			<img src={CLOUD_R} alt="" className="select-none" style={cloudRStyle} />
 
-					transition: cloudTransition,
-				}}
-			>
-				<img
-					src={CLOUD}
-					alt=""
-					className="absolute inset-0 w-full h-full max-w-none object-cover"
-					style={{ transform: 'scaleX(-1)' }}
-				/>
-			</div>
+			{/* Lower-left cloud — grows from bottom-left corner */}
+			<img src={CLOUD_L} alt="" className="select-none" style={cloudLStyle} />
 
-			<div
-				className="absolute overflow-hidden pointer-events-none select-none"
-				style={{
-					top: CLOUD_LOWER[ci].top,
-					right: CLOUD_LOWER[ci].right,
-					bottom: CLOUD_LOWER[ci].bottom,
-					left: CLOUD_LOWER[ci].left,
-					opacity: cloudVisible ? 1 : 0,
-
-					transition: cloudTransition,
-				}}
-			>
-				<img
-					src={CLOUD}
-					alt=""
-					className="absolute inset-0 w-full h-full max-w-none object-cover"
-				/>
-			</div>
-
-			<div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-				<div className="relative h-full" style={{ aspectRatio: '393 / 852' }}>
+			{/* Plane — z=2 behind right cloud, then z=4 in front */}
+			<div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
+				<div className="relative h-full overflow-hidden" style={{ aspectRatio: '393 / 852' }}>
 					<img
 						src={PLANE}
 						alt=""
-						className="absolute inset-0 w-full h-full select-none"
+						className="absolute"
 						style={{
-							opacity: frame >= 0 ? 1 : 0,
-							transform: frame >= 0 ? PLANE_TRANSFORMS[frame] : PLANE_TRANSFORMS[0],
-							transition: [
-								`transform ${PLANE_MOVE_MS}ms cubic-bezier(0.4, 0, 0.2, 1)`,
-								`opacity ${FADE_MS}ms ease`,
-							].join(', '),
+							left: '50%',
+							top: '50%',
+							width: '38%',
+							height: 'auto',
+							marginLeft: '-19%',
+							marginTop: '-10%',
+							zIndex: planeOnTop ? 4 : 2,
+							opacity: 0,
+							animation: started
+								? `ld-fly ${CLOUD_EXPAND_MS - 60}ms cubic-bezier(0.3, 0, 0.7, 1) forwards`
+								: undefined,
 						}}
 					/>
 				</div>
 			</div>
 
+			{/* AOT Logo — spring scale-in */}
 			<img
 				src={AOT_LOGO}
 				alt="AOT Suvarnabhumi Airport"
-				className="absolute object-contain pointer-events-none"
+				className="absolute object-contain pointer-events-none select-none"
 				style={{
 					left: '13.49%',
 					top: '52.11%',
 					width: '73.03%',
-					opacity: showLogo ? 1 : 0,
-					transition: 'opacity 700ms cubic-bezier(0.4, 0, 0.2, 1)',
+					zIndex: 5,
+					transformOrigin: 'center center',
+					opacity: 0,
+					animation: showLogo
+						? 'ld-logo-in 750ms cubic-bezier(0.34, 1.56, 0.64, 1) both'
+						: undefined,
 				}}
 			/>
 		</div>
