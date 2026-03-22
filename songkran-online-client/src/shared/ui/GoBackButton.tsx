@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 const STYLES = `
 @keyframes gb-lift {
@@ -13,7 +13,7 @@ const STYLES = `
 
 type Lang = 'th' | 'en';
 
-export function GoBackButton({ lang, onBack }: { lang: Lang; onBack: () => void }) {
+export function GoBackButton({ lang, onBack, style }: { lang: Lang; onBack: () => void; style?: React.CSSProperties }) {
 	const [lifting, setLifting] = useState(false);
 
 	const handleClick = () => {
@@ -31,6 +31,7 @@ export function GoBackButton({ lang, onBack }: { lang: Lang; onBack: () => void 
 				style={{
 					left: '30.8%', top: '83.8%', width: '38.4%', height: '14.4%',
 					animation: lifting ? 'gb-lift 0.5s ease-out both' : undefined,
+					...style,
 				}}
 				aria-label={lang === 'th' ? 'กลับหน้าหลัก' : 'Back to home'}
 			>
