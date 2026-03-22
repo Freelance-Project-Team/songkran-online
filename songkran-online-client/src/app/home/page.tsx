@@ -14,6 +14,16 @@ const BUTTONS = [
 	{ route: '/water-play',  img: '/assets/home/play-water-btn.png',    left: '52.67%', top: '57.75%', width: '43.26%', height: '21.24%' },
 ] as const;
 
+const STYLES = `
+@keyframes home-select {
+  0%   { transform: scale(1); }
+  25%  { transform: scale(0.91); }
+  55%  { transform: scale(1.06); }
+  75%  { transform: scale(0.97); }
+  100% { transform: scale(1); }
+}
+`;
+
 function HomeScene({
 	lang,
 	onToggle,
@@ -23,8 +33,21 @@ function HomeScene({
 	onToggle: () => void;
 	onNavigate: (route: string) => void;
 }) {
+	const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
+
+	const handleClick = (route: string, i: number) => {
+		if (selectedIdx !== null) return;
+		setSelectedIdx(i);
+		setTimeout(() => {
+			onNavigate(route);
+			setSelectedIdx(null);
+		}, 400);
+	};
+
 	return (
 		<>
+			<style>{STYLES}</style>
+
 			<img
 				src="/assets/home/home-bg.png"
 				alt=""
@@ -37,14 +60,18 @@ function HomeScene({
 			{BUTTONS.map((btn, i) => (
 				<div
 					key={i}
-					className="absolute cursor-pointer hover:scale-[1.03] active:scale-[0.97] transition-transform"
-					style={{ left: btn.left, top: btn.top, width: btn.width, height: btn.height }}
-					onClick={() => onNavigate(btn.route)}
+					className="absolute cursor-pointer"
+					style={{
+						left: btn.left, top: btn.top,
+						width: btn.width, height: btn.height,
+						animation: selectedIdx === i ? 'home-select 0.38s ease-out both' : undefined,
+					}}
+					onClick={() => handleClick(btn.route, i)}
 				>
 					<img
 						src={btn.img}
 						alt=""
-						className="absolute inset-0 w-full h-full select-none pointer-events-none"
+						className="w-full h-full select-none pointer-events-none"
 						style={{ objectFit: 'fill' }}
 					/>
 				</div>
