@@ -15,6 +15,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
 	title: 'Songkran Festival AOTSVB',
 	description: 'Experience the joy of Songkran with AOTSVB',
+	icons: {
+		icon: '/logo.png',
+		apple: '/logo.png',
+	},
 };
 
 export default function RootLayout({
