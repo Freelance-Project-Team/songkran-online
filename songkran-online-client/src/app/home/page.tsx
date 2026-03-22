@@ -30,7 +30,7 @@ const BUTTONS: BtnConfig[] = [
 		group: { left: '2.54%', top: '35.21%', width: '47.97%', height: '21.24%' },
 	},
 	{
-		route: '/prayer',
+		route: '/songnampha',
 		group: { left: '54.45%', top: '35.21%', width: '39.95%', height: '21.24%' },
 	},
 	{
