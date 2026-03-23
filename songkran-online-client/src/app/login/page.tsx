@@ -25,6 +25,12 @@ const ASSETS = {
 
 const poppins = { fontFamily: 'Poppins, sans-serif' };
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
+
+const oauthLogin = (provider: 'google' | 'line' | 'facebook') => {
+	window.location.href = `${API_URL}/auth/${provider}`;
+};
+
 function Artwork({ showBg = true, isSmall = false }: { showBg?: boolean; isSmall?: boolean }) {
 	return (
 		<>
@@ -174,17 +180,17 @@ function LoginForm({ onLogin }: { onLogin: () => void }) {
 			</div>
 
 			<div className="flex items-center justify-center gap-6 mt-[5px]">
-				<button className="rounded-[14px] shadow-md w-[50px] h-[50px] overflow-hidden hover:scale-105 active:scale-95 transition-transform cursor-pointer shrink-0">
+				<button onClick={() => oauthLogin('facebook')} className="rounded-[14px] shadow-md w-[50px] h-[50px] overflow-hidden hover:scale-105 active:scale-95 transition-transform cursor-pointer shrink-0">
 					<img
 						src={ASSETS.facebook}
 						alt="Facebook"
 						className="w-full h-full object-cover"
 					/>
 				</button>
-				<button className="rounded-[14px] shadow-md w-[50px] h-[50px] overflow-hidden hover:scale-105 active:scale-95 transition-transform cursor-pointer shrink-0">
+				<button onClick={() => oauthLogin('google')} className="rounded-[14px] shadow-md w-[50px] h-[50px] overflow-hidden hover:scale-105 active:scale-95 transition-transform cursor-pointer shrink-0">
 					<img src={ASSETS.google} alt="Google" className="w-full h-full object-cover" />
 				</button>
-				<button className="rounded-[14px] w-[50px] h-[50px] overflow-hidden relative hover:scale-105 active:scale-95 transition-transform cursor-pointer shrink-0">
+				<button onClick={() => oauthLogin('line')} className="rounded-[14px] w-[50px] h-[50px] overflow-hidden relative hover:scale-105 active:scale-95 transition-transform cursor-pointer shrink-0">
 					<img
 						src={ASSETS.line}
 						alt="LINE"

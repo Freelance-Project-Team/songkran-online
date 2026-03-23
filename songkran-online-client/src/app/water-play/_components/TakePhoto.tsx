@@ -65,6 +65,17 @@ export function TakePhoto({
 		const ctx = canvas.getContext('2d');
 		if (!ctx) return;
 
+		// Log to backend (fire and forget)
+		const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+		fetch(`${process.env.NEXT_PUBLIC_API_URL}/water-play/log`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				...(token ? { Authorization: `Bearer ${token}` } : {}),
+			},
+			body: JSON.stringify({ character, locationId }),
+		}).catch(() => {});
+
 		const loadImg = (src: string): Promise<HTMLImageElement> =>
 			new Promise((resolve, reject) => {
 				const img = new Image();
