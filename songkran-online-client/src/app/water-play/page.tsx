@@ -6,9 +6,10 @@ import { useMobile } from '@/src/shared/hooks/useMobile';
 import { SelectCharacter } from './_components/SelectCharacter';
 import { SelectLocation } from './_components/SelectLocation';
 import { TakePhoto } from './_components/TakePhoto';
+import { PhotoPreview } from './_components/PhotoPreview';
 
 type Lang = 'th' | 'en';
-type FlowStep = 'character' | 'location' | 'photo';
+type FlowStep = 'character' | 'location' | 'photo' | 'preview';
 
 function SceneFrame({ children }: { children: React.ReactNode }) {
 	return (
@@ -44,6 +45,7 @@ export default function WaterPlayPage() {
 	const [character, setCharacter] = useState<'boy' | 'girl'>('boy');
 	const [faceUrl, setFaceUrl] = useState('');
 	const [locationId, setLocationId] = useState('');
+	const [photoUrl, setPhotoUrl] = useState('');
 
 	const sharedProps = {
 		lang,
@@ -77,6 +79,19 @@ export default function WaterPlayPage() {
 				/>
 			);
 		}
+		if (flowStep === 'preview') {
+			return (
+				<PhotoPreview
+					{...sharedProps}
+					character={character}
+					faceUrl={faceUrl}
+					locationId={locationId}
+					photoUrl={photoUrl}
+					onBack={() => setFlowStep('photo')}
+					onRetake={() => setFlowStep('character')}
+				/>
+			);
+		}
 		return (
 			<TakePhoto
 				{...sharedProps}
@@ -84,6 +99,7 @@ export default function WaterPlayPage() {
 				faceUrl={faceUrl}
 				locationId={locationId}
 				onBack={() => setFlowStep('location')}
+				onPhotoTaken={(url) => { setPhotoUrl(url); setFlowStep('preview'); }}
 			/>
 		);
 	})();

@@ -76,6 +76,7 @@ export function TakePhoto({
 	faceUrl,
 	locationId,
 	onBack,
+	onPhotoTaken,
 }: {
 	lang: Lang;
 	character: 'boy' | 'girl';
@@ -83,6 +84,7 @@ export function TakePhoto({
 	locationId: string;
 	onToggleLang: () => void;
 	onBack: () => void;
+	onPhotoTaken: (photoUrl: string) => void;
 }) {
 	const canvasRef   = useRef<HTMLCanvasElement>(null);
 	const timersRef   = useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map());
@@ -186,10 +188,7 @@ export function TakePhoto({
 			}
 
 			const url = canvas.toDataURL('image/png');
-			const a   = document.createElement('a');
-			a.href     = url;
-			a.download = 'songkran-2026.png';
-			a.click();
+			onPhotoTaken(url);
 		} catch (e) {
 			console.error('Save failed', e);
 		}
