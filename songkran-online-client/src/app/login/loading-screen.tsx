@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 
 const BG       = '/assets/loading/bg.png';
 const AOT_LOGO = '/assets/loading/aot-logo.png';
-const CLOUD_L  = '/assets/loading/cloud-left.png';   // 520×484
-const CLOUD_R  = '/assets/loading/cloud-right.png';  // 567×528
+const CLOUD_L  = '/assets/loading/cloud-left.png';
+const CLOUD_R  = '/assets/loading/cloud-right.png';
 const PLANE    = '/assets/loading/plane-3.svg';
 
 const PLANE_FRONT_MS  = 1400;
@@ -23,29 +23,21 @@ const STYLES = `
   0%   { transform: scale(0.3); opacity: 0; }
   100% { transform: scale(1);   opacity: 1; }
 }
-@keyframes ld-cloud-r-in {
+@keyframes ld-cloud-in {
   from { transform: scale(0); opacity: 0; }
   to   { transform: scale(1); opacity: 1; }
 }
-@keyframes ld-cloud-l-in {
-  from { transform: scale(0); opacity: 0; }
-  to   { transform: scale(1); opacity: 1; }
-}
-@keyframes ld-cloud-r-expand {
-  from { transform: scale(1); }
-  to   { transform: scale(5); }
-}
-@keyframes ld-cloud-l-expand {
+@keyframes ld-cloud-expand {
   from { transform: scale(1); }
   to   { transform: scale(5); }
 }
 `;
 
 export default function LoadingScreen({ onComplete }: { onComplete: () => void }) {
-	const [started, setStarted]           = useState(false);
-	const [planeOnTop, setPlaneOnTop]     = useState(false);
-	const [showLogo, setShowLogo]         = useState(false);
-	const [cloudExpand, setCloudExpand]   = useState(false);
+	const [started, setStarted]         = useState(false);
+	const [planeOnTop, setPlaneOnTop]   = useState(false);
+	const [showLogo, setShowLogo]       = useState(false);
+	const [cloudExpand, setCloudExpand] = useState(false);
 
 	useEffect(() => {
 		const t0 = setTimeout(() => setStarted(true), 60);
@@ -56,37 +48,11 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
 		return () => [t0, t1, t2, t3, t4].forEach(clearTimeout);
 	}, [onComplete]);
 
-	const cloudRStyle: React.CSSProperties = {
-		position: 'absolute',
-		top: '-8%',
-		right: '-15%',
-		width: '90%',
-		height: 'auto',
-		transformOrigin: 'top right',
-		zIndex: cloudExpand ? 10 : 3,
-		pointerEvents: 'none',
-		animation: cloudExpand
-			? 'ld-cloud-r-expand 900ms ease-in forwards'
-			: started
-				? 'ld-cloud-r-in 900ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards'
-				: undefined,
-	};
-
-	const cloudLStyle: React.CSSProperties = {
-		position: 'absolute',
-		bottom: '-8%',
-		left: '-14%',
-		width: '85%',
-		height: 'auto',
-		transformOrigin: 'bottom left',
-		zIndex: cloudExpand ? 10 : 3,
-		pointerEvents: 'none',
-		animation: cloudExpand
-			? 'ld-cloud-l-expand 900ms ease-in forwards'
-			: started
-				? 'ld-cloud-l-in 900ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards'
-				: undefined,
-	};
+	const cloudAnim = cloudExpand
+		? 'ld-cloud-expand 900ms ease-in forwards'
+		: started
+			? 'ld-cloud-in 900ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards'
+			: undefined;
 
 	return (
 		<div className="fixed inset-0 z-50 overflow-hidden">
@@ -98,13 +64,30 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
 				className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
 			/>
 
-			{/* Upper-right cloud — grows from top-right corner */}
-			<img src={CLOUD_R} alt="" className="select-none" style={cloudRStyle} />
+			<img
+				src={CLOUD_R}
+				alt=""
+				className="absolute pointer-events-none select-none"
+				style={{
+					top: '-8%', right: '-15%', width: '90%', height: 'auto',
+					transformOrigin: 'top right',
+					zIndex: cloudExpand ? 10 : 3,
+					animation: cloudAnim,
+				}}
+			/>
 
-			{/* Lower-left cloud — grows from bottom-left corner */}
-			<img src={CLOUD_L} alt="" className="select-none" style={cloudLStyle} />
+			<img
+				src={CLOUD_L}
+				alt=""
+				className="absolute pointer-events-none select-none"
+				style={{
+					bottom: '-8%', left: '-14%', width: '85%', height: 'auto',
+					transformOrigin: 'bottom left',
+					zIndex: cloudExpand ? 10 : 3,
+					animation: cloudAnim,
+				}}
+			/>
 
-			{/* Plane — z=2 behind right cloud, then z=4 in front */}
 			<div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
 				<div className="relative h-full overflow-hidden" style={{ aspectRatio: '393 / 852' }}>
 					<img
@@ -112,12 +95,8 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
 						alt=""
 						className="absolute"
 						style={{
-							left: '50%',
-							top: '50%',
-							width: '38%',
-							height: 'auto',
-							marginLeft: '-19%',
-							marginTop: '-10%',
+							left: '50%', top: '50%', width: '38%', height: 'auto',
+							marginLeft: '-19%', marginTop: '-10%',
 							zIndex: planeOnTop ? 4 : 2,
 							opacity: 0,
 							animation: started
@@ -128,17 +107,14 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
 				</div>
 			</div>
 
-			{/* AOT Logo — spring scale-in */}
 			<img
 				src={AOT_LOGO}
 				alt="AOT Suvarnabhumi Airport"
 				className="absolute object-contain pointer-events-none select-none"
 				style={{
-					left: '13.49%',
-					top: '52.11%',
-					width: '73.03%',
+					left: '13.49%', top: '52.11%', width: '73.03%',
 					zIndex: 5,
-					transformOrigin: 'center center',
+					transformOrigin: 'center',
 					opacity: 0,
 					animation: showLogo
 						? 'ld-logo-in 750ms cubic-bezier(0.34, 1.56, 0.64, 1) both'
