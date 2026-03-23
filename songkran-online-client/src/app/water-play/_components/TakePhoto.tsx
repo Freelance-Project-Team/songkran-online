@@ -1,7 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
-import { LangToggleButton } from '@/src/shared/ui/LangToggleButton';
+import { useRef, useState, useCallback } from 'react';
 import { GoBackButton } from '@/src/shared/ui/GoBackButton';
 
 type Lang = 'th' | 'en';
@@ -18,14 +17,25 @@ const CHAR_IMG: Record<'boy' | 'girl', string> = {
 	girl: '/assets/playsongkran/women-player.png',
 };
 
-// Character: horizontally centered, bottom-anchored (leaves room for buttons)
 const CHAR_POS = { left: '20%', top: '21%', width: '60%', height: '65%' };
 
-// Face circle: derived from SelectCharacter face-{character} ratios, scaled to CHAR_POS
 const FACE_POS: Record<'boy' | 'girl', { left: string; top: string; width: string; height: string }> = {
 	boy:  { left: '40%', top: '29.2%', width: '22%', height: '10.15%' },
 	girl: { left: '39%', top: '29.3%', width: '22%', height: '10.15%' },
 };
+
+type GunItem = {
+	id: number;
+	side: 'left' | 'right';
+	// position in % of container
+	x: number;
+	y: number;
+	// random size in % of container width
+	size: number;
+	hiding: boolean;
+};
+
+let gunIdSeq = 0;
 
 const STYLES = `
 @keyframes tp-slide-in {
@@ -37,14 +47,34 @@ const STYLES = `
   60% { transform: scale(1.1); opacity: 1; }
   100%{ transform: scale(1);   opacity: 1; }
 }
+@keyframes tp-gun-pop {
+  0%   { transform: translate(-50%, -50%) scale(0);    opacity: 0; }
+  55%  { transform: translate(-50%, -50%) scale(1.18); opacity: 1; }
+  75%  { transform: translate(-50%, -50%) scale(0.9);  opacity: 1; }
+  88%  { transform: translate(-50%, -50%) scale(1.06); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1);    opacity: 1; }
+}
+@keyframes tp-gun-hide {
+  from { transform: translate(-50%, -50%) scale(1);   opacity: 1; }
+  to   { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+}
+@keyframes tp-cam-wiggle {
+  0%   { transform: scale(1)    rotate(0deg); }
+  15%  { transform: scale(1.12) rotate(-10deg); }
+  35%  { transform: scale(1.15) rotate(9deg); }
+  55%  { transform: scale(1.08) rotate(-5deg); }
+  75%  { transform: scale(1.03) rotate(2deg); }
+  100% { transform: scale(1)    rotate(0deg); }
+}
 `;
+
+type CamState = 'cam1' | 'cam2';
 
 export function TakePhoto({
 	lang,
 	character,
 	faceUrl,
 	locationId,
-	onToggleLang,
 	onBack,
 }: {
 	lang: Lang;
@@ -54,18 +84,63 @@ export function TakePhoto({
 	onToggleLang: () => void;
 	onBack: () => void;
 }) {
-	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const sceneSrc  = SCENES[locationId] ?? SCENES.arun;
-	const charSrc   = CHAR_IMG[character];
-	const facePos   = FACE_POS[character];
+	const canvasRef   = useRef<HTMLCanvasElement>(null);
+	const timersRef   = useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map());
 
-	const handleSave = async () => {
+	const sceneSrc = SCENES[locationId] ?? SCENES.arun;
+	const charSrc  = CHAR_IMG[character];
+	const facePos  = FACE_POS[character];
+
+	const [camState, setCamState] = useState<CamState>('cam1');
+	const [camAnim,  setCamAnim]  = useState(false);
+	const [guns, setGuns]         = useState<GunItem[]>([]);
+
+	// --- Tap on scene → spawn water gun at click position ---
+	const handleSceneTap = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+		const rect = e.currentTarget.getBoundingClientRect();
+		const xPct = ((e.clientX - rect.left) / rect.width)  * 100;
+		const yPct = ((e.clientY - rect.top)  / rect.height) * 100;
+		const side = xPct < 50 ? 'left' : 'right';
+
+		// random size between 35% and 58% of container width
+		const size = 35 + Math.random() * 23;
+
+		const id = ++gunIdSeq;
+		const newGun: GunItem = { id, side, x: xPct, y: yPct, size, hiding: false };
+
+		setGuns(prev => [...prev, newGun]);
+
+		// Auto-hide after 1.8s
+		const t = setTimeout(() => {
+			setGuns(prev => prev.map(g => g.id === id ? { ...g, hiding: true } : g));
+			// Remove after hide animation
+			const t2 = setTimeout(() => {
+				setGuns(prev => prev.filter(g => g.id !== id));
+				timersRef.current.delete(id);
+			}, 350);
+			timersRef.current.set(id, t2);
+		}, 1800);
+		timersRef.current.set(id, t);
+	}, []);
+
+	// --- Camera button ---
+	const handleCamera = async () => {
+		if (camAnim) return;
+		setCamState('cam2');
+		setCamAnim(true);
+		await savePhoto();
+		setTimeout(() => {
+			setCamState('cam1');
+			setCamAnim(false);
+		}, 550);
+	};
+
+	const savePhoto = async () => {
 		const canvas = canvasRef.current;
 		if (!canvas) return;
 		const ctx = canvas.getContext('2d');
 		if (!ctx) return;
 
-		// Log to backend (fire and forget)
 		const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
 		fetch(`${process.env.NEXT_PUBLIC_API_URL}/water-play/log`, {
 			method: 'POST',
@@ -93,10 +168,7 @@ export function TakePhoto({
 			]);
 
 			ctx.drawImage(scene, 0, 0, 393, 852);
-
-			const cX = 0.20 * 393, cY = 0.21 * 852;
-			const cW = 0.60 * 393, cH = 0.65 * 852;
-			ctx.drawImage(char_, cX, cY, cW, cH);
+			ctx.drawImage(char_, 0.20 * 393, 0.21 * 852, 0.60 * 393, 0.65 * 852);
 
 			if (face && faceUrl) {
 				const fL = parseFloat(facePos.left)   / 100;
@@ -126,9 +198,9 @@ export function TakePhoto({
 	return (
 		<>
 			<style>{STYLES}</style>
-
 			<canvas ref={canvasRef} width={393} height={852} className="hidden" />
 
+			{/* Scene background */}
 			<img
 				src={sceneSrc}
 				alt=""
@@ -136,65 +208,77 @@ export function TakePhoto({
 				style={{ objectFit: 'fill' }}
 			/>
 
-			{/* Character + face — entrance animation on wrapper */}
+			{/* Tap zone */}
+			<div className="absolute inset-0" style={{ zIndex: 1 }} onClick={handleSceneTap} />
+
+			{/* Character + face */}
 			<div
-				className="absolute inset-0"
-				style={{ animation: 'tp-slide-in 0.65s cubic-bezier(0.34,1.56,0.64,1) both' }}
+				className="absolute inset-0 pointer-events-none"
+				style={{ zIndex: 2, animation: 'tp-slide-in 0.65s cubic-bezier(0.34,1.56,0.64,1) both' }}
 			>
 				<img
 					src={charSrc}
 					alt=""
-					className="absolute select-none pointer-events-none"
-					style={{
-						...CHAR_POS,
-						objectFit: 'contain',
-						objectPosition: 'bottom center',
-					}}
+					className="absolute select-none"
+					style={{ ...CHAR_POS, objectFit: 'contain', objectPosition: 'bottom center' }}
 				/>
-
 				{faceUrl && (
 					<div
 						className="absolute overflow-hidden rounded-full"
 						style={{
-							left:   facePos.left,
-							top:    facePos.top,
-							width:  facePos.width,
-							height: facePos.height,
+							left: facePos.left, top: facePos.top,
+							width: facePos.width, height: facePos.height,
 							border: '3px solid rgba(255,255,255,0.9)',
 							boxShadow: '0 2px 12px rgba(0,0,0,0.25)',
 							animation: 'tp-pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.35s both',
 						}}
 					>
-						<img
-							src={faceUrl}
-							alt="face"
-							className="w-full h-full object-cover select-none pointer-events-none"
-						/>
+						<img src={faceUrl} alt="face" className="w-full h-full object-cover select-none" />
 					</div>
 				)}
 			</div>
 
-			<LangToggleButton lang={lang} onToggle={onToggleLang} />
-
-			<GoBackButton
-				lang={lang}
-				onBack={onBack}
-				style={{ left: '2%', top: '84.27%', width: '35%', height: '14.32%' }}
-			/>
-
-			<button
-				onClick={handleSave}
-				className="absolute z-10 p-0 bg-transparent border-0 cursor-pointer"
-				style={{ right: '2%', top: '84.27%', width: '35%', height: '14.32%' }}
-				aria-label={lang === 'th' ? 'บันทึกรูป' : 'Save photo'}
-			>
+			{/* Water guns — rendered at tap position */}
+			{guns.map(gun => (
 				<img
-					src="/assets/playsongkran/continue.png"
+					key={gun.id}
+					src={`/assets/playsongkran/scenes/water-gun-${gun.side}.png`}
 					alt=""
-					className="w-full h-full select-none pointer-events-none"
-					style={{ objectFit: 'contain', objectPosition: 'right bottom' }}
+					className="absolute select-none pointer-events-none"
+					style={{
+						left:   `${gun.x}%`,
+						top:    `${gun.y}%`,
+						width:  `${gun.size}%`,
+						height: 'auto',
+						zIndex: 4,
+						animation: gun.hiding
+							? 'tp-gun-hide 0.35s ease-in both'
+							: 'tp-gun-pop 0.5s cubic-bezier(0.34,1.56,0.64,1) both',
+					}}
 				/>
-			</button>
+			))}
+
+			{/* Bottom buttons */}
+			<div className="absolute inset-x-0 bottom-0" style={{ height: '15%', zIndex: 10 }}>
+				<GoBackButton
+					lang={lang}
+					onBack={onBack}
+					style={{ left: '2%', top: '0%', width: '35%', height: '100%' }}
+				/>
+				<button
+					onClick={handleCamera}
+					className="absolute p-0 bg-transparent border-0 cursor-pointer"
+					style={{ right: '4.8%', top: '10%', width: '20.4%', height: '80%' }}
+					aria-label="ถ่ายรูป"
+				>
+					<img
+						src={`/assets/playsongkran/scenes/camera-${camState === 'cam1' ? '1' : '2'}.png`}
+						alt=""
+						className="w-full h-full object-contain select-none pointer-events-none"
+						style={{ animation: camAnim ? 'tp-cam-wiggle 0.55s ease-out both' : undefined }}
+					/>
+				</button>
+			</div>
 		</>
 	);
 }
