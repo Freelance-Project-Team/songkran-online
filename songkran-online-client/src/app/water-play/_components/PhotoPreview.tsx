@@ -97,39 +97,36 @@ export function PhotoPreview({
 		canvas.width = W; canvas.height = H;
 		const ctx = canvas.getContext('2d')!;
 
-		const [scene, char_, face] = await Promise.all([
+		const sy = (n: number) => Math.round(n * H / 852);
+
+		const [scene, char_, face, robot, logo] = await Promise.all([
 			loadImg(sceneSrc),
 			loadImg(charSrc),
 			faceUrl ? loadImg(faceUrl) : Promise.resolve(null as unknown as HTMLImageElement),
+			loadImg('/assets/playsongkran/preview/aot-robot.png'),
+			loadImg('/assets/login/logo.png'),
 		]);
 
-		// Scene — top 677 px only (matches clipPath shown in UI)
+		// 1. Scene — top 677 px only
 		ctx.drawImage(scene,
 			0, 0, scene.naturalWidth, scene.naturalHeight * (H / 852),
 			0, 0, W, H,
 		);
 
-		// Character — objectFit:'contain', objectPosition:'bottom center'
-		const cL = 163, cT = Math.round(208 * H / 852), cW = 276, cH = Math.round(494 * H / 852);
+		// 2. Robot (z=1, behind character)
+		const robotW = 238, robotH = Math.round(robotW * robot.naturalHeight / robot.naturalWidth);
+		ctx.drawImage(robot, -12, sy(462), robotW, robotH);
+
+		// 3. Character — objectFit:'contain', objectPosition:'bottom center'
+		const cL = 163, cT = sy(208), cW = 276, cH = sy(494);
 		const asp = char_.naturalWidth / char_.naturalHeight;
 		let dw: number, dh: number;
 		if (cW / cH > asp) { dh = cH; dw = Math.round(dh * asp); }
 		else               { dw = cW; dh = Math.round(dw / asp); }
 		ctx.drawImage(char_, cL + (cW - dw) / 2, cT + (cH - dh), dw, dh);
 
-		// Face
-		if (face && faceUrl) {
-			const fL = 256, fT = Math.round(265 * H / 852), fW = 108, fH = Math.round(108 * H / 852);
-			ctx.save();
-			ctx.beginPath();
-			ctx.ellipse(fL + fW / 2, fT + fH / 2, fW / 2, fH / 2, 0, 0, Math.PI * 2);
-			ctx.clip();
-			ctx.drawImage(face, fL, fT, fW, fH);
-			ctx.restore();
-		}
-
-		// Info text box
-		const bL = 13, bT = Math.round(340 * H / 852), bW = 205, bH = Math.round(110 * H / 852);
+		// 4. Info text box
+		const bL = 13, bT = sy(340), bW = 205, bH = sy(110);
 		ctx.save();
 		ctx.beginPath();
 		const rad = 20;
@@ -151,6 +148,39 @@ export function PhotoPreview({
 			: [userName, 'joined Songkran water play', `at ${location.en}`];
 		lines.forEach((line, i) => ctx.fillText(line, tx, bT + lh * (i + 1)));
 		ctx.restore();
+
+		// 5. Blue banner
+		const bannerT = sy(597), bannerH = sy(80);
+		ctx.fillStyle = '#0055A5';
+		ctx.fillRect(0, bannerT, W, bannerH);
+
+		// 6. Songkran logo (overlaps banner top-left)
+		const logoW = 208, logoH = Math.round(logoW * logo.naturalHeight / logo.naturalWidth);
+		ctx.drawImage(logo, -33, sy(569), logoW, logoH);
+
+		// 7. Banner text
+		ctx.save();
+		ctx.fillStyle = '#fff';
+		ctx.font = 'bold 11px Arial, sans-serif';
+		ctx.textAlign = 'right';
+		const bannerLines = lang === 'th'
+			? ['ท่าอากาศสุวรรณภูมิขอเชิญทุกท่าน', 'ร่วมสนุกเทศกาลสงกรานต์', 'สาดสุขแบบไทยสไตล์ร่วมสมัย']
+			: ['Suvarnabhumi Airport invites everyone', 'to join Songkran Festival', 'Splash happiness Thai style'];
+		const bLh = bannerH / 4;
+		bannerLines.forEach((line, i) => ctx.fillText(line, W - 12, bannerT + bLh * (i + 1)));
+		ctx.restore();
+
+		// 8. Face — draw last (on top), use uniform circle radius to avoid squish
+		if (face && faceUrl) {
+			const fSz = sy(108);
+			const fL = 256, fT = sy(265);
+			ctx.save();
+			ctx.beginPath();
+			ctx.arc(fL + fSz / 2, fT + fSz / 2, fSz / 2, 0, Math.PI * 2);
+			ctx.clip();
+			ctx.drawImage(face, fL, fT, fSz, fSz);
+			ctx.restore();
+		}
 
 		return canvas.toDataURL('image/png');
 	}, [sceneSrc, charSrc, faceUrl, lang, userName, location]);
