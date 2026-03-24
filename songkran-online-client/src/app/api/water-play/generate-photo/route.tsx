@@ -98,8 +98,8 @@ export async function POST(req: NextRequest) {
 				: [
 						'Suvarnabhumi Airport',
 						'invites everyone to join',
-						'Songkran Festival',
-						'Splash into happiness, Thai style',
+						'Songkran Festival Splash',
+						'into happiness, Thai style',
 					];
 
 		return new ImageResponse(

@@ -331,9 +331,9 @@ export function PhotoPreview({
 								<br />
 								invites everyone to join
 								<br />
-								Songkran Festival
+								Songkran Festival Splash
 								<br />
-								Splash into happiness, Thai style
+								into happiness, Thai style
 							</>
 						)}
 					</p>

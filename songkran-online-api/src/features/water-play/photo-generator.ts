@@ -102,8 +102,8 @@ export async function generatePhoto(params: GeneratePhotoParams): Promise<Buffer
 			: [
 				'Suvarnabhumi Airport',
 				'invites everyone to join',
-				'Songkran Festival',
-				'Splash into happiness, Thai style',
+				'Songkran Festival Splash',
+				'into happiness, Thai style',
 			];
 
 	// ── Build SVG ────────────────────────────────────────────────────────────
