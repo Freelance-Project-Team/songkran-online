@@ -1,6 +1,6 @@
 # Songkran Online Platform
 (Payment Status: Deposit Paid)
-
+<img width="1762" height="1017" alt="image" src="https://github.com/user-attachments/assets/2bae4233-70bb-4bde-834b-016da97cef2c" />
 A virtual platform for participating in the Thai New Year (Songkran) festival online. Users can join in water splashing, pour water on Buddha statues (Song Nam Phra), and send digital blessings to each other across various devices with a seamless and interactive experience.
 
 ## Key Features
