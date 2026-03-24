@@ -8,7 +8,7 @@ type Lang = 'th' | 'en';
 type LocationId = 'arun' | 'phakeaw' | 'yaksuwan' | 'saochingcha';
 
 const A = {
-	bg:   '/assets/playsongkran/locations/bg.png',
+	bg: '/assets/playsongkran/locations/bg.png',
 	cont: '/assets/playsongkran/continue.png',
 } as const;
 
@@ -35,7 +35,7 @@ const LOCATIONS: {
 		top: '37.32%',
 		labelTop: '50.94%',
 		labelCenterX: '27.23%',
-		labelHeight: '4.8%',   // 36px source
+		labelHeight: '4.8%', // 36px source
 	},
 	{
 		id: 'phakeaw',
@@ -46,7 +46,7 @@ const LOCATIONS: {
 		top: '37.32%',
 		labelTop: '50.94%',
 		labelCenterX: '73.54%',
-		labelHeight: '3.87%',  // 29px source → 4.8% × (29/36)
+		labelHeight: '3.87%', // 29px source → 4.8% × (29/36)
 	},
 	{
 		id: 'yaksuwan',
@@ -57,7 +57,7 @@ const LOCATIONS: {
 		top: '60.09%',
 		labelTop: '73.65%',
 		labelCenterX: '27.23%',
-		labelHeight: '5.47%',  // 41px source → 4.8% × (41/36)
+		labelHeight: '5.47%', // 41px source → 4.8% × (41/36)
 	},
 	{
 		id: 'saochingcha',
@@ -68,7 +68,7 @@ const LOCATIONS: {
 		top: '59.51%',
 		labelTop: '73.89%',
 		labelCenterX: '73.54%',
-		labelHeight: '3.87%',  // 29px source → 4.8% × (29/36)
+		labelHeight: '3.87%', // 29px source → 4.8% × (29/36)
 	},
 ];
 
@@ -195,9 +195,10 @@ export function SelectLocation({
 							height: loc.labelHeight,
 							width: 'auto',
 							display: 'block',
-							animation: textPoppingId === loc.id
-								? 'sl-text-pop 0.45s ease-out both'
-								: `sl-text-float 2.8s ease-in-out ${i * 0.35}s infinite`,
+							animation:
+								textPoppingId === loc.id
+									? 'sl-text-pop 0.45s ease-out both'
+									: `sl-text-float 2.8s ease-in-out ${i * 0.35}s infinite`,
 						}}
 					/>
 				</div>

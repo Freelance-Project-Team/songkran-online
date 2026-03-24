@@ -29,11 +29,9 @@ async function main() {
 		userId: user.id,
 		email: user.email,
 		name: user.name,
-		token: jwt.sign(
-			{ userId: user.id, email: user.email, name: user.name },
-			JWT_SECRET,
-			{ expiresIn: '7d' }
-		),
+		token: jwt.sign({ userId: user.id, email: user.email, name: user.name }, JWT_SECRET, {
+			expiresIn: '7d',
+		}),
 	}));
 
 	fs.writeFileSync('seed-tokens.json', JSON.stringify(tokens, null, 2));

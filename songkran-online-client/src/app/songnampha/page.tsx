@@ -44,8 +44,6 @@ const STYLES = `
 }
 `;
 
-
-
 function BlessingCard() {
 	return (
 		<div
@@ -174,10 +172,7 @@ function SongnamphScene({
 				}}
 			/>
 
-			<div
-				className="absolute"
-				style={{ left: '0', top: '38%', right: '0', bottom: '27%' }}
-			>
+			<div className="absolute" style={{ left: '0', top: '38%', right: '0', bottom: '27%' }}>
 				{pourState === 'pouring' && <WaterRipple />}
 
 				{pourState === 'idle' ? (
@@ -201,7 +196,10 @@ function SongnamphScene({
 function SceneFrame(props: Parameters<typeof SongnamphScene>[0]) {
 	return (
 		<div className="h-dvh w-full flex items-center justify-center overflow-hidden bg-[#b8dff5]">
-			<div className="relative overflow-hidden w-full sm:h-full sm:w-auto" style={{ aspectRatio: '393 / 852' }}>
+			<div
+				className="relative overflow-hidden w-full sm:h-full sm:w-auto"
+				style={{ aspectRatio: '393 / 852' }}
+			>
 				<SongnamphScene {...props} />
 			</div>
 		</div>

@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import express from 'express';
 import { WaterPlayController } from './controller';
 import { optionalAuth } from '../../shared/middleware/auth';
 
@@ -12,5 +13,8 @@ router.get('/logs', WaterPlayController.getLogs);
 
 // GET /water-play/stats — get stats by location and character
 router.get('/stats', WaterPlayController.getStats);
+
+// POST /water-play/generate-photo — generate share image (PNG)
+router.post('/generate-photo', express.json({ limit: '5mb' }), WaterPlayController.generatePhoto);
 
 export default router;

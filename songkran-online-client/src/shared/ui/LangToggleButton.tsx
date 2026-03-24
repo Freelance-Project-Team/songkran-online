@@ -39,7 +39,9 @@ export function LangToggleButton({ lang, onToggle }: { lang: Lang; onToggle: () 
 				aria-label={lang === 'th' ? 'Switch to English' : 'Switch to Thai'}
 			>
 				<img
-					src={lang === 'th' ? '/assets/shared/lang-en.svg' : '/assets/shared/lang-th.svg'}
+					src={
+						lang === 'th' ? '/assets/shared/lang-en.svg' : '/assets/shared/lang-th.svg'
+					}
 					alt=""
 					className="w-full h-full select-none pointer-events-none"
 				/>
