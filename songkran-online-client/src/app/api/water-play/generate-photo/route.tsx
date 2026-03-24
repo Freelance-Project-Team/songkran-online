@@ -96,8 +96,9 @@ export async function POST(req: NextRequest) {
 						'สาดสุขแบบไทยสไตล์ร่วมสมัย',
 					]
 				: [
-						'Suvarnabhumi Airport invites everyone',
-						'to join Songkran Festival',
+						'Suvarnabhumi Airport',
+						'invites everyone to join',
+						'Songkran Festival',
 						'Splash happiness Thai style',
 					];
 
@@ -125,7 +126,7 @@ export async function POST(req: NextRequest) {
 				<img
 					src={robotSrc}
 					alt=""
-					style={{ position: 'absolute', left: -12, top: 462, width: 238 }}
+					style={{ position: 'absolute', left: -12, top: lang === 'th' ? 462 : 432, width: 238 }}
 				/>
 
 				{/* Character */}
@@ -197,9 +198,9 @@ export async function POST(req: NextRequest) {
 					style={{
 						position: 'absolute',
 						left: 0,
-						top: 597,
+						top: lang === 'th' ? 597 : 582,
 						width: W,
-						height: 80,
+						height: lang === 'th' ? 80 : 95,
 						background: '#0055A5',
 						display: 'flex',
 						flexDirection: 'column',
@@ -214,8 +215,8 @@ export async function POST(req: NextRequest) {
 							style={{
 								color: 'white',
 								fontWeight: 700,
-								fontSize: 17,
-								lineHeight: '22px',
+								fontSize: lang === 'th' ? 17 : 14,
+								lineHeight: lang === 'th' ? '22px' : '18px',
 							}}
 						>
 							{line}
@@ -228,7 +229,7 @@ export async function POST(req: NextRequest) {
 				<img
 					src={logoSrc}
 					alt=""
-					style={{ position: 'absolute', left: -33, top: 569, width: 208 }}
+					style={{ position: 'absolute', left: lang === 'th' ? -33 : -40, top: lang === 'th' ? 569 : 555, width: lang === 'th' ? 208 : 248 }}
 				/>
 			</div>,
 			{
