@@ -300,8 +300,8 @@ export function PhotoPreview({
 					style={{
 						left: 0,
 						right: 0,
-						top: lang === 'th' ? px(597, 'y') : px(582, 'y'),
-						height: lang === 'th' ? px(80, 'y') : px(95, 'y'),
+						top: lang === 'th' ? px(597, 'y') : px(572, 'y'),
+						height: lang === 'th' ? px(80, 'y') : px(105, 'y'),
 						background: '#0055A5',
 						paddingRight: '4%',
 						zIndex: 5,
@@ -312,9 +312,9 @@ export function PhotoPreview({
 						className="text-white text-right"
 						style={{
 							fontFamily: SF,
-							fontSize: lang === 'th' ? '17px' : '14px',
+							fontSize: lang === 'th' ? '17px' : '15px',
 							fontWeight: 700,
-							lineHeight: lang === 'th' ? '22px' : '18px',
+							lineHeight: lang === 'th' ? '22px' : '19px',
 						}}
 					>
 						{lang === 'th' ? (

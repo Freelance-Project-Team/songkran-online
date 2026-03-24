@@ -198,9 +198,9 @@ export async function POST(req: NextRequest) {
 					style={{
 						position: 'absolute',
 						left: 0,
-						top: lang === 'th' ? 597 : 582,
+						top: lang === 'th' ? 597 : 572,
 						width: W,
-						height: lang === 'th' ? 80 : 95,
+						height: lang === 'th' ? 80 : 105,
 						background: '#0055A5',
 						display: 'flex',
 						flexDirection: 'column',
@@ -215,8 +215,8 @@ export async function POST(req: NextRequest) {
 							style={{
 								color: 'white',
 								fontWeight: 700,
-								fontSize: lang === 'th' ? 17 : 14,
-								lineHeight: lang === 'th' ? '22px' : '18px',
+								fontSize: lang === 'th' ? 17 : 15,
+								lineHeight: lang === 'th' ? '22px' : '19px',
 							}}
 						>
 							{line}
