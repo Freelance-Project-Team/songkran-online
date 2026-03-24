@@ -206,7 +206,7 @@ export function SelectLocation({
 			<GoBackButton
 				lang={lang}
 				onBack={onBack}
-				style={{ left: '2%', top: '84.27%', width: '35%', height: '14.32%' }}
+				style={{ left: '2%', top: '78%', width: '35%', height: '14.32%' }}
 			/>
 
 			<button
@@ -215,7 +215,7 @@ export function SelectLocation({
 				className="absolute z-10 p-0 bg-transparent border-0"
 				style={{
 					right: '2%',
-					top: '84.27%',
+					top: '78%',
 					width: '35%',
 					height: '14.32%',
 					cursor: !selected ? 'default' : 'pointer',
