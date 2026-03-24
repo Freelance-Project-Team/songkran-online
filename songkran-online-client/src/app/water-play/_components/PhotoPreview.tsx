@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { GoBackButton } from '@/src/shared/ui/GoBackButton';
 
 type Lang = 'th' | 'en';
@@ -60,7 +60,6 @@ export function PhotoPreview({
 	character,
 	faceUrl,
 	locationId,
-	photoUrl,
 	onBack,
 }: {
 	lang: Lang;
@@ -70,6 +69,7 @@ export function PhotoPreview({
 	photoUrl: string;
 	onBack: () => void;
 }) {
+	const captureRef = useRef<HTMLDivElement>(null);
 	const [userName, setUserName] = useState('');
 
 	useEffect(() => {
@@ -82,108 +82,28 @@ export function PhotoPreview({
 	const charSrc  = CHAR_IMG[character];
 	const location = LOCATION_NAMES[locationId] ?? LOCATION_NAMES.arun;
 
-	const buildShareImage = useCallback(async (): Promise<string> => {
-		const loadImg = (src: string): Promise<HTMLImageElement> =>
-			new Promise((resolve, reject) => {
-				const img = new Image();
-				img.crossOrigin = 'anonymous';
-				img.onload  = () => resolve(img);
-				img.onerror = reject;
-				img.src = src;
-			});
+	// Capture DOM snapshot → crop to above-banner (top 597/852)
+	const buildShareImage = async (): Promise<string> => {
+		if (!captureRef.current) throw new Error('captureRef missing');
+		const { toPng } = await import('html-to-image');
+		const el = captureRef.current;
+		const rect = el.getBoundingClientRect();
+		const pixelRatio = 393 / rect.width;
 
-		const W = 393, H = 677;
+		const dataUrl = await toPng(el, { pixelRatio, skipFonts: false });
+
+		// Crop to above-banner (top 597/852 of the full height)
+		const img = new Image();
+		img.src = dataUrl;
+		await new Promise<void>(r => { img.onload = () => r(); });
+
+		const cropH = Math.round(img.naturalHeight * (597 / 852));
 		const canvas = document.createElement('canvas');
-		canvas.width = W; canvas.height = H;
-		const ctx = canvas.getContext('2d')!;
-
-		const sy = (n: number) => Math.round(n * H / 852);
-
-		const [scene, char_, face, robot, logo] = await Promise.all([
-			loadImg(sceneSrc),
-			loadImg(charSrc),
-			faceUrl ? loadImg(faceUrl) : Promise.resolve(null as unknown as HTMLImageElement),
-			loadImg('/assets/playsongkran/preview/aot-robot.png'),
-			loadImg('/assets/login/logo.png'),
-		]);
-
-		// 1. Scene — top 677 px only
-		ctx.drawImage(scene,
-			0, 0, scene.naturalWidth, scene.naturalHeight * (H / 852),
-			0, 0, W, H,
-		);
-
-		// 2. Robot (z=1, behind character)
-		const robotW = 238, robotH = Math.round(robotW * robot.naturalHeight / robot.naturalWidth);
-		ctx.drawImage(robot, -12, sy(462), robotW, robotH);
-
-		// 3. Character — objectFit:'contain', objectPosition:'bottom center'
-		const cL = 163, cT = sy(208), cW = 276, cH = sy(494);
-		const asp = char_.naturalWidth / char_.naturalHeight;
-		let dw: number, dh: number;
-		if (cW / cH > asp) { dh = cH; dw = Math.round(dh * asp); }
-		else               { dw = cW; dh = Math.round(dw / asp); }
-		ctx.drawImage(char_, cL + (cW - dw) / 2, cT + (cH - dh), dw, dh);
-
-		// 4. Info text box
-		const bL = 13, bT = sy(340), bW = 205, bH = sy(110);
-		ctx.save();
-		ctx.beginPath();
-		const rad = 20;
-		ctx.moveTo(bL + rad, bT);
-		ctx.arcTo(bL + bW, bT,      bL + bW, bT + bH, rad);
-		ctx.arcTo(bL + bW, bT + bH, bL,      bT + bH, rad);
-		ctx.arcTo(bL,      bT + bH, bL,      bT,      rad);
-		ctx.arcTo(bL,      bT,      bL + bW, bT,      rad);
-		ctx.closePath();
-		ctx.fillStyle = 'rgba(0,85,165,0.70)';
-		ctx.fill();
-		ctx.fillStyle = '#fff';
-		ctx.font = 'bold 13px Arial, sans-serif';
-		ctx.textAlign = 'center';
-		const tx = bL + bW / 2;
-		const lh = bH / 4;
-		const lines = lang === 'th'
-			? [`คุณ ${userName}`, 'ได้มาร่วมเล่นน้ำสงกรานต์', `ที่${location.th}`]
-			: [userName, 'joined Songkran water play', `at ${location.en}`];
-		lines.forEach((line, i) => ctx.fillText(line, tx, bT + lh * (i + 1)));
-		ctx.restore();
-
-		// 5. Blue banner
-		const bannerT = sy(597), bannerH = sy(80);
-		ctx.fillStyle = '#0055A5';
-		ctx.fillRect(0, bannerT, W, bannerH);
-
-		// 6. Songkran logo (overlaps banner top-left)
-		const logoW = 208, logoH = Math.round(logoW * logo.naturalHeight / logo.naturalWidth);
-		ctx.drawImage(logo, -33, sy(569), logoW, logoH);
-
-		// 7. Banner text
-		ctx.save();
-		ctx.fillStyle = '#fff';
-		ctx.font = 'bold 11px Arial, sans-serif';
-		ctx.textAlign = 'right';
-		const bannerLines = lang === 'th'
-			? ['ท่าอากาศสุวรรณภูมิขอเชิญทุกท่าน', 'ร่วมสนุกเทศกาลสงกรานต์', 'สาดสุขแบบไทยสไตล์ร่วมสมัย']
-			: ['Suvarnabhumi Airport invites everyone', 'to join Songkran Festival', 'Splash happiness Thai style'];
-		const bLh = bannerH / 4;
-		bannerLines.forEach((line, i) => ctx.fillText(line, W - 12, bannerT + bLh * (i + 1)));
-		ctx.restore();
-
-		// 8. Face — draw last (on top), use uniform circle radius to avoid squish
-		if (face && faceUrl) {
-			const fSz = sy(108);
-			const fL = 256, fT = sy(265);
-			ctx.save();
-			ctx.beginPath();
-			ctx.arc(fL + fSz / 2, fT + fSz / 2, fSz / 2, 0, Math.PI * 2);
-			ctx.clip();
-			ctx.drawImage(face, fL, fT, fSz, fSz);
-			ctx.restore();
-		}
-
+		canvas.width = img.naturalWidth;
+		canvas.height = cropH;
+		canvas.getContext('2d')!.drawImage(img, 0, 0);
 		return canvas.toDataURL('image/png');
-	}, [sceneSrc, charSrc, faceUrl, lang, userName, location]);
+	};
 
 	const handleDownload = async () => {
 		const url = await buildShareImage();
@@ -227,131 +147,136 @@ export function PhotoPreview({
 		<>
 			<style>{STYLES}</style>
 
-			<img
-				src={sceneSrc}
-				alt=""
-				className="absolute inset-0 w-full h-full select-none pointer-events-none"
-				style={{
-					objectFit: 'fill',
-					zIndex: 0,
-					clipPath: `inset(0 0 ${((852 - 677) / 852) * 100}% 0)`,
-				}}
-			/>
+			{/* ── Visual layer captured for export ── */}
+			<div ref={captureRef} className="absolute inset-0 pointer-events-none">
 
-			<img
-				src="/assets/login/bg.png"
-				alt=""
-				className="absolute left-0 right-0 select-none pointer-events-none"
-				style={{
-					top: px(677, 'y'),
-					bottom: 0,
-					width: '100%',
-					height: px(852 - 677, 'y'),
-					objectFit: 'cover',
-					objectPosition: 'bottom center',
-					zIndex: 0,
-				}}
-			/>
-
-			<img
-				src="/assets/playsongkran/preview/aot-robot.png"
-				alt=""
-				className="absolute select-none pointer-events-none"
-				style={{
-					left: px(-12, 'x'), top: px(462, 'y'),
-					width: px(238, 'x'), height: 'auto',
-					zIndex: 1,
-					animation: 'pp-slide-up 0.55s ease-out 0.1s both',
-				}}
-			/>
-
-			<img
-				src={charSrc}
-				alt=""
-				className="absolute select-none pointer-events-none"
-				style={{
-					left: px(163, 'x'), top: px(208, 'y'),
-					width: px(276, 'x'), height: px(494, 'y'),
-					objectFit: 'contain', objectPosition: 'bottom center',
-					zIndex: 2,
-					animation: 'pp-slide-up 0.55s ease-out both',
-				}}
-			/>
-
-			{faceUrl && (
-				<div
-					className="absolute overflow-hidden rounded-full"
+				<img
+					src={sceneSrc}
+					alt=""
+					className="absolute inset-0 w-full h-full select-none pointer-events-none"
 					style={{
-						left: px(256, 'x'), top: px(265, 'y'),
-						width: px(108, 'x'), height: px(108, 'y'),
-						border: '3px solid rgba(255,255,255,0.9)',
-						boxShadow: '0 2px 12px rgba(0,0,0,0.25)',
-						zIndex: 3,
-						animation: 'pp-pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.25s both',
+						objectFit: 'fill',
+						zIndex: 0,
+						clipPath: `inset(0 0 ${((852 - 677) / 852) * 100}% 0)`,
+					}}
+				/>
+
+				<img
+					src="/assets/login/bg.png"
+					alt=""
+					className="absolute left-0 right-0 select-none pointer-events-none"
+					style={{
+						top: px(677, 'y'),
+						bottom: 0,
+						width: '100%',
+						height: px(852 - 677, 'y'),
+						objectFit: 'cover',
+						objectPosition: 'bottom center',
+						zIndex: 0,
+					}}
+				/>
+
+				<img
+					src="/assets/playsongkran/preview/aot-robot.png"
+					alt=""
+					className="absolute select-none pointer-events-none"
+					style={{
+						left: px(-12, 'x'), top: px(462, 'y'),
+						width: px(238, 'x'), height: 'auto',
+						zIndex: 1,
+						animation: 'pp-slide-up 0.55s ease-out 0.1s both',
+					}}
+				/>
+
+				<img
+					src={charSrc}
+					alt=""
+					className="absolute select-none pointer-events-none"
+					style={{
+						left: px(163, 'x'), top: px(208, 'y'),
+						width: px(276, 'x'), height: px(494, 'y'),
+						objectFit: 'contain', objectPosition: 'bottom center',
+						zIndex: 2,
+						animation: 'pp-slide-up 0.55s ease-out both',
+					}}
+				/>
+
+				{faceUrl && (
+					<div
+						className="absolute overflow-hidden rounded-full"
+						style={{
+							left: px(256, 'x'), top: px(265, 'y'),
+							width: px(108, 'x'), height: px(108, 'y'),
+							border: '3px solid rgba(255,255,255,0.9)',
+							boxShadow: '0 2px 12px rgba(0,0,0,0.25)',
+							zIndex: 3,
+							animation: 'pp-pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.25s both',
+						}}
+					>
+						<img src={faceUrl} alt="face" className="w-full h-full object-cover select-none" />
+					</div>
+				)}
+
+				<div
+					className="absolute flex flex-col items-center justify-center text-center"
+					style={{
+						left: px(13, 'x'), top: px(340, 'y'),
+						width: px(205, 'x'), height: px(110, 'y'),
+						background: 'rgba(0,85,165,0.70)',
+						borderRadius: '20px',
+						padding: '0 10px',
+						zIndex: 4,
+						fontFamily: SF,
+						animation: 'pp-fade-in 0.45s ease-out 0.15s both',
 					}}
 				>
-					<img src={faceUrl} alt="face" className="w-full h-full object-cover select-none" />
+					<p className="text-white leading-snug" style={{ fontSize: 'clamp(12px, 2.1vh, 18px)', fontWeight: 700 }}>
+						{lang === 'th' ? `คุณ ${userName}` : userName}
+					</p>
+					<p className="text-white leading-snug" style={{ fontSize: 'clamp(12px, 2.1vh, 18px)', fontWeight: 700 }}>
+						{lang === 'th' ? 'ได้มาร่วมเล่นน้ำสงกรานต์' : 'joined Songkran'}
+					</p>
+					<p className="text-white leading-snug" style={{ fontSize: 'clamp(12px, 2.1vh, 18px)', fontWeight: 700 }}>
+						{lang === 'th' ? `ที่${location.th}` : `at ${location.en}`}
+					</p>
 				</div>
-			)}
 
-			<div
-				className="absolute flex flex-col items-center justify-center text-center"
-				style={{
-					left: px(13, 'x'), top: px(340, 'y'),
-					width: px(205, 'x'), height: px(110, 'y'),
-					background: 'rgba(0,85,165,0.70)',
-					borderRadius: '20px',
-					padding: '0 10px',
-					zIndex: 4,
-					fontFamily: SF,
-					animation: 'pp-fade-in 0.45s ease-out 0.15s both',
-				}}
-			>
-				<p className="text-white leading-snug" style={{ fontSize: 'clamp(12px, 2.1vh, 18px)', fontWeight: 700 }}>
-					{lang === 'th' ? `คุณ ${userName}` : userName}
-				</p>
-				<p className="text-white leading-snug" style={{ fontSize: 'clamp(12px, 2.1vh, 18px)', fontWeight: 700 }}>
-					{lang === 'th' ? 'ได้มาร่วมเล่นน้ำสงกรานต์' : 'joined Songkran'}
-				</p>
-				<p className="text-white leading-snug" style={{ fontSize: 'clamp(12px, 2.1vh, 18px)', fontWeight: 700 }}>
-					{lang === 'th' ? `ที่${location.th}` : `at ${location.en}`}
-				</p>
-			</div>
-
-			<div
-				className="absolute flex items-center justify-end"
-				style={{
-					left: 0, right: 0, top: px(597, 'y'), height: px(80, 'y'),
-					background: '#0055A5',
-					paddingRight: '4%',
-					zIndex: 5,
-					animation: 'pp-slide-up 0.45s ease-out 0.2s both',
-				}}
-			>
-				<p
-					className="text-white text-right"
-					style={{ fontFamily: SF, fontSize: '17px', fontWeight: 700, lineHeight: '22px' }}
+				<div
+					className="absolute flex items-center justify-end"
+					style={{
+						left: 0, right: 0, top: px(597, 'y'), height: px(80, 'y'),
+						background: '#0055A5',
+						paddingRight: '4%',
+						zIndex: 5,
+						animation: 'pp-slide-up 0.45s ease-out 0.2s both',
+					}}
 				>
-					{lang === 'th' ? (
-						<>ท่าอากาศสุวรรณภูมิขอเชิญทุกท่าน<br />ร่วมสนุกเทศกาลสงกรานต์<br />สาดสุขแบบไทยสไตล์ร่วมสมัย</>
-					) : (
-						<>Suvarnabhumi Airport invites everyone<br />to join Songkran Festival<br />Splash happiness Thai style</>
-					)}
-				</p>
+					<p
+						className="text-white text-right"
+						style={{ fontFamily: SF, fontSize: '17px', fontWeight: 700, lineHeight: '22px' }}
+					>
+						{lang === 'th' ? (
+							<>ท่าอากาศสุวรรณภูมิขอเชิญทุกท่าน<br />ร่วมสนุกเทศกาลสงกรานต์<br />สาดสุขแบบไทยสไตล์ร่วมสมัย</>
+						) : (
+							<>Suvarnabhumi Airport invites everyone<br />to join Songkran Festival<br />Splash happiness Thai style</>
+						)}
+					</p>
+				</div>
+
+				<img
+					src="/assets/login/logo.png"
+					alt="Songkran Festival 2026"
+					className="absolute select-none pointer-events-none"
+					style={{
+						left: px(-33, 'x'), top: px(569, 'y'),
+						width: px(208, 'x'), height: 'auto',
+						zIndex: 6,
+						animation: 'pp-fade-in 0.5s ease-out 0.3s both',
+					}}
+				/>
+
 			</div>
-
-			<img
-				src="/assets/login/logo.png"
-				alt="Songkran Festival 2026"
-				className="absolute select-none pointer-events-none"
-				style={{
-					left: px(-33, 'x'), top: px(569, 'y'),
-					width: px(208, 'x'), height: 'auto',
-					zIndex: 6,
-					animation: 'pp-fade-in 0.5s ease-out 0.3s both',
-				}}
-			/>
-
+			{/* ── End visual layer ── */}
 
 			<button
 				onClick={handleFacebook}
@@ -392,7 +317,7 @@ export function PhotoPreview({
 				/>
 			</button>
 
-			{/* Native Share — same square style as Facebook & LINE */}
+			{/* Native Share */}
 			<button
 				onClick={handleNativeShare}
 				className="absolute flex items-center justify-center cursor-pointer hover:scale-105 active:scale-95 transition-transform"
@@ -410,7 +335,6 @@ export function PhotoPreview({
 				<ShareIcon />
 			</button>
 
-			{/* Tuk-tuk go-back button */}
 			<GoBackButton
 				lang={lang}
 				onBack={onBack}

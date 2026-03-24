@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const BG       = '/assets/loading/bg.png';
 const AOT_LOGO = '/assets/loading/aot-logo.png';
@@ -39,14 +39,17 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
 	const [showLogo, setShowLogo]       = useState(false);
 	const [cloudExpand, setCloudExpand] = useState(false);
 
+	const onCompleteRef = useRef(onComplete);
+	useEffect(() => { onCompleteRef.current = onComplete; });
+
 	useEffect(() => {
 		const t0 = setTimeout(() => setStarted(true), 60);
 		const t1 = setTimeout(() => setPlaneOnTop(true), PLANE_FRONT_MS);
 		const t2 = setTimeout(() => setShowLogo(true), LOGO_MS);
 		const t3 = setTimeout(() => setCloudExpand(true), CLOUD_EXPAND_MS);
-		const t4 = setTimeout(onComplete, DONE_MS);
+		const t4 = setTimeout(() => onCompleteRef.current(), DONE_MS);
 		return () => [t0, t1, t2, t3, t4].forEach(clearTimeout);
-	}, [onComplete]);
+	}, []);
 
 	const cloudAnim = cloudExpand
 		? 'ld-cloud-expand 900ms ease-in forwards'
