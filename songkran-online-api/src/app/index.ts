@@ -13,7 +13,11 @@ dotenv.config();
 
 const app: Express = express();
 
-app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
+const allowedOrigins = (process.env.CLIENT_URL ?? '')
+	.split(',')
+	.map((o) => o.trim())
+	.filter(Boolean);
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json({ limit: '5mb' }));
 app.use((req, res, next) => {
 	const start = Date.now();

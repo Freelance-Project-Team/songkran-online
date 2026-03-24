@@ -97,7 +97,7 @@ function SceneOverlay({ pourState }: { pourState: PourState }) {
 			alt=""
 			className="absolute w-full h-full select-none pointer-events-none"
 			style={{
-				objectFit: 'fill',
+				objectFit: 'contain',
 				animation:
 					pourState === 'idle'
 						? 'bl-float 3.5s ease-in-out infinite'
@@ -139,7 +139,7 @@ function BlessingScene({
 
 			<div
 				className="absolute"
-				style={{ left: '18.03%', top: '54.23%', right: '16.77%', bottom: '27%' }}
+				style={{ left: '8%', top: '48%', right: '8%', bottom: '18%' }}
 			>
 				{pourState === 'pouring' && <WaterRipple />}
 
