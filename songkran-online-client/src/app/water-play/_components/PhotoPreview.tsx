@@ -344,9 +344,9 @@ export function PhotoPreview({
 					alt="Songkran Festival 2026"
 					className="absolute select-none pointer-events-none"
 					style={{
-						left: lang === 'th' ? px(-33, 'x') : px(-40, 'x'),
-						top: lang === 'th' ? px(569, 'y') : px(555, 'y'),
-						width: lang === 'th' ? px(208, 'x') : px(248, 'x'),
+						left: lang === 'th' ? px(-38, 'x') : px(-45, 'x'),
+						top: lang === 'th' ? px(545, 'y') : px(533, 'y'),
+						width: lang === 'th' ? px(240, 'x') : px(280, 'x'),
 						height: 'auto',
 						zIndex: 6,
 						animation: 'pp-fade-in 0.5s ease-out 0.3s both',
