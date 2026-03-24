@@ -31,7 +31,7 @@ export function LangToggleButton({ lang, onToggle }: { lang: Lang; onToggle: () 
 				className="absolute z-10 cursor-pointer p-0 bg-transparent border-0"
 				style={{
 					left: '79%',
-					top: '5%',
+					top: '13%',
 					width: '16.54%',
 					aspectRatio: '1',
 					animation: popping ? 'lt-pop 0.45s ease-out both' : undefined,

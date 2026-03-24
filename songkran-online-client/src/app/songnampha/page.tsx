@@ -176,7 +176,7 @@ function SongnamphScene({
 
 			<div
 				className="absolute"
-				style={{ left: '0', top: '38%', right: '0', bottom: '16.2%' }}
+				style={{ left: '0', top: '38%', right: '0', bottom: '27%' }}
 			>
 				{pourState === 'pouring' && <WaterRipple />}
 

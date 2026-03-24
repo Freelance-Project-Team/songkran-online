@@ -140,7 +140,7 @@ function BlessingScene({
 
 			<div
 				className="absolute"
-				style={{ left: '18.03%', top: '54.23%', right: '16.77%', bottom: '17.44%' }}
+				style={{ left: '18.03%', top: '54.23%', right: '16.77%', bottom: '27%' }}
 			>
 				{pourState === 'pouring' && <WaterRipple />}
 
