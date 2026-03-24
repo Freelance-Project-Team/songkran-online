@@ -88,25 +88,43 @@ export function PhotoPreview({
 	const charSrc = CHAR_IMG[character];
 	const location = LOCATION_NAMES[locationId] ?? LOCATION_NAMES.arun;
 
-	/** Convert a blob: URL to a base64 data URL (required for server-side rendering). */
-	const toDataUrl = (blobUrl: string): Promise<string> =>
-		fetch(blobUrl)
-			.then((r) => r.blob())
-			.then(
-				(blob) =>
-					new Promise((resolve, reject) => {
-						const reader = new FileReader();
-						reader.onload = () => resolve(reader.result as string);
-						reader.onerror = reject;
-						reader.readAsDataURL(blob);
-					})
-			);
+	/**
+	 * Resolve any faceUrl to a compact JPEG data URL.
+	 * - blob: URLs are browser-only and must be converted before sending to the server
+	 * - Resizes to max 400×400 and encodes as JPEG 0.75 to stay well under Vercel's 4.5 MB body limit
+	 */
+	const prepareFaceDataUrl = async (url: string): Promise<string> => {
+		// Step 1: get a data URL (handles both blob: and data: inputs)
+		let dataUrl = url;
+		if (url.startsWith('blob:')) {
+			const blob = await fetch(url).then((r) => r.blob());
+			dataUrl = await new Promise<string>((resolve, reject) => {
+				const reader = new FileReader();
+				reader.onload = () => resolve(reader.result as string);
+				reader.onerror = reject;
+				reader.readAsDataURL(blob);
+			});
+		}
+
+		// Step 2: resize + compress to JPEG so the payload stays small
+		const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+			const i = new Image();
+			i.onload = () => resolve(i);
+			i.onerror = reject;
+			i.src = dataUrl;
+		});
+		const MAX = 400;
+		const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+		const canvas = document.createElement('canvas');
+		canvas.width = Math.round(img.width * scale);
+		canvas.height = Math.round(img.height * scale);
+		canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height);
+		return canvas.toDataURL('image/jpeg', 0.75);
+	};
 
 	/** Generate the share image via the backend API. */
 	const buildShareBlob = async (): Promise<Blob> => {
-		// Blob URLs (blob:https://...) are browser-only — convert to base64 before sending
-		const faceDataUrl =
-			faceUrl && faceUrl.startsWith('blob:') ? await toDataUrl(faceUrl) : faceUrl;
+		const faceDataUrl = faceUrl ? await prepareFaceDataUrl(faceUrl) : '';
 
 		const res = await fetch('/api/water-play/generate-photo', {
 			method: 'POST',

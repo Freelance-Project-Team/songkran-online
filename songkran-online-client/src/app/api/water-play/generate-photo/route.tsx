@@ -1,6 +1,5 @@
 import { ImageResponse } from 'next/og';
 import type { NextRequest } from 'next/server';
-import fs from 'fs';
 
 export const runtime = 'nodejs';
 
@@ -31,38 +30,32 @@ const LOCATION_NAMES: Record<string, { th: string; en: string }> = {
 
 // ─── Origin helper ───────────────────────────────────────────────────────────
 
-/** Derive the base URL — works on Vercel, local dev, and custom domains. */
 function getOrigin(req: NextRequest): string {
 	if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
 	return new URL(req.url).origin;
 }
 
-// ─── Font cache ───────────────────────────────────────────────────────────────
-// Fonts are fetched once from the public URL and kept in memory.
-// SF Pro is used on macOS servers that have it; Sarabun is the fallback.
+// ─── Font cache (fetched from public URL, cached in memory) ──────────────────
 
-const SF_PRO_PATH = '/System/Library/Fonts/SFNS.ttf';
-
-let fontLatinCache: ArrayBuffer | null = null;
 let fontThaiCache: ArrayBuffer | null = null;
+let fontLatinCache: ArrayBuffer | null = null;
 
 async function getFonts(origin: string) {
-	if (!fontThaiCache) {
-		fontThaiCache = await fetch(`${origin}/fonts/Sarabun-Bold-thai.woff2`).then((r) =>
-			r.arrayBuffer()
-		);
-	}
-	if (!fontLatinCache) {
-		// Use SF Pro if available (macOS), otherwise fall back to Sarabun Latin
-		if (fs.existsSync(SF_PRO_PATH)) {
-			fontLatinCache = fs.readFileSync(SF_PRO_PATH).buffer.slice(0) as ArrayBuffer;
-		} else {
-			fontLatinCache = await fetch(`${origin}/fonts/Sarabun-Bold-latin.woff2`).then((r) =>
-				r.arrayBuffer()
-			);
-		}
-	}
-	return { fontLatin: fontLatinCache!, fontThai: fontThaiCache! };
+	const [fontThai, fontLatin] = await Promise.all([
+		fontThaiCache ??
+			fetch(`${origin}/fonts/Sarabun-Bold-thai.woff2`).then((r) => {
+				if (!r.ok) throw new Error(`Font fetch failed: ${r.status}`);
+				return r.arrayBuffer();
+			}),
+		fontLatinCache ??
+			fetch(`${origin}/fonts/Sarabun-Bold-latin.woff2`).then((r) => {
+				if (!r.ok) throw new Error(`Font fetch failed: ${r.status}`);
+				return r.arrayBuffer();
+			}),
+	]);
+	fontThaiCache = fontThai;
+	fontLatinCache = fontLatin;
+	return { fontThai, fontLatin };
 }
 
 // ─── Route ───────────────────────────────────────────────────────────────────
@@ -78,7 +71,7 @@ export async function POST(req: NextRequest) {
 		};
 
 		const origin = getOrigin(req);
-		const { fontLatin, fontThai } = await getFonts(origin);
+		const { fontThai, fontLatin } = await getFonts(origin);
 
 		const sceneSrc = `${origin}${SCENES[locationId] ?? SCENES.arun}`;
 		const charSrc = `${origin}${CHAR_IMG[character]}`;
@@ -114,7 +107,7 @@ export async function POST(req: NextRequest) {
 						position: 'relative',
 						overflow: 'hidden',
 						display: 'flex',
-						fontFamily: 'SF Pro, Sarabun',
+						fontFamily: 'Sarabun',
 					}}
 				>
 					{/* Scene — stretched to FULL_H, clips at VISIBLE_H via overflow:hidden */}
@@ -236,8 +229,8 @@ export async function POST(req: NextRequest) {
 				width: W,
 				height: VISIBLE_H,
 				fonts: [
-					{ name: 'SF Pro', data: fontLatin, weight: 700, style: 'normal' },
 					{ name: 'Sarabun', data: fontThai, weight: 700, style: 'normal' },
+					{ name: 'Sarabun', data: fontLatin, weight: 700, style: 'normal' },
 				],
 			}
 		);
