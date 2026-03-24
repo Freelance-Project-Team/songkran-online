@@ -229,7 +229,7 @@ export async function POST(req: NextRequest) {
 				<img
 					src={logoSrc}
 					alt=""
-					style={{ position: 'absolute', left: lang === 'th' ? -38 : -45, top: lang === 'th' ? 545 : 533, width: lang === 'th' ? 240 : 280 }}
+					style={{ position: 'absolute', left: lang === 'th' ? -38 : -45, top: lang === 'th' ? 570 : 560, width: lang === 'th' ? 240 : 280 }}
 				/>
 			</div>,
 			{
