@@ -201,7 +201,7 @@ function SongnamphScene({
 function SceneFrame(props: Parameters<typeof SongnamphScene>[0]) {
 	return (
 		<div className="h-dvh w-full flex items-center justify-center overflow-hidden bg-[#b8dff5]">
-			<div className="relative h-full overflow-hidden" style={{ aspectRatio: '393 / 852' }}>
+			<div className="relative overflow-hidden w-full sm:h-full sm:w-auto" style={{ aspectRatio: '393 / 852' }}>
 				<SongnamphScene {...props} />
 			</div>
 		</div>
