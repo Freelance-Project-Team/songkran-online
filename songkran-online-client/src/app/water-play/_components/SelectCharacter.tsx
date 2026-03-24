@@ -212,7 +212,7 @@ export function SelectCharacter({
 			<GoBackButton
 				lang={lang}
 				onBack={onBack}
-				style={{ left: '2%', top: '84.27%', width: '35%', height: '14.32%' }}
+				style={{ left: '2%', top: '75%', width: '35%', height: '14.32%' }}
 			/>
 
 			<button
@@ -220,7 +220,7 @@ export function SelectCharacter({
 				onAnimationEnd={() => setContPop(false)}
 				className="absolute z-10 p-0 bg-transparent border-0"
 				style={{
-					right: '2%', top: '84.27%',
+					right: '2%', top: '75%',
 					width: '35%', height: '14.32%',
 					cursor: step === 'select' ? 'default' : 'pointer',
 					opacity: step === 'select' ? 0.45 : 1,

@@ -52,7 +52,7 @@ function BlessingCard() {
 			className="absolute z-20"
 			style={{
 				left: '7.89%',
-				top: '12.56%',
+				top: '20%',
 				width: '85.24%',
 				height: '25.82%',
 				animation: 'snp-card-in 0.5s cubic-bezier(0.34,1.56,0.64,1) both',
@@ -201,7 +201,7 @@ function SongnamphScene({
 function SceneFrame(props: Parameters<typeof SongnamphScene>[0]) {
 	return (
 		<div className="h-dvh w-full flex items-center justify-center overflow-hidden bg-[#b8dff5]">
-			<div className="relative h-full overflow-hidden" style={{ aspectRatio: '393 / 852' }}>
+			<div className="relative overflow-hidden w-full sm:h-full sm:w-auto" style={{ aspectRatio: '393 / 852' }}>
 				<SongnamphScene {...props} />
 			</div>
 		</div>

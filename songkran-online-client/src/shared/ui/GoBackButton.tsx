@@ -30,7 +30,7 @@ export function GoBackButton({ lang, onBack, style, noDelay }: { lang: Lang; onB
 				onClick={handleClick}
 				className="absolute z-10 cursor-pointer p-0 bg-transparent border-0"
 				style={{
-					left: '30.8%', top: '83.8%', width: '38.4%', height: '14.4%',
+					left: '30.8%', top: '75%', width: '38.4%', height: '14.4%',
 					animation: lifting ? 'gb-lift 0.5s ease-out both' : undefined,
 					...style,
 				}}

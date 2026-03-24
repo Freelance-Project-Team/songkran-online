@@ -46,7 +46,7 @@ function BlessingCard() {
 			className="absolute z-20"
 			style={{
 				left: '7.38%',
-				top: '19.6%',
+				top: '25%',
 				width: '85.24%',
 				height: '19.37%',
 				animation: 'bl-card-in 0.5s cubic-bezier(0.34,1.56,0.64,1) both',
@@ -163,7 +163,7 @@ function BlessingScene({
 function SceneFrame(props: Parameters<typeof BlessingScene>[0]) {
 	return (
 		<div className="h-dvh w-full flex items-center justify-center overflow-hidden bg-[#b8dff5]">
-			<div className="relative h-full overflow-hidden" style={{ aspectRatio: '393 / 852' }}>
+			<div className="relative overflow-hidden w-full sm:h-full sm:w-auto" style={{ aspectRatio: '393 / 852' }}>
 				<BlessingScene {...props} />
 			</div>
 		</div>
