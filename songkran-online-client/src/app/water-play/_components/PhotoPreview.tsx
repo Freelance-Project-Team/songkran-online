@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { GoBackButton } from '@/src/shared/ui/GoBackButton';
 
 type Lang = 'th' | 'en';
@@ -82,9 +82,83 @@ export function PhotoPreview({
 	const charSrc  = CHAR_IMG[character];
 	const location = LOCATION_NAMES[locationId] ?? LOCATION_NAMES.arun;
 
-	const handleDownload = () => {
+	const buildShareImage = useCallback(async (): Promise<string> => {
+		const loadImg = (src: string): Promise<HTMLImageElement> =>
+			new Promise((resolve, reject) => {
+				const img = new Image();
+				img.crossOrigin = 'anonymous';
+				img.onload  = () => resolve(img);
+				img.onerror = reject;
+				img.src = src;
+			});
+
+		const W = 393, H = 677;
+		const canvas = document.createElement('canvas');
+		canvas.width = W; canvas.height = H;
+		const ctx = canvas.getContext('2d')!;
+
+		const [scene, char_, face] = await Promise.all([
+			loadImg(sceneSrc),
+			loadImg(charSrc),
+			faceUrl ? loadImg(faceUrl) : Promise.resolve(null as unknown as HTMLImageElement),
+		]);
+
+		// Scene — top 677 px only (matches clipPath shown in UI)
+		ctx.drawImage(scene,
+			0, 0, scene.naturalWidth, scene.naturalHeight * (H / 852),
+			0, 0, W, H,
+		);
+
+		// Character — objectFit:'contain', objectPosition:'bottom center'
+		const cL = 163, cT = Math.round(208 * H / 852), cW = 276, cH = Math.round(494 * H / 852);
+		const asp = char_.naturalWidth / char_.naturalHeight;
+		let dw: number, dh: number;
+		if (cW / cH > asp) { dh = cH; dw = Math.round(dh * asp); }
+		else               { dw = cW; dh = Math.round(dw / asp); }
+		ctx.drawImage(char_, cL + (cW - dw) / 2, cT + (cH - dh), dw, dh);
+
+		// Face
+		if (face && faceUrl) {
+			const fL = 256, fT = Math.round(265 * H / 852), fW = 108, fH = Math.round(108 * H / 852);
+			ctx.save();
+			ctx.beginPath();
+			ctx.ellipse(fL + fW / 2, fT + fH / 2, fW / 2, fH / 2, 0, 0, Math.PI * 2);
+			ctx.clip();
+			ctx.drawImage(face, fL, fT, fW, fH);
+			ctx.restore();
+		}
+
+		// Info text box
+		const bL = 13, bT = Math.round(340 * H / 852), bW = 205, bH = Math.round(110 * H / 852);
+		ctx.save();
+		ctx.beginPath();
+		const rad = 20;
+		ctx.moveTo(bL + rad, bT);
+		ctx.arcTo(bL + bW, bT,      bL + bW, bT + bH, rad);
+		ctx.arcTo(bL + bW, bT + bH, bL,      bT + bH, rad);
+		ctx.arcTo(bL,      bT + bH, bL,      bT,      rad);
+		ctx.arcTo(bL,      bT,      bL + bW, bT,      rad);
+		ctx.closePath();
+		ctx.fillStyle = 'rgba(0,85,165,0.70)';
+		ctx.fill();
+		ctx.fillStyle = '#fff';
+		ctx.font = 'bold 13px Arial, sans-serif';
+		ctx.textAlign = 'center';
+		const tx = bL + bW / 2;
+		const lh = bH / 4;
+		const lines = lang === 'th'
+			? [`คุณ ${userName}`, 'ได้มาร่วมเล่นน้ำสงกรานต์', `ที่${location.th}`]
+			: [userName, 'joined Songkran water play', `at ${location.en}`];
+		lines.forEach((line, i) => ctx.fillText(line, tx, bT + lh * (i + 1)));
+		ctx.restore();
+
+		return canvas.toDataURL('image/png');
+	}, [sceneSrc, charSrc, faceUrl, lang, userName, location]);
+
+	const handleDownload = async () => {
+		const url = await buildShareImage();
 		const a = document.createElement('a');
-		a.href = photoUrl; a.download = 'songkran-2026.png'; a.click();
+		a.href = url; a.download = 'songkran-2026.png'; a.click();
 	};
 
 	const handleFacebook = () => {
@@ -106,7 +180,8 @@ export function PhotoPreview({
 	const handleNativeShare = async () => {
 		if (!navigator.share) { handleDownload(); return; }
 		try {
-			const blob = await fetch(photoUrl).then(r => r.blob());
+			const url = await buildShareImage();
+			const blob = await fetch(url).then(r => r.blob());
 			const file = new File([blob], 'songkran-2026.png', { type: 'image/png' });
 			await navigator.share({
 				title: lang === 'th' ? 'สงกรานต์ 2026' : 'Songkran 2026',
