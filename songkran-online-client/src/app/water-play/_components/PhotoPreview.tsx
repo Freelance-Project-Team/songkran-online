@@ -141,23 +141,32 @@ export function PhotoPreview({
 		if (sharingRef.current) return;
 		sharingRef.current = true;
 		setSharing(true);
+
+		// Safari blocks window.open if it happens after an await.
+		// So we open a blank window synchronously here, then set its URL later.
+		let newWindow: Window | null = null;
+		if (platform === 'facebook' || platform === 'line') {
+			newWindow = window.open('', '_blank');
+		}
+
 		try {
 			// If requested explicitly for Facebook or LINE, generate the OG page URL
 			if (platform === 'facebook' || platform === 'line') {
 				const shareUrl = await buildShareUrl();
 				
 				if (platform === 'facebook') {
-					window.open(
-						`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
-						'_blank'
-					);
+					const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+					if (newWindow) newWindow.location.href = url;
+					else window.location.href = url; // Fallback if popup blocked entirely
 				} else if (platform === 'line') {
 					const text = encodeURIComponent(
 						lang === 'th'
 							? `ฉันร่วมเล่นน้ำสงกรานต์ที่${location.th}!`
 							: `I joined Songkran water play at ${location.en}!`
 					);
-					window.open(`https://line.me/R/msg/text/?${text}%20${encodeURIComponent(shareUrl)}`, '_blank');
+					const url = `https://line.me/R/msg/text/?${text}%20${encodeURIComponent(shareUrl)}`;
+					if (newWindow) newWindow.location.href = url;
+					else window.location.href = url;
 				}
 			} else {
 				// For Native Share fallback
@@ -198,6 +207,7 @@ export function PhotoPreview({
 				}
 			}
 		} catch (err) {
+			if (newWindow) newWindow.close();
 			if (err instanceof Error && err.name !== 'AbortError') {
 				console.error('[share]', err);
 			}
