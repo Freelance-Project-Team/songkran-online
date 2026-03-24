@@ -187,10 +187,16 @@ function LoginForm({ onLogin }: { onLogin: () => void }) {
 						className="w-full h-full object-cover"
 					/>
 				</button> */}
-				<button onClick={() => oauthLogin('google')} className="rounded-[14px] shadow-md w-[50px] h-[50px] overflow-hidden hover:scale-105 active:scale-95 transition-transform cursor-pointer shrink-0">
+				<button
+					onClick={() => oauthLogin('google')}
+					className="rounded-[14px] shadow-md w-[50px] h-[50px] overflow-hidden hover:scale-105 active:scale-95 transition-transform cursor-pointer shrink-0"
+				>
 					<img src={ASSETS.google} alt="Google" className="w-full h-full object-cover" />
 				</button>
-				<button onClick={() => oauthLogin('line')} className="rounded-[14px] w-[50px] h-[50px] overflow-hidden relative hover:scale-105 active:scale-95 transition-transform cursor-pointer shrink-0">
+				<button
+					onClick={() => oauthLogin('line')}
+					className="rounded-[14px] w-[50px] h-[50px] overflow-hidden relative hover:scale-105 active:scale-95 transition-transform cursor-pointer shrink-0"
+				>
 					<img
 						src={ASSETS.line}
 						alt="LINE"

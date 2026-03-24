@@ -8,12 +8,12 @@ type Lang = 'th' | 'en';
 type Step = 'select' | 'confirm-boy' | 'confirm-girl' | 'face-boy' | 'face-girl';
 
 const A = {
-	bg:      '/assets/playsongkran/bg.png',
-	boy:     '/assets/playsongkran/boy-player.png',
-	girl:    '/assets/playsongkran/women-player.png',
-	selBoy:  '/assets/playsongkran/select-boy.png',
+	bg: '/assets/playsongkran/bg.png',
+	boy: '/assets/playsongkran/boy-player.png',
+	girl: '/assets/playsongkran/women-player.png',
+	selBoy: '/assets/playsongkran/select-boy.png',
 	selGirl: '/assets/playsongkran/select-girl.png',
-	cont:    '/assets/playsongkran/continue.png',
+	cont: '/assets/playsongkran/continue.png',
 } as const;
 
 const STYLES = `
@@ -29,26 +29,27 @@ const STYLES = `
 }
 `;
 
-const CHAR_TRANS = 'left 0.45s cubic-bezier(0.4,0,0.2,1), top 0.45s cubic-bezier(0.4,0,0.2,1), width 0.45s cubic-bezier(0.4,0,0.2,1), height 0.45s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease';
+const CHAR_TRANS =
+	'left 0.45s cubic-bezier(0.4,0,0.2,1), top 0.45s cubic-bezier(0.4,0,0.2,1), width 0.45s cubic-bezier(0.4,0,0.2,1), height 0.45s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease';
 
 type Pos = { left: string; top: string; width: string; height: string };
 
 const BOY_POS: Record<Exclude<Step, 'face-girl'>, Pos> = {
-	select:         { left: '0%',     top: '32.51%', width: '57.76%', height: '47.77%' },
-	'confirm-boy':  { left: '-3.82%', top: '23%',    width: '80.41%', height: '66.32%' },
-	'confirm-girl': { left: '7.38%',  top: '42.02%', width: '34.86%', height: '28.76%' },
-	'face-boy':     { left: '0.51%',  top: '17.49%', width: '100%',   height: '82.51%' },
+	select: { left: '0%', top: '32.51%', width: '57.76%', height: '47.77%' },
+	'confirm-boy': { left: '-3.82%', top: '23%', width: '80.41%', height: '66.32%' },
+	'confirm-girl': { left: '7.38%', top: '42.02%', width: '34.86%', height: '28.76%' },
+	'face-boy': { left: '0.51%', top: '17.49%', width: '100%', height: '82.51%' },
 };
 
 const GIRL_POS: Record<Exclude<Step, 'face-boy'>, Pos> = {
-	select:         { left: '41.22%', top: '32.51%', width: '57.76%', height: '47.77%' },
-	'confirm-boy':  { left: '55.47%', top: '41.20%', width: '36.64%', height: '30.28%' },
-	'confirm-girl': { left: '21.88%', top: '23%',    width: '81.68%', height: '67.61%' },
-	'face-girl':    { left: '0%',     top: '16.43%', width: '99.24%', height: '82.16%' },
+	select: { left: '41.22%', top: '32.51%', width: '57.76%', height: '47.77%' },
+	'confirm-boy': { left: '55.47%', top: '41.20%', width: '36.64%', height: '30.28%' },
+	'confirm-girl': { left: '21.88%', top: '23%', width: '81.68%', height: '67.61%' },
+	'face-girl': { left: '0%', top: '16.43%', width: '99.24%', height: '82.16%' },
 };
 
 const FACE_POS: Record<'face-boy' | 'face-girl', { left: string; top: string }> = {
-	'face-boy':  { left: '34.1%',  top: '27.93%' },
+	'face-boy': { left: '34.1%', top: '27.93%' },
 	'face-girl': { left: '31.81%', top: '26.88%' },
 };
 
@@ -97,10 +98,12 @@ export function SelectCharacter({
 		setFaceUrl(URL.createObjectURL(file));
 	};
 
-	const boyPos  = BOY_POS[step === 'face-girl' ? 'confirm-girl' : (step as Exclude<Step, 'face-girl'>)];
-	const girlPos = GIRL_POS[step === 'face-boy'  ? 'confirm-boy'  : (step as Exclude<Step, 'face-boy'>)];
-	const boyZ    = step === 'confirm-boy' || step === 'face-boy' ? 3 : 2;
-	const girlZ   = step === 'confirm-girl' || step === 'face-girl' ? 3 : 2;
+	const boyPos =
+		BOY_POS[step === 'face-girl' ? 'confirm-girl' : (step as Exclude<Step, 'face-girl'>)];
+	const girlPos =
+		GIRL_POS[step === 'face-boy' ? 'confirm-boy' : (step as Exclude<Step, 'face-boy'>)];
+	const boyZ = step === 'confirm-boy' || step === 'face-boy' ? 3 : 2;
+	const girlZ = step === 'confirm-girl' || step === 'face-girl' ? 3 : 2;
 
 	return (
 		<>
@@ -130,8 +133,10 @@ export function SelectCharacter({
 					alt=""
 					className="absolute select-none pointer-events-none"
 					style={{
-						left: '27%', top: '15%',
-						width: '12.72%', height: '9.86%',
+						left: '27%',
+						top: '15%',
+						width: '12.72%',
+						height: '9.86%',
 						objectFit: 'contain',
 						animation: 'wp-arrow 1.1s ease-in-out infinite',
 						zIndex: 4,
@@ -145,8 +150,10 @@ export function SelectCharacter({
 					alt=""
 					className="absolute select-none pointer-events-none"
 					style={{
-						left: '53%', top: '15%',
-						width: '12.72%', height: '10.1%',
+						left: '53%',
+						top: '15%',
+						width: '12.72%',
+						height: '10.1%',
 						objectFit: 'contain',
 						animation: 'wp-arrow 1.1s ease-in-out infinite',
 						zIndex: 4,
@@ -203,7 +210,9 @@ export function SelectCharacter({
 						<img src={faceUrl} alt="face" className="w-full h-full object-cover" />
 					) : (
 						<div className="w-full h-full flex items-center justify-center">
-							<span className="text-5xl font-light text-gray-400 leading-none">+</span>
+							<span className="text-5xl font-light text-gray-400 leading-none">
+								+
+							</span>
 						</div>
 					)}
 				</button>
@@ -220,8 +229,10 @@ export function SelectCharacter({
 				onAnimationEnd={() => setContPop(false)}
 				className="absolute z-10 p-0 bg-transparent border-0"
 				style={{
-					right: '2%', top: '75%',
-					width: '35%', height: '14.32%',
+					right: '2%',
+					top: '75%',
+					width: '35%',
+					height: '14.32%',
 					cursor: step === 'select' ? 'default' : 'pointer',
 					opacity: step === 'select' ? 0.45 : 1,
 					transition: 'opacity 0.3s ease',

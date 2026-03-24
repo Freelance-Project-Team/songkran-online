@@ -2,16 +2,16 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-const BG       = '/assets/loading/bg.png';
+const BG = '/assets/loading/bg.png';
 const AOT_LOGO = '/assets/loading/aot-logo.png';
-const CLOUD_L  = '/assets/loading/cloud-left.png';
-const CLOUD_R  = '/assets/loading/cloud-right.png';
-const PLANE    = '/assets/loading/plane-3.svg';
+const CLOUD_L = '/assets/loading/cloud-left.png';
+const CLOUD_R = '/assets/loading/cloud-right.png';
+const PLANE = '/assets/loading/plane-3.svg';
 
-const PLANE_FRONT_MS  = 1400;
-const LOGO_MS         = 2000;
+const PLANE_FRONT_MS = 1400;
+const LOGO_MS = 2000;
 const CLOUD_EXPAND_MS = 2700;
-const DONE_MS         = 3900;
+const DONE_MS = 3900;
 
 const STYLES = `
 @keyframes ld-fly {
@@ -34,13 +34,15 @@ const STYLES = `
 `;
 
 export default function LoadingScreen({ onComplete }: { onComplete: () => void }) {
-	const [started, setStarted]         = useState(false);
-	const [planeOnTop, setPlaneOnTop]   = useState(false);
-	const [showLogo, setShowLogo]       = useState(false);
+	const [started, setStarted] = useState(false);
+	const [planeOnTop, setPlaneOnTop] = useState(false);
+	const [showLogo, setShowLogo] = useState(false);
 	const [cloudExpand, setCloudExpand] = useState(false);
 
 	const onCompleteRef = useRef(onComplete);
-	useEffect(() => { onCompleteRef.current = onComplete; });
+	useEffect(() => {
+		onCompleteRef.current = onComplete;
+	});
 
 	useEffect(() => {
 		const t0 = setTimeout(() => setStarted(true), 60);
@@ -72,7 +74,10 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
 				alt=""
 				className="absolute pointer-events-none select-none"
 				style={{
-					top: '-8%', right: '-15%', width: '90%', height: 'auto',
+					top: '-8%',
+					right: '-15%',
+					width: '90%',
+					height: 'auto',
 					transformOrigin: 'top right',
 					zIndex: cloudExpand ? 10 : 3,
 					animation: cloudAnim,
@@ -84,7 +89,10 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
 				alt=""
 				className="absolute pointer-events-none select-none"
 				style={{
-					bottom: '-8%', left: '-14%', width: '85%', height: 'auto',
+					bottom: '-8%',
+					left: '-14%',
+					width: '85%',
+					height: 'auto',
 					transformOrigin: 'bottom left',
 					zIndex: cloudExpand ? 10 : 3,
 					animation: cloudAnim,
@@ -92,14 +100,21 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
 			/>
 
 			<div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
-				<div className="relative h-full overflow-hidden" style={{ aspectRatio: '393 / 852' }}>
+				<div
+					className="relative h-full overflow-hidden"
+					style={{ aspectRatio: '393 / 852' }}
+				>
 					<img
 						src={PLANE}
 						alt=""
 						className="absolute"
 						style={{
-							left: '50%', top: '50%', width: '38%', height: 'auto',
-							marginLeft: '-19%', marginTop: '-10%',
+							left: '50%',
+							top: '50%',
+							width: '38%',
+							height: 'auto',
+							marginLeft: '-19%',
+							marginTop: '-10%',
 							zIndex: planeOnTop ? 4 : 2,
 							opacity: 0,
 							animation: started
@@ -115,7 +130,9 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
 				alt="AOT Suvarnabhumi Airport"
 				className="absolute object-contain pointer-events-none select-none"
 				style={{
-					left: '13.49%', top: '52.11%', width: '73.03%',
+					left: '13.49%',
+					top: '52.11%',
+					width: '73.03%',
 					zIndex: 5,
 					transformOrigin: 'center',
 					opacity: 0,

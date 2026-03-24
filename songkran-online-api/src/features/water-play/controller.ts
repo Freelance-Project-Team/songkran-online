@@ -16,7 +16,10 @@ export const WaterPlayController = {
 			if (!locationId || !VALID_LOCATIONS.includes(locationId)) {
 				return res
 					.status(400)
-					.json({ message: 'Invalid locationId. Must be arun, phakeaw, yaksuwan, or saochingcha.' });
+					.json({
+						message:
+							'Invalid locationId. Must be arun, phakeaw, yaksuwan, or saochingcha.',
+					});
 			}
 
 			await WaterPlayService.log({

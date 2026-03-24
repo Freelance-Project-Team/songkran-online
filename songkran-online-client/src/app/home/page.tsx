@@ -8,10 +8,38 @@ import { LangToggleButton } from '@/src/shared/ui/LangToggleButton';
 type Lang = 'th' | 'en';
 
 const BUTTONS = [
-	{ route: '/newsongkran', img: '/assets/home/new-songkran-btn.png',  left: '2.54%',  top: '35.21%', width: '48.09%', height: '21.24%' },
-	{ route: '/songnampha',  img: '/assets/home/songnampha-btn.png',    left: '54.45%', top: '35.21%', width: '39.95%', height: '21.24%' },
-	{ route: '/blessing',    img: '/assets/home/rodnamdumhua-btn.png',  left: '6.62%',  top: '57.75%', width: '44.02%', height: '21.24%' },
-	{ route: '/water-play',  img: '/assets/home/play-water-btn.png',    left: '52.67%', top: '57.75%', width: '43.26%', height: '21.24%' },
+	{
+		route: '/newsongkran',
+		img: '/assets/home/new-songkran-btn.png',
+		left: '2.54%',
+		top: '35.21%',
+		width: '48.09%',
+		height: '21.24%',
+	},
+	{
+		route: '/songnampha',
+		img: '/assets/home/songnampha-btn.png',
+		left: '54.45%',
+		top: '35.21%',
+		width: '39.95%',
+		height: '21.24%',
+	},
+	{
+		route: '/blessing',
+		img: '/assets/home/rodnamdumhua-btn.png',
+		left: '6.62%',
+		top: '57.75%',
+		width: '44.02%',
+		height: '21.24%',
+	},
+	{
+		route: '/water-play',
+		img: '/assets/home/play-water-btn.png',
+		left: '52.67%',
+		top: '57.75%',
+		width: '43.26%',
+		height: '21.24%',
+	},
 ] as const;
 
 const STYLES = `
@@ -62,9 +90,12 @@ function HomeScene({
 					key={i}
 					className="absolute cursor-pointer"
 					style={{
-						left: btn.left, top: btn.top,
-						width: btn.width, height: btn.height,
-						animation: selectedIdx === i ? 'home-select 0.38s ease-out both' : undefined,
+						left: btn.left,
+						top: btn.top,
+						width: btn.width,
+						height: btn.height,
+						animation:
+							selectedIdx === i ? 'home-select 0.38s ease-out both' : undefined,
 					}}
 					onClick={() => handleClick(btn.route, i)}
 				>
@@ -83,7 +114,10 @@ function HomeScene({
 function SceneFrame(props: Parameters<typeof HomeScene>[0]) {
 	return (
 		<div className="h-dvh w-full flex items-center justify-center overflow-hidden bg-[#b8dff5]">
-			<div className="relative overflow-hidden w-full sm:h-full sm:w-auto" style={{ aspectRatio: '393 / 852' }}>
+			<div
+				className="relative overflow-hidden w-full sm:h-full sm:w-auto"
+				style={{ aspectRatio: '393 / 852' }}
+			>
 				<HomeScene {...props} />
 			</div>
 		</div>
@@ -118,7 +152,7 @@ export default function HomePage() {
 
 	const props = {
 		lang,
-		onToggle:   () => setLang((l) => (l === 'th' ? 'en' : 'th')),
+		onToggle: () => setLang((l) => (l === 'th' ? 'en' : 'th')),
 		onNavigate: (route: string) => router.push(route),
 	};
 
