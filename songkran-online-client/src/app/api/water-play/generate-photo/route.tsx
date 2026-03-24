@@ -1,5 +1,7 @@
 import { ImageResponse } from 'next/og';
 import type { NextRequest } from 'next/server';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 
 export const runtime = 'nodejs';
 
@@ -35,27 +37,23 @@ function getOrigin(req: NextRequest): string {
 	return new URL(req.url).origin;
 }
 
-// ─── Font cache (fetched from public URL, cached in memory) ──────────────────
+// ─── Font cache (read from filesystem, cached in memory) ─────────────────────
 
 let fontThaiCache: ArrayBuffer | null = null;
 let fontLatinCache: ArrayBuffer | null = null;
 
-async function getFonts(origin: string) {
+async function getFonts() {
+	if (fontThaiCache && fontLatinCache) {
+		return { fontThai: fontThaiCache, fontLatin: fontLatinCache };
+	}
+	const fontsDir = join(process.cwd(), 'public', 'fonts');
 	const [fontThai, fontLatin] = await Promise.all([
-		fontThaiCache ??
-			fetch(`${origin}/fonts/Sarabun-Bold-thai.woff2`).then((r) => {
-				if (!r.ok) throw new Error(`Font fetch failed: ${r.status}`);
-				return r.arrayBuffer();
-			}),
-		fontLatinCache ??
-			fetch(`${origin}/fonts/Sarabun-Bold-latin.woff2`).then((r) => {
-				if (!r.ok) throw new Error(`Font fetch failed: ${r.status}`);
-				return r.arrayBuffer();
-			}),
+		readFile(join(fontsDir, 'Sarabun-Bold-thai.woff2')),
+		readFile(join(fontsDir, 'Sarabun-Bold-latin.woff2')),
 	]);
-	fontThaiCache = fontThai;
-	fontLatinCache = fontLatin;
-	return { fontThai, fontLatin };
+	fontThaiCache = fontThai.buffer.slice(fontThai.byteOffset, fontThai.byteOffset + fontThai.byteLength);
+	fontLatinCache = fontLatin.buffer.slice(fontLatin.byteOffset, fontLatin.byteOffset + fontLatin.byteLength);
+	return { fontThai: fontThaiCache, fontLatin: fontLatinCache };
 }
 
 // ─── Route ───────────────────────────────────────────────────────────────────
@@ -71,7 +69,7 @@ export async function POST(req: NextRequest) {
 		};
 
 		const origin = getOrigin(req);
-		const { fontThai, fontLatin } = await getFonts(origin);
+		const { fontThai, fontLatin } = await getFonts();
 
 		const sceneSrc = `${origin}${SCENES[locationId] ?? SCENES.arun}`;
 		const charSrc = `${origin}${CHAR_IMG[character]}`;
