@@ -7,10 +7,16 @@ import {
 	facebookRedirect,
 	facebookCallback,
 	getMe,
+	register,
+	login,
 } from './controller';
 import { requireAuth } from '../../shared/middleware/auth';
 
 const router = Router();
+
+// Email / Password
+router.post('/register', register);
+router.post('/login', login);
 
 // Google OAuth
 router.get('/google', googleRedirect);
