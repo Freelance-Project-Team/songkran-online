@@ -91,28 +91,15 @@ export function PhotoPreview({
 
 	/**
 	 * Resolve any faceUrl to a compact JPEG data URL.
-	 * - blob: URLs are browser-only and must be converted before sending to the server
-	 * - Resizes to max 400×400 and encodes as JPEG 0.75 to stay well under Vercel's 4.5 MB body limit
+	 * Uses the URL directly as Image.src (works for both blob: and data: URLs, including HEIC on iOS).
+	 * Canvas converts to JPEG, making it safe to send to the server regardless of input format.
 	 */
 	const prepareFaceDataUrl = async (url: string): Promise<string> => {
-		// Step 1: get a data URL (handles both blob: and data: inputs)
-		let dataUrl = url;
-		if (url.startsWith('blob:')) {
-			const blob = await fetch(url).then((r) => r.blob());
-			dataUrl = await new Promise<string>((resolve, reject) => {
-				const reader = new FileReader();
-				reader.onload = () => resolve(reader.result as string);
-				reader.onerror = reject;
-				reader.readAsDataURL(blob);
-			});
-		}
-
-		// Step 2: resize + compress to JPEG so the payload stays small
 		const img = await new Promise<HTMLImageElement>((resolve, reject) => {
 			const i = new Image();
 			i.onload = () => resolve(i);
 			i.onerror = reject;
-			i.src = dataUrl;
+			i.src = url;
 		});
 		const MAX = 400;
 		const scale = Math.min(1, MAX / Math.max(img.width, img.height));
