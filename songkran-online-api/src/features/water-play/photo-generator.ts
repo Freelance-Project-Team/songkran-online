@@ -1,4 +1,5 @@
 import { Resvg } from '@resvg/resvg-js';
+import { existsSync } from 'fs';
 import { join } from 'path';
 import axios from 'axios';
 
@@ -33,11 +34,8 @@ const imageCache = new Map<string, string>();
 
 // ─── Font file paths ────────────────────────────────────────────────────────
 
-const fontsDir = join(process.cwd(), 'assets', 'fonts');
-const FONT_FILES = [
-	join(fontsDir, 'Sarabun-Bold-thai.woff2'),
-	join(fontsDir, 'Sarabun-Bold-latin.woff2'),
-];
+const FONTS_DIR = join(process.cwd(), 'assets', 'fonts');
+const FONT_FILE = join(FONTS_DIR, 'Sarabun-Bold.ttf');
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -153,9 +151,18 @@ export async function generatePhoto(params: GeneratePhotoParams): Promise<Buffer
 
 	// ── Render SVG → PNG ─────────────────────────────────────────────────────
 
+	// Verify font file exists
+	if (!existsSync(FONT_FILE)) {
+		console.error(`[generate-photo] Font file not found: ${FONT_FILE}`);
+	} else {
+		console.log(`[generate-photo] Font file OK: ${FONT_FILE}`);
+	}
+
 	const resvg = new Resvg(svg, {
 		font: {
-			fontFiles: FONT_FILES,
+			fontFiles: [FONT_FILE],
+			fontDirs: [FONTS_DIR],
+			defaultFontFamily: 'Sarabun',
 			loadSystemFonts: false,
 		},
 	});
