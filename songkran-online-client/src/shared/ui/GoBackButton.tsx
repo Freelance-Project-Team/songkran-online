@@ -36,6 +36,11 @@ export function GoBackButton({
 		setTimeout(onBack, 650);
 	};
 
+	const liftedSrc =
+		lang === 'en'
+			? '/assets/shared/go-back-btn-2-en.png'
+			: '/assets/shared/go-back-btn-2-th.png';
+
 	return (
 		<>
 			<style>{STYLES}</style>
@@ -57,17 +62,17 @@ export function GoBackButton({
 					alt=""
 					className="absolute inset-0 w-full h-full select-none pointer-events-none"
 					style={{
-						objectFit: 'fill',
+						objectFit: 'contain',
 						opacity: lifting ? 0 : 1,
 						transition: 'opacity 0.2s ease',
 					}}
 				/>
 				<img
-					src="/assets/shared/go-back-2-btn.png"
+					src={liftedSrc}
 					alt=""
 					className="absolute inset-0 w-full h-full select-none pointer-events-none"
 					style={{
-						objectFit: 'fill',
+						objectFit: 'contain',
 						opacity: lifting ? 1 : 0,
 						transition: 'opacity 0.2s ease',
 					}}

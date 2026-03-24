@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { GoBackButton } from '@/src/shared/ui/GoBackButton';
 
 type Lang = 'th' | 'en';
@@ -77,6 +77,7 @@ export function PhotoPreview({
 }) {
 	const [userName, setUserName] = useState('');
 	const [sharing, setSharing] = useState(false);
+	const sharingRef = useRef(false);
 
 	useEffect(() => {
 		if (typeof window !== 'undefined') {
@@ -152,11 +153,15 @@ export function PhotoPreview({
 	};
 
 	const handleNativeShare = async () => {
+		if (sharingRef.current) return;
+		sharingRef.current = true;
 		setSharing(true);
 		try {
 			const blob = await buildShareBlob();
 			const file = new File([blob], 'songkran-2026.png', { type: 'image/png' });
-			if (navigator.share) {
+			const canShareFile =
+				typeof navigator.canShare === 'function' && navigator.canShare({ files: [file] });
+			if (canShareFile) {
 				await navigator.share({
 					title: lang === 'th' ? 'สงกรานต์ 2026' : 'Songkran 2026',
 					text:
@@ -173,9 +178,13 @@ export function PhotoPreview({
 				a.click();
 				URL.revokeObjectURL(url);
 			}
-		} catch {
-			/* cancelled */
+		} catch (err) {
+			// AbortError = user cancelled share sheet — safe to ignore
+			if (err instanceof Error && err.name !== 'AbortError') {
+				console.error('[share]', err);
+			}
 		} finally {
+			sharingRef.current = false;
 			setSharing(false);
 		}
 	};
