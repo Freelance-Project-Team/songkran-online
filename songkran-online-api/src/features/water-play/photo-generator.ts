@@ -121,11 +121,11 @@ export async function generatePhoto(params: GeneratePhotoParams): Promise<Buffer
 		`
 		: '';
 
-	// Banner: Thai 3 lines (y=597, h=80), English 4 lines (y=572, h=105)
-	const bannerY = lang === 'th' ? 597 : 572;
-	const bannerH = lang === 'th' ? 80 : 105;
-	const bannerFontSize = lang === 'th' ? 14 : 13;
-	const bannerLineSpacing = lang === 'th' ? 18 : 17;
+	// Banner: Thai 3 lines (y=597, h=80), English 4 lines (y=582, h=95)
+	const bannerY = lang === 'th' ? 597 : 582;
+	const bannerH = lang === 'th' ? 80 : 95;
+	const bannerFontSize = lang === 'th' ? 14 : 12;
+	const bannerLineSpacing = lang === 'th' ? 18 : 16;
 	const bannerTotalTextH = bannerLines.length * bannerLineSpacing;
 	const bannerPadTop = (bannerH - bannerTotalTextH) / 2;
 	const bY = bannerLines.map((_, i) => bannerY + bannerPadTop + bannerFontSize + i * bannerLineSpacing);
