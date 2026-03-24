@@ -88,7 +88,6 @@ export default function WaterPlayPage() {
 					locationId={locationId}
 					photoUrl={photoUrl}
 					onBack={() => setFlowStep('photo')}
-					onRetake={() => setFlowStep('character')}
 				/>
 			);
 		}
