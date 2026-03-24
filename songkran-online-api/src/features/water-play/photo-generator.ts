@@ -93,7 +93,7 @@ export async function generatePhoto(params: GeneratePhotoParams): Promise<Buffer
 
 	const infoLines =
 		lang === 'th'
-			? [`คุณ ${userName}`, 'ได้มาร่วม น้ำสงกรานต์', `ที่${location.th}`]
+			? [`คุณ ${userName}`, 'ได้มาร่วมเล่นน้ำ  สงกรานต์', `ที่${location.th}`]
 			: [userName, 'joined Songkran water play', `at ${location.en}`];
 
 	const bannerLines =
