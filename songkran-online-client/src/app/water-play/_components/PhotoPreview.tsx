@@ -126,7 +126,7 @@ export function PhotoPreview({
 	const buildShareBlob = async (): Promise<Blob> => {
 		const faceDataUrl = faceUrl ? await prepareFaceDataUrl(faceUrl) : '';
 
-		const res = await fetch('/api/water-play/generate-photo', {
+		const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/water-play/generate-photo`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ faceDataUrl, locationId, character, userName, lang }),

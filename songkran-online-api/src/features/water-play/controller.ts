@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { WaterPlayService } from '../../entities/water-play/service';
 import { AuthRequest } from '../../shared/middleware/auth';
+import { generatePhoto } from './photo-generator';
 
 const VALID_CHARACTERS = ['boy', 'girl'];
 const VALID_LOCATIONS = ['arun', 'phakeaw', 'yaksuwan', 'saochingcha'];
@@ -50,6 +51,36 @@ export const WaterPlayController = {
 			const stats = await WaterPlayService.getStats();
 			res.json(stats);
 		} catch (error: any) {
+			res.status(500).json({ message: error.message });
+		}
+	},
+
+	generatePhoto: async (req: Request, res: Response) => {
+		try {
+			const { faceDataUrl, locationId, character, userName, lang } = req.body;
+
+			if (!character || !VALID_CHARACTERS.includes(character)) {
+				return res.status(400).json({ message: 'Invalid character. Must be boy or girl.' });
+			}
+			if (!locationId || !VALID_LOCATIONS.includes(locationId)) {
+				return res.status(400).json({
+					message: 'Invalid locationId. Must be arun, phakeaw, yaksuwan, or saochingcha.',
+				});
+			}
+
+			const pngBuffer = await generatePhoto({
+				faceDataUrl: faceDataUrl || '',
+				locationId,
+				character,
+				userName: userName || '',
+				lang: lang || 'th',
+			});
+
+			res.set('Content-Type', 'image/png');
+			res.set('Cache-Control', 'no-store');
+			res.send(pngBuffer);
+		} catch (error: any) {
+			console.error('[generate-photo]', error);
 			res.status(500).json({ message: error.message });
 		}
 	},
