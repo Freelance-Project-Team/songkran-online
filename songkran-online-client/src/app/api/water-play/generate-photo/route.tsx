@@ -126,7 +126,7 @@ export async function POST(req: NextRequest) {
 				<img
 					src={robotSrc}
 					alt=""
-					style={{ position: 'absolute', left: -12, top: lang === 'th' ? 462 : 432, width: 238 }}
+					style={{ position: 'absolute', left: -12, top: lang === 'th' ? 462 : 450, width: 238 }}
 				/>
 
 				{/* Character */}
@@ -229,7 +229,7 @@ export async function POST(req: NextRequest) {
 				<img
 					src={logoSrc}
 					alt=""
-					style={{ position: 'absolute', left: lang === 'th' ? -33 : -40, top: lang === 'th' ? 569 : 555, width: lang === 'th' ? 208 : 248 }}
+					style={{ position: 'absolute', left: lang === 'th' ? -33 : -40, top: lang === 'th' ? 569 : 570, width: lang === 'th' ? 208 : 248 }}
 				/>
 			</div>,
 			{

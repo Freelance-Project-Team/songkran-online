@@ -136,7 +136,7 @@ export async function generatePhoto(params: GeneratePhotoParams): Promise<Buffer
 	<image href="${sceneUri}" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="none"/>
 
 	<!-- Robot -->
-	<image href="${robotUri}" x="-12" y="${lang === 'th' ? 462 : 432}" width="238" height="250" preserveAspectRatio="xMidYMin meet"/>
+	<image href="${robotUri}" x="-12" y="${lang === 'th' ? 462 : 450}" width="238" height="250" preserveAspectRatio="xMidYMin meet"/>
 
 	<!-- Character -->
 	<image href="${charUri}" x="163" y="208" width="276" height="494" preserveAspectRatio="xMidYMax meet"/>
@@ -154,7 +154,7 @@ export async function generatePhoto(params: GeneratePhotoParams): Promise<Buffer
 	${bannerLines.map((line, i) => `<text x="377" y="${bY[i]}" text-anchor="end" font-family="Sarabun" font-weight="700" font-size="${bannerFontSize}" letter-spacing="${lang === 'th' ? 0.5 : 0}" fill="white">${escapeXml(line)}</text>`).join('\n\t')}
 
 	<!-- Logo -->
-	<image href="${logoUri}" x="${lang === 'th' ? -33 : -40}" y="${lang === 'th' ? 569 : 555}" width="${lang === 'th' ? 208 : 248}" height="${lang === 'th' ? 108 : 128}" preserveAspectRatio="xMidYMid meet"/>
+	<image href="${logoUri}" x="${lang === 'th' ? -33 : -40}" y="${lang === 'th' ? 569 : 570}" width="${lang === 'th' ? 208 : 248}" height="${lang === 'th' ? 108 : 128}" preserveAspectRatio="xMidYMid meet"/>
 
 </svg>`;
 
