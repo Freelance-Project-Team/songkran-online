@@ -1,7 +1,9 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-	/* config options here */
+	outputFileTracingIncludes: {
+		'/api/water-play/generate-photo': ['./public/fonts/**/*'],
+	},
 };
 
 export default nextConfig;

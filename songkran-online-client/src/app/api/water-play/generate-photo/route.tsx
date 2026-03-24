@@ -33,7 +33,12 @@ const LOCATION_NAMES: Record<string, { th: string; en: string }> = {
 // ─── Origin helper ───────────────────────────────────────────────────────────
 
 function getOrigin(req: NextRequest): string {
-	if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+	// Use the request's host header to get the actual domain (e.g. custom domain)
+	// instead of VERCEL_URL which points to the deployment URL behind Deployment Protection
+	const host = req.headers.get('host');
+	if (host) return `https://${host}`;
+	if (process.env.VERCEL_PROJECT_PRODUCTION_URL)
+		return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
 	return new URL(req.url).origin;
 }
 
