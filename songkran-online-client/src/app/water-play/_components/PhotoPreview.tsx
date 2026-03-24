@@ -123,23 +123,7 @@ export function PhotoPreview({
 		return res.blob();
 	};
 
-	const handleFacebook = () => {
-		window.open(
-			`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`,
-			'_blank'
-		);
-	};
-
-	const handleLine = () => {
-		const text = encodeURIComponent(
-			lang === 'th'
-				? `ฉันร่วมเล่นน้ำสงกรานต์ที่${location.th}! 🎉`
-				: `I joined Songkran water play at ${location.en}! 🎉`
-		);
-		window.open(`https://line.me/R/msg/text/?${text}`, '_blank');
-	};
-
-	const handleNativeShare = async () => {
+	const handleSocialShare = async (platform?: 'facebook' | 'line') => {
 		if (sharingRef.current) return;
 		sharingRef.current = true;
 		setSharing(true);
@@ -148,6 +132,7 @@ export function PhotoPreview({
 			const file = new File([blob], 'songkran-2026.png', { type: 'image/png' });
 			const canShareFile =
 				typeof navigator.canShare === 'function' && navigator.canShare({ files: [file] });
+
 			if (canShareFile) {
 				await navigator.share({
 					title: lang === 'th' ? 'สงกรานต์ 2026' : 'Songkran 2026',
@@ -164,6 +149,23 @@ export function PhotoPreview({
 				a.download = 'songkran-2026.png';
 				a.click();
 				URL.revokeObjectURL(url);
+
+				// Provide instruction after download on desktop
+				setTimeout(() => {
+					if (platform === 'facebook') {
+						alert(
+							lang === 'th'
+								? 'บันทึกรูปภาพลงเครื่องแล้ว กรุณานำรูปไปโพสต์บน Facebook ของคุณได้เลย!'
+								: 'Image saved to your device! You can now post it to Facebook.'
+						);
+					} else if (platform === 'line') {
+						alert(
+							lang === 'th'
+								? 'บันทึกรูปภาพลงเครื่องแล้ว กรุณานำรูปไปส่งต่อใน LINE ของคุณได้เลย!'
+								: 'Image saved to your device! You can now send it in LINE.'
+						);
+					}
+				}, 500);
 			}
 		} catch (err) {
 			// AbortError = user cancelled share sheet — safe to ignore
@@ -175,6 +177,10 @@ export function PhotoPreview({
 			setSharing(false);
 		}
 	};
+
+	const handleFacebook = () => handleSocialShare('facebook');
+	const handleLine = () => handleSocialShare('line');
+	const handleNativeShare = () => handleSocialShare();
 
 	return (
 		<>
