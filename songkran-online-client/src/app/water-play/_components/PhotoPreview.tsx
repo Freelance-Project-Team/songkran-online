@@ -486,10 +486,10 @@ export function PhotoPreview({
 				lang={lang}
 				onBack={onBack}
 				style={{
-					left: '4%',
+					left: '5%',
 					top: '79%',
-					width: px(115, 'x'),
-					height: px(93, 'y'),
+					width: '30%',
+					height: '12%',
 					zIndex: 7,
 				}}
 			/>
