@@ -13,10 +13,11 @@ const STYLES = `
 
 type Lang = 'th' | 'en';
 
-export function GoBackButton({ lang, onBack, style }: { lang: Lang; onBack: () => void; style?: React.CSSProperties }) {
+export function GoBackButton({ lang, onBack, style, noDelay }: { lang: Lang; onBack: () => void; style?: React.CSSProperties; noDelay?: boolean }) {
 	const [lifting, setLifting] = useState(false);
 
 	const handleClick = () => {
+		if (noDelay) { onBack(); return; }
 		if (lifting) return;
 		setLifting(true);
 		setTimeout(onBack, 650);

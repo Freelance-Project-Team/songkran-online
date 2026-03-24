@@ -19,10 +19,12 @@ const CHAR_IMG: Record<'boy' | 'girl', string> = {
 
 const LOCATION_NAMES: Record<string, { th: string; en: string }> = {
 	arun:        { th: 'วัดอรุณราชวราราม', en: 'Wat Arun' },
-	phakeaw:     { th: 'วัดพระแก้ว',       en: 'Wat Phra Kaew' },
+	phakeaw:     { th: 'วัดพระแก้ว',        en: 'Wat Phra Kaew' },
 	yaksuwan:    { th: 'วัดยักษ์สุวรรณ',    en: 'Wat Yak Suwan' },
-	saochingcha: { th: 'เสาชิงช้า',         en: 'Sao Chingcha' },
+	saochingcha: { th: 'เสาชิงช้า',          en: 'Sao Chingcha' },
 };
+
+const SF = '-apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif';
 
 const STYLES = `
 @keyframes pp-slide-up {
@@ -40,17 +42,15 @@ const STYLES = `
 }
 `;
 
-const inter = 'var(--font-inter), Inter, sans-serif';
+const px = (n: number, axis: 'x' | 'y') => `${(n / (axis === 'x' ? 393 : 852)) * 100}%`;
 
-// Share icon SVG
 function ShareIcon() {
 	return (
-		<svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-			<circle cx="18" cy="5"  r="3" fill="#0055A5" />
-			<circle cx="6"  cy="12" r="3" fill="#0055A5" />
-			<circle cx="18" cy="19" r="3" fill="#0055A5" />
-			<line x1="8.59"  y1="13.51" x2="15.42" y2="17.49" stroke="#0055A5" strokeWidth="1.6" />
-			<line x1="15.41" y1="6.51"  x2="8.59"  y2="10.49" stroke="#0055A5" strokeWidth="1.6" />
+		<svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+			{/* Arrow up */}
+			<path d="M12 2L7.5 6.5h3V14h3V6.5h3L12 2Z" fill="white" />
+			{/* Box */}
+			<path d="M4 12v8h16v-8" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
 		</svg>
 	);
 }
@@ -62,7 +62,6 @@ export function PhotoPreview({
 	locationId,
 	photoUrl,
 	onBack,
-	onRetake,
 }: {
 	lang: Lang;
 	character: 'boy' | 'girl';
@@ -70,7 +69,6 @@ export function PhotoPreview({
 	locationId: string;
 	photoUrl: string;
 	onBack: () => void;
-	onRetake: () => void;
 }) {
 	const [userName, setUserName] = useState('');
 
@@ -84,18 +82,16 @@ export function PhotoPreview({
 	const charSrc  = CHAR_IMG[character];
 	const location = LOCATION_NAMES[locationId] ?? LOCATION_NAMES.arun;
 
-	// ---------- share handlers ----------
-
 	const handleDownload = () => {
 		const a = document.createElement('a');
-		a.href     = photoUrl;
-		a.download = 'songkran-2026.png';
-		a.click();
+		a.href = photoUrl; a.download = 'songkran-2026.png'; a.click();
 	};
 
 	const handleFacebook = () => {
-		const url = encodeURIComponent(window.location.href);
-		window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+		window.open(
+			`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`,
+			'_blank',
+		);
 	};
 
 	const handleLine = () => {
@@ -122,96 +118,67 @@ export function PhotoPreview({
 		} catch { /* cancelled */ }
 	};
 
-	// ---- layout constants (Figma 393×852 → %) ----
-	// Character
-	const charL = `${163 / 393 * 100}%`;
-	const charT = `${208 / 852 * 100}%`;
-	const charW = `${276 / 393 * 100}%`;
-	const charH = `${494 / 852 * 100}%`;
-
-	// Face — absolute on frame
-	const faceL = `${256 / 393 * 100}%`;
-	const faceT = `${265 / 852 * 100}%`;
-	const faceW = `${108 / 393 * 100}%`;
-	const faceH = `${108 / 852 * 100}%`;
-
-	// Info card
-	const cardL = `${13  / 393 * 100}%`;
-	const cardT = `${340 / 852 * 100}%`;
-	const cardW = `${205 / 393 * 100}%`;
-	const cardH = `${110 / 852 * 100}%`;
-
-	// Robot
-	const robL = `${-12 / 393 * 100}%`;
-	const robT = `${462 / 852 * 100}%`;
-	const robW = `${238 / 393 * 100}%`;
-
-	// Logo (songkran)
-	const logoL = `${-33 / 393 * 100}%`;
-	const logoT = `${569 / 852 * 100}%`;
-	const logoW = `${208 / 393 * 100}%`;
-
-	// Footer
-	const footT = `${597 / 852 * 100}%`;
-	const footH = `${80  / 852 * 100}%`;
-
-	// Share row
-	const shareL = `${103 / 393 * 100}%`;
-	const shareT = `${691 / 852 * 100}%`;
-
-	// Retake button
-	const retakeL = `${141 / 393 * 100}%`;
-	const retakeT = `${752 / 852 * 100}%`;
-	const retakeW = `${115 / 393 * 100}%`;
-	const retakeH = `${93  / 852 * 100}%`;
-
-	// Button size (share)
-	const btn50 = `${50 / 393 * 100}%`;
-	const btn63 = `${63 / 393 * 100}%`;
-
 	return (
 		<>
 			<style>{STYLES}</style>
 
-			{/* ── Scene bg ── */}
 			<img
 				src={sceneSrc}
 				alt=""
 				className="absolute inset-0 w-full h-full select-none pointer-events-none"
-				style={{ objectFit: 'fill', zIndex: 0 }}
+				style={{
+					objectFit: 'fill',
+					zIndex: 0,
+					clipPath: `inset(0 0 ${((852 - 677) / 852) * 100}% 0)`,
+				}}
 			/>
 
-			{/* ── AOT Robot (behind character) ── */}
+			<img
+				src="/assets/login/bg.png"
+				alt=""
+				className="absolute left-0 right-0 select-none pointer-events-none"
+				style={{
+					top: px(677, 'y'),
+					bottom: 0,
+					width: '100%',
+					height: px(852 - 677, 'y'),
+					objectFit: 'cover',
+					objectPosition: 'bottom center',
+					zIndex: 0,
+				}}
+			/>
+
 			<img
 				src="/assets/playsongkran/preview/aot-robot.png"
 				alt=""
 				className="absolute select-none pointer-events-none"
 				style={{
-					left: robL, top: robT, width: robW, height: 'auto',
+					left: px(-12, 'x'), top: px(462, 'y'),
+					width: px(238, 'x'), height: 'auto',
 					zIndex: 1,
 					animation: 'pp-slide-up 0.55s ease-out 0.1s both',
 				}}
 			/>
 
-			{/* ── Character ── */}
 			<img
 				src={charSrc}
 				alt=""
 				className="absolute select-none pointer-events-none"
 				style={{
-					left: charL, top: charT, width: charW, height: charH,
+					left: px(163, 'x'), top: px(208, 'y'),
+					width: px(276, 'x'), height: px(494, 'y'),
 					objectFit: 'contain', objectPosition: 'bottom center',
 					zIndex: 2,
 					animation: 'pp-slide-up 0.55s ease-out both',
 				}}
 			/>
 
-			{/* ── Face ── */}
 			{faceUrl && (
 				<div
 					className="absolute overflow-hidden rounded-full"
 					style={{
-						left: faceL, top: faceT, width: faceW, height: faceH,
+						left: px(256, 'x'), top: px(265, 'y'),
+						width: px(108, 'x'), height: px(108, 'y'),
 						border: '3px solid rgba(255,255,255,0.9)',
 						boxShadow: '0 2px 12px rgba(0,0,0,0.25)',
 						zIndex: 3,
@@ -222,35 +189,34 @@ export function PhotoPreview({
 				</div>
 			)}
 
-			{/* ── Info card ── */}
 			<div
-				className="absolute flex flex-col justify-center"
+				className="absolute flex flex-col items-center justify-center text-center"
 				style={{
-					left: cardL, top: cardT, width: cardW, height: cardH,
+					left: px(13, 'x'), top: px(340, 'y'),
+					width: px(205, 'x'), height: px(110, 'y'),
 					background: 'rgba(0,85,165,0.70)',
 					borderRadius: '20px',
-					padding: '8px 14px',
+					padding: '0 10px',
 					zIndex: 4,
-					fontFamily: inter,
+					fontFamily: SF,
 					animation: 'pp-fade-in 0.45s ease-out 0.15s both',
 				}}
 			>
-				<p className="text-white font-extrabold leading-snug" style={{ fontSize: '16px' }}>
+				<p className="text-white leading-snug" style={{ fontSize: 'clamp(12px, 2.1vh, 18px)', fontWeight: 700 }}>
 					{lang === 'th' ? `คุณ ${userName}` : userName}
 				</p>
-				<p className="text-white font-semibold leading-snug" style={{ fontSize: '13px', opacity: 0.95 }}>
-					{lang === 'th' ? 'ได้มาร่วมเล่นน้ำสงกรานต์' : 'joined Songkran water play'}
+				<p className="text-white leading-snug" style={{ fontSize: 'clamp(12px, 2.1vh, 18px)', fontWeight: 700 }}>
+					{lang === 'th' ? 'ได้มาร่วมเล่นน้ำสงกรานต์' : 'joined Songkran'}
 				</p>
-				<p className="text-white font-bold leading-snug" style={{ fontSize: '13px' }}>
-					{lang === 'th' ? `ณ ${location.th}` : `at ${location.en}`}
+				<p className="text-white leading-snug" style={{ fontSize: 'clamp(12px, 2.1vh, 18px)', fontWeight: 700 }}>
+					{lang === 'th' ? `ที่${location.th}` : `at ${location.en}`}
 				</p>
 			</div>
 
-			{/* ── Blue footer bar ── */}
 			<div
 				className="absolute flex items-center justify-end"
 				style={{
-					left: 0, right: 0, top: footT, height: footH,
+					left: 0, right: 0, top: px(597, 'y'), height: px(80, 'y'),
 					background: '#0055A5',
 					paddingRight: '4%',
 					zIndex: 5,
@@ -259,106 +225,96 @@ export function PhotoPreview({
 			>
 				<p
 					className="text-white text-right"
-					style={{ fontFamily: inter, fontSize: '10px', fontWeight: 600, lineHeight: 1.65 }}
+					style={{ fontFamily: SF, fontSize: '17px', fontWeight: 700, lineHeight: '22px' }}
 				>
 					{lang === 'th' ? (
-						<>ท่าอากาศยานสุวรรณภูมิขอเชิญทุกท่าน<br />ร่วมสนุกเทศกาลสงกรานต์<br />สาดสุขแบบไทยสไตล์ร่วมสมัย</>
+						<>ท่าอากาศสุวรรณภูมิขอเชิญทุกท่าน<br />ร่วมสนุกเทศกาลสงกรานต์<br />สาดสุขแบบไทยสไตล์ร่วมสมัย</>
 					) : (
-						<>Suvarnabhumi Airport invites everyone<br />to join the Songkran Festival<br />Splash happiness Thai contemporary style</>
+						<>Suvarnabhumi Airport invites everyone<br />to join Songkran Festival<br />Splash happiness Thai style</>
 					)}
 				</p>
 			</div>
 
-			{/* ── Songkran logo (over footer) ── */}
 			<img
 				src="/assets/login/logo.png"
 				alt="Songkran Festival 2026"
 				className="absolute select-none pointer-events-none"
 				style={{
-					left: logoL, top: logoT, width: logoW, height: 'auto',
+					left: px(-33, 'x'), top: px(569, 'y'),
+					width: px(208, 'x'), height: 'auto',
 					zIndex: 6,
 					animation: 'pp-fade-in 0.5s ease-out 0.3s both',
 				}}
 			/>
 
-			{/* ── Share buttons row ── */}
-			<div
-				className="absolute flex items-center"
+
+			<button
+				onClick={handleFacebook}
+				className="absolute overflow-hidden cursor-pointer hover:scale-105 active:scale-95 transition-transform"
 				style={{
-					left: shareL, top: shareT,
-					gap: `${10 / 393 * 100}%`,
+					left: px(103, 'x'), top: px(691, 'y'),
+					width: px(50, 'x'), height: px(50, 'y'),
+					borderRadius: '14px',
+					boxShadow: '0 0 0.563px rgba(0,0,0,0.3), 0 1.125px 16.875px rgba(0,0,0,0.08)',
 					zIndex: 7,
 					animation: 'pp-pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.35s both',
+					padding: 0, border: 0, background: 'transparent',
 				}}
+				aria-label="Share on Facebook"
 			>
-				{/* Facebook */}
-				<button
-					onClick={handleFacebook}
-					className="rounded-[14px] overflow-hidden shrink-0 hover:scale-105 active:scale-95 transition-transform cursor-pointer"
-					style={{ width: btn50, paddingBottom: btn50, position: 'relative' }}
-					aria-label="Share on Facebook"
-				>
-					<img
-						src="/assets/login/facebook.jpg"
-						alt="Facebook"
-						className="absolute inset-0 w-full h-full object-cover"
-					/>
-				</button>
+				<img src="/assets/login/facebook.jpg" alt="" className="w-full h-full object-cover" />
+			</button>
 
-				{/* LINE */}
-				<button
-					onClick={handleLine}
-					className="rounded-[14px] overflow-hidden shrink-0 relative hover:scale-105 active:scale-95 transition-transform cursor-pointer"
-					style={{ width: btn50, paddingBottom: btn50, position: 'relative' }}
-					aria-label="Share on LINE"
-				>
-					<img
-						src="/assets/login/line.png"
-						alt="LINE"
-						className="absolute max-w-none"
-						style={{ height: '144.26%', left: '-26.02%', top: '-22.13%', width: '286.43%' }}
-					/>
-				</button>
-
-				{/* Native share */}
-				<button
-					onClick={handleNativeShare}
-					className="rounded-full bg-white flex items-center justify-center shrink-0 shadow-md hover:scale-105 active:scale-95 transition-transform cursor-pointer"
-					style={{ width: btn63, paddingBottom: btn63, position: 'relative' }}
-					aria-label={lang === 'th' ? 'แชร์' : 'Share'}
-				>
-					<div className="absolute inset-0 flex items-center justify-center">
-						<ShareIcon />
-					</div>
-				</button>
-			</div>
-
-			{/* ── Retake / Play again button ── */}
+		{/* LINE */}
 			<button
-				onClick={onRetake}
-				className="absolute cursor-pointer bg-transparent border-0 p-0 hover:scale-105 active:scale-95 transition-transform"
+				onClick={handleLine}
+				className="absolute overflow-hidden cursor-pointer hover:scale-105 active:scale-95 transition-transform"
 				style={{
-					left: retakeL, top: retakeT, width: retakeW, height: retakeH,
+					left: px(178, 'x'), top: px(691, 'y'),
+					width: px(50, 'x'), height: px(50, 'y'),
+					borderRadius: '14px',
 					zIndex: 7,
-					animation: 'pp-pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.45s both',
+					animation: 'pp-pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.38s both',
+					padding: 0, border: 0,
 				}}
-				aria-label={lang === 'th' ? 'เล่นอีกครั้ง' : 'Play again'}
+				aria-label="Share on LINE"
 			>
 				<img
-					src="/assets/playsongkran/continue.png"
-					alt={lang === 'th' ? 'เล่นอีกครั้ง' : 'Play again'}
-					className="w-full h-full object-contain select-none pointer-events-none"
+					src="/assets/login/line.png"
+					alt=""
+					className="absolute max-w-none"
+					style={{ height: '144.26%', left: '-26.02%', top: '-22.13%', width: '286.43%' }}
 				/>
 			</button>
 
-			{/* ── Go back button ── */}
-			<div className="absolute inset-x-0 bottom-0" style={{ height: '15%', zIndex: 10 }}>
-				<GoBackButton
-					lang={lang}
-					onBack={onBack}
-					style={{ left: '2%', top: '0%', width: '35%', height: '100%' }}
-				/>
-			</div>
+			{/* Native Share — same square style as Facebook & LINE */}
+			<button
+				onClick={handleNativeShare}
+				className="absolute flex items-center justify-center cursor-pointer hover:scale-105 active:scale-95 transition-transform"
+				style={{
+					left: px(253, 'x'), top: px(691, 'y'),
+					width: px(50, 'x'), height: px(50, 'y'),
+					borderRadius: '14px',
+					background: '#0055A5',
+					zIndex: 7,
+					animation: 'pp-pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.41s both',
+					padding: 0, border: 0,
+				}}
+				aria-label={lang === 'th' ? 'แชร์' : 'Share'}
+			>
+				<ShareIcon />
+			</button>
+
+			{/* Tuk-tuk go-back button */}
+			<GoBackButton
+				lang={lang}
+				onBack={onBack}
+				style={{
+					left: px(141, 'x'), top: px(752, 'y'),
+					width: px(115, 'x'), height: px(93, 'y'),
+					zIndex: 7,
+				}}
+			/>
 		</>
 	);
 }
