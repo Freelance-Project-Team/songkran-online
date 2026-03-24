@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { toPng } from 'html-to-image';
 import { GoBackButton } from '@/src/shared/ui/GoBackButton';
 
 type Lang = 'th' | 'en';
@@ -77,6 +78,7 @@ export function PhotoPreview({
 }) {
 	const [userName, setUserName] = useState('');
 	const [sharing, setSharing] = useState(false);
+	const photoRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		if (typeof window !== 'undefined') {
@@ -88,150 +90,29 @@ export function PhotoPreview({
 	const charSrc = CHAR_IMG[character];
 	const location = LOCATION_NAMES[locationId] ?? LOCATION_NAMES.arun;
 
-	// Build a 393×852 canvas then crop to 393×677 (includes banner)
+	// Capture the rendered DOM directly — no image reloads needed
 	const buildShareImage = async (): Promise<string> => {
-		const loadImg = (src: string): Promise<HTMLImageElement> =>
-			new Promise((resolve, reject) => {
-				const img = new Image();
-				img.crossOrigin = 'anonymous';
-				img.onload = () => resolve(img);
-				img.onerror = reject;
-				img.src = src;
-			});
+		const el = photoRef.current;
+		if (!el) throw new Error('ref not ready');
 
-		const W = 393,
-			H = 852,
-			CROP = 677; // include banner (597–677) in export
+		const rect = el.getBoundingClientRect();
+		const fullPng = await toPng(el, {
+			cacheBust: true,
+			pixelRatio: 393 / rect.width,
+		});
 
-		const canvas = document.createElement('canvas');
-		canvas.width = W;
-		canvas.height = H;
-		const ctx = canvas.getContext('2d')!;
-
-		const [scene, char_, face, robot, logo] = await Promise.all([
-			loadImg(sceneSrc),
-			loadImg(charSrc),
-			faceUrl ? loadImg(faceUrl) : Promise.resolve(null as unknown as HTMLImageElement),
-			loadImg('/assets/playsongkran/preview/aot-robot.png'),
-			loadImg('/assets/login/logo.png'),
-		]);
-
-		// 1. Scene — objectFit:'fill' → stretch to full 393×852
-		ctx.drawImage(scene, 0, 0, W, H);
-
-		// 2. Robot — preserve natural aspect ratio
-		const robotH = Math.round((238 * robot.naturalHeight) / robot.naturalWidth);
-		ctx.drawImage(robot, -12, 462, 238, robotH);
-
-		// 3. Character — objectFit:'contain', objectPosition:'bottom center'
-		const cL = 163,
-			cT = 208,
-			cW = 276,
-			cH = 494;
-		const asp = char_.naturalWidth / char_.naturalHeight;
-		let dw: number, dh: number;
-		if (cW / cH > asp) {
-			dh = cH;
-			dw = Math.round(dh * asp);
-		} else {
-			dw = cW;
-			dh = Math.round(dw / asp);
-		}
-		ctx.drawImage(char_, cL + (cW - dw) / 2, cT + (cH - dh), dw, dh);
-
-		// 4. Info text box (blue rounded rect + text)
-		const bL = 13,
-			bT = 340,
-			bW = 205,
-			bH = 110;
-		ctx.save();
-		ctx.beginPath();
-		ctx.moveTo(bL + 20, bT);
-		ctx.arcTo(bL + bW, bT, bL + bW, bT + bH, 20);
-		ctx.arcTo(bL + bW, bT + bH, bL, bT + bH, 20);
-		ctx.arcTo(bL, bT + bH, bL, bT, 20);
-		ctx.arcTo(bL, bT, bL + bW, bT, 20);
-		ctx.closePath();
-		ctx.fillStyle = 'rgba(0,85,165,0.70)';
-		ctx.fill();
-		ctx.fillStyle = '#fff';
-		ctx.font = `bold 14px ${SF}`;
-		ctx.textAlign = 'center';
-		const lh = bH / 4;
-		const infoLines =
-			lang === 'th'
-				? [`คุณ ${userName}`, 'ได้มาร่วมเล่นน้ำสงกรานต์', `ที่${location.th}`]
-				: [userName, 'joined Songkran water play', `at ${location.en}`];
-		infoLines.forEach((line, i) => ctx.fillText(line, bL + bW / 2, bT + lh * (i + 1)));
-		ctx.restore();
-
-		// 5. Face — uniform circle (no squish)
-		if (face && faceUrl) {
-			const fL = 256,
-				fT = 265,
-				fSz = 108;
-			ctx.save();
-			ctx.beginPath();
-			ctx.arc(fL + fSz / 2, fT + fSz / 2, fSz / 2, 0, Math.PI * 2);
-			ctx.clip();
-			ctx.drawImage(face, fL, fT, fSz, fSz);
-			ctx.restore();
-		}
-
-		// 6. Banner — blue bar (597–677)
-		const bannerT = 597,
-			bannerH = 80;
-		ctx.fillStyle = '#0055A5';
-		ctx.fillRect(0, bannerT, W, bannerH);
-
-		// 7. Banner text — right-aligned, vertically centered
-		const bannerLines =
-			lang === 'th'
-				? [
-						'ท่าอากาศยานสุวรรณภูมิขอเชิญทุกท่าน',
-						'ร่วมสนุกเทศกาลสงกรานต์',
-						'สาดสุขแบบไทยสไตล์ร่วมสมัย',
-					]
-				: [
-						'Suvarnabhumi Airport invites everyone',
-						'to join Songkran Festival',
-						'Splash happiness Thai style',
-					];
-		ctx.save();
-		ctx.fillStyle = '#fff';
-		ctx.font = `bold 17px ${SF}`;
-		ctx.textAlign = 'right';
-		ctx.textBaseline = 'top';
-		const lineH = 22;
-		const totalTextH = bannerLines.length * lineH;
-		const textStartY = bannerT + (bannerH - totalTextH) / 2;
-		bannerLines.forEach((line, i) => ctx.fillText(line, W - 16, textStartY + i * lineH));
-		ctx.restore();
-
-		// 8. Logo — overlapping banner
-		const logoW = 208;
-		const logoH = Math.round((logoW * logo.naturalHeight) / logo.naturalWidth);
-		ctx.drawImage(logo, -33, 569, logoW, logoH);
-
-		// Crop to include banner
+		// Crop to banner bottom (677/852 of full height = 79.46%)
+		const img = await new Promise<HTMLImageElement>((res) => {
+			const i = new Image();
+			i.onload = () => res(i);
+			i.src = fullPng;
+		});
+		const cropH = Math.round(img.height * (677 / 852));
 		const out = document.createElement('canvas');
-		out.width = W;
-		out.height = CROP;
-		out.getContext('2d')!.drawImage(canvas, 0, 0);
+		out.width = img.width;
+		out.height = cropH;
+		out.getContext('2d')!.drawImage(img, 0, 0);
 		return out.toDataURL('image/png');
-	};
-
-	const handleDownload = async () => {
-		setSharing(true);
-		try {
-			const url = await buildShareImage();
-			const a = document.createElement('a');
-			a.href = url;
-			a.download = 'songkran-2026.png';
-			a.click();
-		} finally {
-			setSharing(false);
-		}
 	};
 
 	const handleFacebook = () => {
@@ -282,176 +163,179 @@ export function PhotoPreview({
 		<>
 			<style>{STYLES}</style>
 
-			<img
-				src={sceneSrc}
-				alt=""
-				className="absolute inset-0 w-full h-full select-none pointer-events-none"
-				style={{
-					objectFit: 'fill',
-					zIndex: 0,
-					clipPath: `inset(0 0 ${((852 - 677) / 852) * 100}% 0)`,
-				}}
-			/>
+			{/* Photo layers captured by html-to-image */}
+			<div ref={photoRef} className="absolute inset-0">
+				<img
+					src={sceneSrc}
+					alt=""
+					className="absolute inset-0 w-full h-full select-none pointer-events-none"
+					style={{
+						objectFit: 'fill',
+						zIndex: 0,
+						clipPath: `inset(0 0 ${((852 - 677) / 852) * 100}% 0)`,
+					}}
+				/>
 
-			<img
-				src="/assets/login/bg.png"
-				alt=""
-				className="absolute left-0 right-0 select-none pointer-events-none"
-				style={{
-					top: px(677, 'y'),
-					bottom: 0,
-					width: '100%',
-					height: px(852 - 677, 'y'),
-					objectFit: 'cover',
-					objectPosition: 'bottom center',
-					zIndex: 0,
-				}}
-			/>
+				<img
+					src="/assets/login/bg.png"
+					alt=""
+					className="absolute left-0 right-0 select-none pointer-events-none"
+					style={{
+						top: px(677, 'y'),
+						bottom: 0,
+						width: '100%',
+						height: px(852 - 677, 'y'),
+						objectFit: 'cover',
+						objectPosition: 'bottom center',
+						zIndex: 0,
+					}}
+				/>
 
-			<img
-				src="/assets/playsongkran/preview/aot-robot.png"
-				alt=""
-				className="absolute select-none pointer-events-none"
-				style={{
-					left: px(-12, 'x'),
-					top: px(462, 'y'),
-					width: px(238, 'x'),
-					height: 'auto',
-					zIndex: 1,
-					animation: 'pp-slide-up 0.55s ease-out 0.1s both',
-				}}
-			/>
+				<img
+					src="/assets/playsongkran/preview/aot-robot.png"
+					alt=""
+					className="absolute select-none pointer-events-none"
+					style={{
+						left: px(-12, 'x'),
+						top: px(462, 'y'),
+						width: px(238, 'x'),
+						height: 'auto',
+						zIndex: 1,
+						animation: 'pp-slide-up 0.55s ease-out 0.1s both',
+					}}
+				/>
 
-			<img
-				src={charSrc}
-				alt=""
-				className="absolute select-none pointer-events-none"
-				style={{
-					left: px(163, 'x'),
-					top: px(208, 'y'),
-					width: px(276, 'x'),
-					height: px(494, 'y'),
-					objectFit: 'contain',
-					objectPosition: 'bottom center',
-					zIndex: 2,
-					animation: 'pp-slide-up 0.55s ease-out both',
-				}}
-			/>
+				<img
+					src={charSrc}
+					alt=""
+					className="absolute select-none pointer-events-none"
+					style={{
+						left: px(163, 'x'),
+						top: px(208, 'y'),
+						width: px(276, 'x'),
+						height: px(494, 'y'),
+						objectFit: 'contain',
+						objectPosition: 'bottom center',
+						zIndex: 2,
+						animation: 'pp-slide-up 0.55s ease-out both',
+					}}
+				/>
 
-			{faceUrl && (
+				{faceUrl && (
+					<div
+						className="absolute overflow-hidden rounded-full"
+						style={{
+							left: px(256, 'x'),
+							top: px(265, 'y'),
+							width: px(108, 'x'),
+							height: px(108, 'y'),
+							border: '3px solid rgba(255,255,255,0.9)',
+							boxShadow: '0 2px 12px rgba(0,0,0,0.25)',
+							zIndex: 3,
+							animation: 'pp-pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.25s both',
+						}}
+					>
+						<img
+							src={faceUrl}
+							alt="face"
+							className="w-full h-full object-cover select-none"
+						/>
+					</div>
+				)}
+
 				<div
-					className="absolute overflow-hidden rounded-full"
+					className="absolute flex flex-col items-center justify-center text-center"
 					style={{
-						left: px(256, 'x'),
-						top: px(265, 'y'),
-						width: px(108, 'x'),
-						height: px(108, 'y'),
-						border: '3px solid rgba(255,255,255,0.9)',
-						boxShadow: '0 2px 12px rgba(0,0,0,0.25)',
-						zIndex: 3,
-						animation: 'pp-pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.25s both',
-					}}
-				>
-					<img
-						src={faceUrl}
-						alt="face"
-						className="w-full h-full object-cover select-none"
-					/>
-				</div>
-			)}
-
-			<div
-				className="absolute flex flex-col items-center justify-center text-center"
-				style={{
-					left: px(13, 'x'),
-					top: px(340, 'y'),
-					width: px(205, 'x'),
-					height: px(110, 'y'),
-					background: 'rgba(0,85,165,0.70)',
-					borderRadius: '20px',
-					padding: '0 10px',
-					zIndex: 4,
-					fontFamily: SF,
-					animation: 'pp-fade-in 0.45s ease-out 0.15s both',
-				}}
-			>
-				<p
-					className="text-white leading-snug"
-					style={{ fontSize: 'clamp(12px, 2.1vh, 18px)', fontWeight: 700 }}
-				>
-					{lang === 'th' ? `คุณ ${userName}` : userName}
-				</p>
-				<p
-					className="text-white leading-snug"
-					style={{ fontSize: 'clamp(12px, 2.1vh, 18px)', fontWeight: 700 }}
-				>
-					{lang === 'th' ? 'ได้มาร่วมเล่นน้ำสงกรานต์' : 'joined Songkran'}
-				</p>
-				<p
-					className="text-white leading-snug"
-					style={{ fontSize: 'clamp(12px, 2.1vh, 18px)', fontWeight: 700 }}
-				>
-					{lang === 'th' ? `ที่${location.th}` : `at ${location.en}`}
-				</p>
-			</div>
-
-			<div
-				className="absolute flex items-center justify-end"
-				style={{
-					left: 0,
-					right: 0,
-					top: px(597, 'y'),
-					height: px(80, 'y'),
-					background: '#0055A5',
-					paddingRight: '4%',
-					zIndex: 5,
-					animation: 'pp-slide-up 0.45s ease-out 0.2s both',
-				}}
-			>
-				<p
-					className="text-white text-right"
-					style={{
+						left: px(13, 'x'),
+						top: px(340, 'y'),
+						width: px(205, 'x'),
+						height: px(110, 'y'),
+						background: 'rgba(0,85,165,0.70)',
+						borderRadius: '20px',
+						padding: '0 10px',
+						zIndex: 4,
 						fontFamily: SF,
-						fontSize: '17px',
-						fontWeight: 700,
-						lineHeight: '22px',
+						animation: 'pp-fade-in 0.45s ease-out 0.15s both',
 					}}
 				>
-					{lang === 'th' ? (
-						<>
-							ท่าอากาศสุวรรณภูมิขอเชิญทุกท่าน
-							<br />
-							ร่วมสนุกเทศกาลสงกรานต์
-							<br />
-							สาดสุขแบบไทยสไตล์ร่วมสมัย
-						</>
-					) : (
-						<>
-							Suvarnabhumi Airport invites everyone
-							<br />
-							to join Songkran Festival
-							<br />
-							Splash happiness Thai style
-						</>
-					)}
-				</p>
+					<p
+						className="text-white leading-snug"
+						style={{ fontSize: 'clamp(12px, 2.1vh, 18px)', fontWeight: 700 }}
+					>
+						{lang === 'th' ? `คุณ ${userName}` : userName}
+					</p>
+					<p
+						className="text-white leading-snug"
+						style={{ fontSize: 'clamp(12px, 2.1vh, 18px)', fontWeight: 700 }}
+					>
+						{lang === 'th' ? 'ได้มาร่วมเล่นน้ำสงกรานต์' : 'joined Songkran'}
+					</p>
+					<p
+						className="text-white leading-snug"
+						style={{ fontSize: 'clamp(12px, 2.1vh, 18px)', fontWeight: 700 }}
+					>
+						{lang === 'th' ? `ที่${location.th}` : `at ${location.en}`}
+					</p>
+				</div>
+
+				<div
+					className="absolute flex items-center justify-end"
+					style={{
+						left: 0,
+						right: 0,
+						top: px(597, 'y'),
+						height: px(80, 'y'),
+						background: '#0055A5',
+						paddingRight: '4%',
+						zIndex: 5,
+						animation: 'pp-slide-up 0.45s ease-out 0.2s both',
+					}}
+				>
+					<p
+						className="text-white text-right"
+						style={{
+							fontFamily: SF,
+							fontSize: '17px',
+							fontWeight: 700,
+							lineHeight: '22px',
+						}}
+					>
+						{lang === 'th' ? (
+							<>
+								ท่าอากาศสุวรรณภูมิขอเชิญทุกท่าน
+								<br />
+								ร่วมสนุกเทศกาลสงกรานต์
+								<br />
+								สาดสุขแบบไทยสไตล์ร่วมสมัย
+							</>
+						) : (
+							<>
+								Suvarnabhumi Airport invites everyone
+								<br />
+								to join Songkran Festival
+								<br />
+								Splash happiness Thai style
+							</>
+						)}
+					</p>
+				</div>
+
+				<img
+					src="/assets/login/logo.png"
+					alt="Songkran Festival 2026"
+					className="absolute select-none pointer-events-none"
+					style={{
+						left: px(-33, 'x'),
+						top: px(569, 'y'),
+						width: px(208, 'x'),
+						height: 'auto',
+						zIndex: 6,
+						animation: 'pp-fade-in 0.5s ease-out 0.3s both',
+					}}
+				/>
 			</div>
 
-			<img
-				src="/assets/login/logo.png"
-				alt="Songkran Festival 2026"
-				className="absolute select-none pointer-events-none"
-				style={{
-					left: px(-33, 'x'),
-					top: px(569, 'y'),
-					width: px(208, 'x'),
-					height: 'auto',
-					zIndex: 6,
-					animation: 'pp-fade-in 0.5s ease-out 0.3s both',
-				}}
-			/>
-
-			{/* Share buttons */}
+			{/* Share buttons — outside photo ref, not included in export */}
 			<button
 				onClick={handleFacebook}
 				className="absolute overflow-hidden cursor-pointer hover:scale-105 active:scale-95 transition-transform"
