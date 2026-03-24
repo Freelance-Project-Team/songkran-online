@@ -285,7 +285,7 @@ export function PhotoPreview({
 						className="text-white leading-snug"
 						style={{ fontSize: 'clamp(12px, 2.1vh, 18px)', fontWeight: 700 }}
 					>
-						{lang === 'th' ? 'ได้มาร่วมเล่นน้ำสงกรานต์' : 'joined Songkran'}
+						{lang === 'th' ? 'ได้มาร่วมเล่นน้ำสงกรานต์' : 'joined to splash water'}
 					</p>
 					<p
 						className="text-white leading-snug"
@@ -331,9 +331,9 @@ export function PhotoPreview({
 								<br />
 								invites everyone to join
 								<br />
-								Songkran Festival Splash
+								Songkran Festival
 								<br />
-								happiness Thai style
+								Splash into happiness, Thai style
 							</>
 						)}
 					</p>

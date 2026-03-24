@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
 		const infoLines =
 			lang === 'th'
 				? [`คุณ ${userName}`, 'ได้มาร่วมเล่นน้ำสงกรานต์', `ที่${location.th}`]
-				: [userName, 'joined Songkran water play', `at ${location.en}`];
+				: [userName, 'joined to splash water', `at ${location.en}`];
 
 		const bannerLines =
 			lang === 'th'
@@ -99,7 +99,7 @@ export async function POST(req: NextRequest) {
 						'Suvarnabhumi Airport',
 						'invites everyone to join',
 						'Songkran Festival',
-						'Splash happiness Thai style',
+						'Splash into happiness, Thai style',
 					];
 
 		return new ImageResponse(

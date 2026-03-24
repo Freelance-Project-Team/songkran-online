@@ -94,7 +94,7 @@ export async function generatePhoto(params: GeneratePhotoParams): Promise<Buffer
 	const infoLines =
 		lang === 'th'
 			? [`คุณ ${userName}`, 'ได้มาร่วมเล่นน้ำ', `สงกรานต์ที่ ${location.th}`]
-			: [userName, 'joined Songkran water play', `at ${location.en}`];
+			: [userName, 'joined to splash water', `at ${location.en}`];
 
 	const bannerLines =
 		lang === 'th'
@@ -103,7 +103,7 @@ export async function generatePhoto(params: GeneratePhotoParams): Promise<Buffer
 				'Suvarnabhumi Airport',
 				'invites everyone to join',
 				'Songkran Festival',
-				'Splash happiness Thai style',
+				'Splash into happiness, Thai style',
 			];
 
 	// ── Build SVG ────────────────────────────────────────────────────────────
