@@ -1,7 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { toPng } from 'html-to-image';
+import { useEffect, useState } from 'react';
 import { GoBackButton } from '@/src/shared/ui/GoBackButton';
 
 type Lang = 'th' | 'en';
@@ -78,7 +77,6 @@ export function PhotoPreview({
 }) {
 	const [userName, setUserName] = useState('');
 	const [sharing, setSharing] = useState(false);
-	const photoRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		if (typeof window !== 'undefined') {
@@ -90,29 +88,15 @@ export function PhotoPreview({
 	const charSrc = CHAR_IMG[character];
 	const location = LOCATION_NAMES[locationId] ?? LOCATION_NAMES.arun;
 
-	// Capture the rendered DOM directly — no image reloads needed
-	const buildShareImage = async (): Promise<string> => {
-		const el = photoRef.current;
-		if (!el) throw new Error('ref not ready');
-
-		const rect = el.getBoundingClientRect();
-		const fullPng = await toPng(el, {
-			cacheBust: true,
-			pixelRatio: 393 / rect.width,
+	/** Generate the share image via the backend API. */
+	const buildShareBlob = async (): Promise<Blob> => {
+		const res = await fetch('/api/water-play/generate-photo', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ faceDataUrl: faceUrl, locationId, character, userName, lang }),
 		});
-
-		// Crop to banner bottom (677/852 of full height = 79.46%)
-		const img = await new Promise<HTMLImageElement>((res) => {
-			const i = new Image();
-			i.onload = () => res(i);
-			i.src = fullPng;
-		});
-		const cropH = Math.round(img.height * (677 / 852));
-		const out = document.createElement('canvas');
-		out.width = img.width;
-		out.height = cropH;
-		out.getContext('2d')!.drawImage(img, 0, 0);
-		return out.toDataURL('image/png');
+		if (!res.ok) throw new Error(`Image generation failed: ${res.status}`);
+		return res.blob();
 	};
 
 	const handleFacebook = () => {
@@ -134,24 +118,25 @@ export function PhotoPreview({
 	const handleNativeShare = async () => {
 		setSharing(true);
 		try {
-			const url = await buildShareImage();
-			if (!navigator.share) {
+			const blob = await buildShareBlob();
+			const file = new File([blob], 'songkran-2026.png', { type: 'image/png' });
+			if (navigator.share) {
+				await navigator.share({
+					title: lang === 'th' ? 'สงกรานต์ 2026' : 'Songkran 2026',
+					text:
+						lang === 'th'
+							? `ฉันร่วมเล่นน้ำสงกรานต์ที่${location.th}!`
+							: `I joined Songkran at ${location.en}!`,
+					files: [file],
+				});
+			} else {
+				const url = URL.createObjectURL(blob);
 				const a = document.createElement('a');
 				a.href = url;
 				a.download = 'songkran-2026.png';
 				a.click();
-				return;
+				URL.revokeObjectURL(url);
 			}
-			const blob = await fetch(url).then((r) => r.blob());
-			const file = new File([blob], 'songkran-2026.png', { type: 'image/png' });
-			await navigator.share({
-				title: lang === 'th' ? 'สงกรานต์ 2026' : 'Songkran 2026',
-				text:
-					lang === 'th'
-						? `ฉันร่วมเล่นน้ำสงกรานต์ที่${location.th}!`
-						: `I joined Songkran at ${location.en}!`,
-				files: [file],
-			});
 		} catch {
 			/* cancelled */
 		} finally {
@@ -163,8 +148,8 @@ export function PhotoPreview({
 		<>
 			<style>{STYLES}</style>
 
-			{/* Photo layers captured by html-to-image */}
-			<div ref={photoRef} className="absolute inset-0">
+			{/* Photo layers */}
+			<div className="absolute inset-0">
 				<img
 					src={sceneSrc}
 					alt=""
