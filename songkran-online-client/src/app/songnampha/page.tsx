@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useMobile } from '@/src/shared/hooks/useMobile';
 import { GoBackButton } from '@/src/shared/ui/GoBackButton';
 import { LangToggleButton } from '@/src/shared/ui/LangToggleButton';
+import { useLangStore } from '@/src/shared/stores/lang-store';
 
 type Lang = 'th' | 'en';
 type PourState = 'idle' | 'pouring' | 'blessed';
@@ -13,7 +14,7 @@ const A = {
 	bg: '/assets/shared/bg.png',
 	munk: '/assets/songnampha/munk.png',
 	bgText: '/assets/songnampha/bg-text.png',
-	text: '/assets/songnampha/text.png',
+	text: { th: '/assets/songnampha/text-th.png', en: '/assets/songnampha/text-en.png' },
 	flower: '/assets/songnampha/flower.png',
 } as const;
 
@@ -44,7 +45,7 @@ const STYLES = `
 }
 `;
 
-function BlessingCard() {
+function BlessingCard({ lang }: { lang: Lang }) {
 	return (
 		<div
 			className="absolute z-20"
@@ -64,7 +65,7 @@ function BlessingCard() {
 			/>
 			<div className="absolute inset-0 flex items-center justify-center px-[6.7%] py-[10%]">
 				<img
-					src={A.text}
+					src={A.text[lang]}
 					alt="คำอวยพร"
 					className="w-full h-full select-none pointer-events-none"
 					style={{ objectFit: 'contain' }}
@@ -142,7 +143,7 @@ function SongnamphScene({
 				style={{ objectFit: 'fill' }}
 			/>
 
-			{pourState === 'blessed' && <BlessingCard />}
+			{pourState === 'blessed' && <BlessingCard lang={lang} />}
 
 			<LangToggleButton lang={lang} onToggle={onToggleLang} />
 
@@ -212,7 +213,7 @@ function DesktopCanvas(props: Parameters<typeof SongnamphScene>[0]) {
 			<SceneFrame {...props} />
 			<div className="w-[440px] shrink-0 flex flex-col items-center justify-center bg-white px-10 py-12 shadow-2xl overflow-y-auto z-10">
 				<img
-					src={A.text}
+					src={A.text[props.lang]}
 					alt="สรงน้ำพระ"
 					className="w-48 object-contain mb-6 select-none"
 				/>
@@ -236,7 +237,7 @@ function DesktopCanvas(props: Parameters<typeof SongnamphScene>[0]) {
 export default function SongnamphPage() {
 	const router = useRouter();
 	const isMobile = useMobile();
-	const [lang, setLang] = useState<Lang>('th');
+	const { lang, toggleLang } = useLangStore();
 	const [pourState, setPourState] = useState<PourState>('idle');
 
 	const handlePour = () => {
@@ -249,7 +250,7 @@ export default function SongnamphPage() {
 		lang,
 		pourState,
 		onPour: handlePour,
-		onToggleLang: () => setLang((l) => (l === 'th' ? 'en' : 'th')),
+		onToggleLang: toggleLang,
 		onBack: () => router.push('/home'),
 	};
 

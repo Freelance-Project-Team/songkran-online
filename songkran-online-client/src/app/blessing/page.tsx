@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useMobile } from '@/src/shared/hooks/useMobile';
 import { GoBackButton } from '@/src/shared/ui/GoBackButton';
 import { LangToggleButton } from '@/src/shared/ui/LangToggleButton';
+import { useLangStore } from '@/src/shared/stores/lang-store';
 
 type Lang = 'th' | 'en';
 type PourState = 'idle' | 'pouring' | 'blessed';
@@ -13,7 +14,7 @@ const A = {
 	bg: '/assets/rodnamdumhua/bg.png',
 	scene: '/assets/rodnamdumhua/scene.png',
 	bgText: '/assets/rodnamdumhua/bg-text.png',
-	text: '/assets/rodnamdumhua/text.png',
+	text: { th: '/assets/rodnamdumhua/text-th.png', en: '/assets/rodnamdumhua/text-en.png' },
 } as const;
 
 const STYLES = `
@@ -38,7 +39,7 @@ const STYLES = `
 }
 `;
 
-function BlessingCard() {
+function BlessingCard({ lang }: { lang: Lang }) {
 	return (
 		<div
 			className="absolute z-20"
@@ -58,7 +59,7 @@ function BlessingCard() {
 			/>
 			<div className="absolute inset-0 flex items-center justify-center px-[6%] py-[8%]">
 				<img
-					src={A.text}
+					src={A.text[lang]}
 					alt="คำอวยพร"
 					className="w-full h-full select-none pointer-events-none"
 					style={{ objectFit: 'contain' }}
@@ -132,7 +133,7 @@ function BlessingScene({
 				style={{ objectFit: 'fill' }}
 			/>
 
-			{pourState === 'blessed' && <BlessingCard />}
+			{pourState === 'blessed' && <BlessingCard lang={lang} />}
 
 			<LangToggleButton lang={lang} onToggle={onToggleLang} />
 
@@ -177,7 +178,7 @@ function DesktopCanvas(props: Parameters<typeof BlessingScene>[0]) {
 			<SceneFrame {...props} />
 			<div className="w-110 shrink-0 flex flex-col items-center justify-center bg-white px-10 py-12 shadow-2xl overflow-y-auto z-10">
 				<img
-					src={A.text}
+					src={A.text[props.lang]}
 					alt="รดน้ำดำหัว"
 					className="w-48 object-contain mb-6 select-none"
 				/>
@@ -201,7 +202,7 @@ function DesktopCanvas(props: Parameters<typeof BlessingScene>[0]) {
 export default function BlessingPage() {
 	const router = useRouter();
 	const isMobile = useMobile();
-	const [lang, setLang] = useState<Lang>('th');
+	const { lang, toggleLang } = useLangStore();
 	const [pourState, setPourState] = useState<PourState>('idle');
 
 	const handleTap = () => {
@@ -214,7 +215,7 @@ export default function BlessingPage() {
 		lang,
 		pourState,
 		onPour: handleTap,
-		onToggleLang: () => setLang((l) => (l === 'th' ? 'en' : 'th')),
+		onToggleLang: toggleLang,
 		onBack: () => router.push('/home'),
 	};
 

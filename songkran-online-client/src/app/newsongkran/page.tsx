@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useMobile } from '@/src/shared/hooks/useMobile';
 import { GoBackButton } from '@/src/shared/ui/GoBackButton';
 import { LangToggleButton } from '@/src/shared/ui/LangToggleButton';
+import { useLangStore } from '@/src/shared/stores/lang-store';
 
 type Lang = 'th' | 'en';
 type PourState = 'idle' | 'pouring' | 'blessed';
@@ -13,7 +14,7 @@ const A = {
 	bg: '/assets/shared/bg.png',
 	scene: '/assets/newsongkran/scene.png',
 	bgText: '/assets/newsongkran/bg-text.png',
-	text: '/assets/newsongkran/text.png',
+	text: { th: '/assets/newsongkran/text-th.png', en: '/assets/newsongkran/text-en.png' },
 } as const;
 
 const STYLES = `
@@ -38,7 +39,7 @@ const STYLES = `
 }
 `;
 
-function BlessingCard() {
+function BlessingCard({ lang }: { lang: Lang }) {
 	return (
 		<div
 			className="absolute z-20"
@@ -58,7 +59,7 @@ function BlessingCard() {
 			/>
 			<div className="absolute inset-0 flex items-center justify-center px-[6.7%] py-[10%]">
 				<img
-					src={A.text}
+					src={A.text[lang]}
 					alt="คำอวยพร"
 					className="w-full h-full select-none pointer-events-none"
 					style={{ objectFit: 'contain' }}
@@ -132,7 +133,7 @@ function NewSongkranScene({
 				style={{ objectFit: 'fill' }}
 			/>
 
-			{pourState === 'blessed' && <BlessingCard />}
+			{pourState === 'blessed' && <BlessingCard lang={lang} />}
 
 			<LangToggleButton lang={lang} onToggle={onToggleLang} />
 
@@ -176,7 +177,7 @@ function DesktopCanvas(props: Parameters<typeof NewSongkranScene>[0]) {
 		<div className="flex h-screen">
 			<SceneFrame {...props} />
 			<div className="w-[440px] shrink-0 flex flex-col items-center justify-center bg-white px-10 py-12 shadow-2xl overflow-y-auto z-10">
-				<img src={A.text} alt="ทำบุญ" className="w-48 object-contain mb-6 select-none" />
+				<img src={A.text[props.lang]} alt="ทำบุญ" className="w-48 object-contain mb-6 select-none" />
 				<p
 					className="text-[#89c6ff] text-[11px] font-semibold tracking-widest text-center"
 					style={{ fontFamily: 'Sarabun, sans-serif' }}
@@ -197,7 +198,7 @@ function DesktopCanvas(props: Parameters<typeof NewSongkranScene>[0]) {
 export default function NewSongkranPage() {
 	const router = useRouter();
 	const isMobile = useMobile();
-	const [lang, setLang] = useState<Lang>('th');
+	const { lang, toggleLang } = useLangStore();
 	const [pourState, setPourState] = useState<PourState>('idle');
 
 	const handleTap = () => {
@@ -210,7 +211,7 @@ export default function NewSongkranPage() {
 		lang,
 		pourState,
 		onPour: handleTap,
-		onToggleLang: () => setLang((l) => (l === 'th' ? 'en' : 'th')),
+		onToggleLang: toggleLang,
 		onBack: () => router.push('/home'),
 	};
 

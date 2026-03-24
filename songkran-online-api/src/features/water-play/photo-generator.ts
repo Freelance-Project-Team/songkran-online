@@ -100,10 +100,10 @@ export async function generatePhoto(params: GeneratePhotoParams): Promise<Buffer
 		lang === 'th'
 			? ['ท่าอากาศยานสุวรรณภูมิขอเชิญทุกท่าน', 'ร่วมสนุกเทศกาลสงกรานต์', 'สาดสุขแบบไทยสไตล์ร่วมสมัย']
 			: [
-					'Suvarnabhumi Airport invites everyone',
-					'to join Songkran Festival',
-					'Splash happiness Thai style',
-				];
+				'Suvarnabhumi Airport invites everyone',
+				'to join Songkran Festival',
+				'Splash happiness Thai style',
+			];
 
 	// ── Build SVG ────────────────────────────────────────────────────────────
 
@@ -139,15 +139,15 @@ export async function generatePhoto(params: GeneratePhotoParams): Promise<Buffer
 
 	<!-- Info text box -->
 	<rect x="13" y="340" width="205" height="110" rx="20" fill="rgba(0,85,165,0.70)"/>
-	<text x="115.5" y="377" text-anchor="middle" font-family="Sarabun" font-weight="700" font-size="14" fill="white">${escapeXml(infoLines[0])}</text>
-	<text x="115.5" y="395" text-anchor="middle" font-family="Sarabun" font-weight="700" font-size="14" fill="white">${escapeXml(infoLines[1])}</text>
-	<text x="115.5" y="413" text-anchor="middle" font-family="Sarabun" font-weight="700" font-size="14" fill="white">${escapeXml(infoLines[2])}</text>
+	<text x="115.5" y="377" text-anchor="middle" font-family="Sarabun" font-weight="700" font-size="${lang === 'th' ? 14 : 15}" letter-spacing="${lang === 'th' ? 0.5 : 0}" fill="white">${escapeXml(infoLines[0])}</text>
+	<text x="115.5" y="395" text-anchor="middle" font-family="Sarabun" font-weight="700" font-size="${lang === 'th' ? 14 : 15}" letter-spacing="${lang === 'th' ? 0.5 : 0}" fill="white">${escapeXml(infoLines[1])}</text>
+	<text x="115.5" y="413" text-anchor="middle" font-family="Sarabun" font-weight="700" font-size="${lang === 'th' ? 14 : 15}" letter-spacing="${lang === 'th' ? 0.5 : 0}" fill="white">${escapeXml(infoLines[2])}</text>
 
 	<!-- Banner -->
 	<rect x="0" y="597" width="${W}" height="80" fill="#0055A5"/>
-	<text x="377" y="${bY[0]}" text-anchor="end" font-family="Sarabun" font-weight="700" font-size="14" fill="white">${escapeXml(bannerLines[0])}</text>
-	<text x="377" y="${bY[1]}" text-anchor="end" font-family="Sarabun" font-weight="700" font-size="14" fill="white">${escapeXml(bannerLines[1])}</text>
-	<text x="377" y="${bY[2]}" text-anchor="end" font-family="Sarabun" font-weight="700" font-size="14" fill="white">${escapeXml(bannerLines[2])}</text>
+	<text x="377" y="${bY[0]}" text-anchor="end" font-family="Sarabun" font-weight="700" font-size="${lang === 'th' ? 14 : 15}" letter-spacing="${lang === 'th' ? 0.5 : 0}" fill="white">${escapeXml(bannerLines[0])}</text>
+	<text x="377" y="${bY[1]}" text-anchor="end" font-family="Sarabun" font-weight="700" font-size="${lang === 'th' ? 14 : 15}" letter-spacing="${lang === 'th' ? 0.5 : 0}" fill="white">${escapeXml(bannerLines[1])}</text>
+	<text x="377" y="${bY[2]}" text-anchor="end" font-family="Sarabun" font-weight="700" font-size="${lang === 'th' ? 14 : 15}" letter-spacing="${lang === 'th' ? 0.5 : 0}" fill="white">${escapeXml(bannerLines[2])}</text>
 
 	<!-- Logo -->
 	<image href="${logoUri}" x="-33" y="569" width="208" height="108" preserveAspectRatio="xMidYMid meet"/>
