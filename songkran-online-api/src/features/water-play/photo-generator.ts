@@ -98,12 +98,7 @@ export async function generatePhoto(params: GeneratePhotoParams): Promise<Buffer
 
 	const bannerLines =
 		lang === 'th'
-			? [
-				'ท่าอากาศยานสุวรรณภูมิ',
-				'ขอเชิญทุกท่านร่วมสนุก',
-				'เทศกาลสงกรานต์',
-				'สาดสุขแบบไทยสไตล์ร่วมสมัย',
-			]
+			? ['ท่าอากาศยานสุวรรณภูมิขอเชิญทุกท่าน', 'ร่วมสนุกเทศกาลสงกรานต์', 'สาดสุขแบบไทยสไตล์ร่วมสมัย']
 			: [
 				'Suvarnabhumi Airport',
 				'invites everyone to join',
@@ -126,9 +121,9 @@ export async function generatePhoto(params: GeneratePhotoParams): Promise<Buffer
 		`
 		: '';
 
-	// Banner: Thai 4 lines (y=582, h=95), English 4 lines (y=582, h=95)
-	const bannerY = 582;
-	const bannerH = 95;
+	// Banner: Thai 3 lines (y=597, h=80), English 4 lines (y=582, h=95)
+	const bannerY = lang === 'th' ? 597 : 582;
+	const bannerH = lang === 'th' ? 80 : 95;
 	const bannerFontSize = lang === 'th' ? 14 : 12;
 	const bannerLineSpacing = lang === 'th' ? 18 : 16;
 	const bannerTotalTextH = bannerLines.length * bannerLineSpacing;
@@ -141,7 +136,7 @@ export async function generatePhoto(params: GeneratePhotoParams): Promise<Buffer
 	<image href="${sceneUri}" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="none"/>
 
 	<!-- Robot -->
-	<image href="${robotUri}" x="5" y="${lang === 'th' ? 485 : 450}" width="238" height="250" preserveAspectRatio="xMidYMin meet"/>
+	<image href="${robotUri}" x="5" y="${lang === 'th' ? 462 : 450}" width="238" height="250" preserveAspectRatio="xMidYMin meet"/>
 
 	<!-- Character -->
 	<image href="${charUri}" x="163" y="208" width="276" height="494" preserveAspectRatio="xMidYMax meet"/>
@@ -159,7 +154,7 @@ export async function generatePhoto(params: GeneratePhotoParams): Promise<Buffer
 	${bannerLines.map((line, i) => `<text x="377" y="${bY[i]}" text-anchor="end" font-family="Sarabun" font-weight="700" font-size="${bannerFontSize}" letter-spacing="${lang === 'th' ? 0.5 : 0}" fill="white">${escapeXml(line)}</text>`).join('\n\t')}
 
 	<!-- Logo -->
-	<image href="${logoUri}" x="${lang === 'th' ? -42 : -50}" y="${lang === 'th' ? 575 : 548}" width="${lang === 'th' ? 270 : 310}" height="${lang === 'th' ? 140 : 160}" preserveAspectRatio="xMidYMid meet"/>
+	<image href="${logoUri}" x="${lang === 'th' ? -42 : -50}" y="${lang === 'th' ? 568 : 548}" width="${lang === 'th' ? 270 : 310}" height="${lang === 'th' ? 140 : 160}" preserveAspectRatio="xMidYMid meet"/>
 
 </svg>`;
 

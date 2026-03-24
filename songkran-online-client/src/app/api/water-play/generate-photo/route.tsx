@@ -91,9 +91,8 @@ export async function POST(req: NextRequest) {
 		const bannerLines =
 			lang === 'th'
 				? [
-						'ท่าอากาศยานสุวรรณภูมิ',
-						'ขอเชิญทุกท่านร่วมสนุก',
-						'เทศกาลสงกรานต์',
+						'ท่าอากาศยานสุวรรณภูมิขอเชิญทุกท่าน',
+						'ร่วมสนุกเทศกาลสงกรานต์',
 						'สาดสุขแบบไทยสไตล์ร่วมสมัย',
 					]
 				: [
@@ -127,7 +126,7 @@ export async function POST(req: NextRequest) {
 				<img
 					src={robotSrc}
 					alt=""
-					style={{ position: 'absolute', left: 5, top: lang === 'th' ? 485 : 450, width: 238 }}
+					style={{ position: 'absolute', left: 5, top: lang === 'th' ? 462 : 450, width: 238 }}
 				/>
 
 				{/* Character */}
@@ -199,9 +198,9 @@ export async function POST(req: NextRequest) {
 					style={{
 						position: 'absolute',
 						left: 0,
-						top: 582,
+						top: lang === 'th' ? 597 : 582,
 						width: W,
-						height: 95,
+						height: lang === 'th' ? 80 : 95,
 						background: '#0055A5',
 						display: 'flex',
 						flexDirection: 'column',
@@ -230,7 +229,7 @@ export async function POST(req: NextRequest) {
 				<img
 					src={logoSrc}
 					alt=""
-					style={{ position: 'absolute', left: lang === 'th' ? -42 : -50, top: lang === 'th' ? 575 : 548, width: lang === 'th' ? 270 : 310 }}
+					style={{ position: 'absolute', left: lang === 'th' ? -42 : -50, top: lang === 'th' ? 568 : 548, width: lang === 'th' ? 270 : 310 }}
 				/>
 			</div>,
 			{

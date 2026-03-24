@@ -214,7 +214,7 @@ export function PhotoPreview({
 					className="absolute select-none pointer-events-none"
 					style={{
 						left: px(5, 'x'),
-						top: lang === 'th' ? px(485, 'y') : px(432, 'y'),
+						top: lang === 'th' ? px(462, 'y') : px(432, 'y'),
 						width: px(238, 'x'),
 						height: 'auto',
 						zIndex: 1,
@@ -300,8 +300,8 @@ export function PhotoPreview({
 					style={{
 						left: 0,
 						right: 0,
-						top: px(582, 'y'),
-						height: px(95, 'y'),
+						top: lang === 'th' ? px(597, 'y') : px(582, 'y'),
+						height: lang === 'th' ? px(80, 'y') : px(95, 'y'),
 						background: '#0055A5',
 						paddingRight: '4%',
 						zIndex: 5,
@@ -319,11 +319,9 @@ export function PhotoPreview({
 					>
 						{lang === 'th' ? (
 							<>
-								ท่าอากาศยานสุวรรณภูมิ
+								ท่าอากาศสุวรรณภูมิขอเชิญทุกท่าน
 								<br />
-								ขอเชิญทุกท่านร่วมสนุก
-								<br />
-								เทศกาลสงกรานต์
+								ร่วมสนุกเทศกาลสงกรานต์
 								<br />
 								สาดสุขแบบไทยสไตล์ร่วมสมัย
 							</>
@@ -347,7 +345,7 @@ export function PhotoPreview({
 					className="absolute select-none pointer-events-none"
 					style={{
 						left: lang === 'th' ? px(-38, 'x') : px(-45, 'x'),
-						top: lang === 'th' ? px(575, 'y') : px(533, 'y'),
+						top: lang === 'th' ? px(555, 'y') : px(533, 'y'),
 						width: lang === 'th' ? px(240, 'x') : px(280, 'x'),
 						height: 'auto',
 						zIndex: 6,
