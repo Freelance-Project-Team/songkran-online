@@ -99,132 +99,135 @@ export async function POST(req: NextRequest) {
 					];
 
 		return new ImageResponse(
-			(
+			<div
+				style={{
+					width: W,
+					height: VISIBLE_H,
+					position: 'relative',
+					overflow: 'hidden',
+					display: 'flex',
+					fontFamily: 'Sarabun',
+				}}
+			>
+				{/* Scene — stretched to FULL_H, clips at VISIBLE_H via overflow:hidden */}
+				{/* eslint-disable-next-line @next/next/no-img-element */}
+				<img
+					src={sceneSrc}
+					alt=""
+					style={{ position: 'absolute', top: 0, left: 0, width: W, height: FULL_H }}
+				/>
+
+				{/* Robot */}
+				{/* eslint-disable-next-line @next/next/no-img-element */}
+				<img
+					src={robotSrc}
+					alt=""
+					style={{ position: 'absolute', left: -12, top: 462, width: 238 }}
+				/>
+
+				{/* Character */}
+				{/* eslint-disable-next-line @next/next/no-img-element */}
+				<img
+					src={charSrc}
+					alt=""
+					style={{
+						position: 'absolute',
+						left: 163,
+						top: 208,
+						width: 276,
+						height: 494,
+						objectFit: 'contain',
+						objectPosition: 'bottom center',
+					}}
+				/>
+
+				{/* Face circle */}
+				{faceDataUrl && (
+					<div
+						style={{
+							position: 'absolute',
+							left: 256,
+							top: 265,
+							width: 108,
+							height: 108,
+							borderRadius: 54,
+							overflow: 'hidden',
+							border: '3px solid rgba(255,255,255,0.9)',
+							display: 'flex',
+						}}
+					>
+						{/* eslint-disable-next-line @next/next/no-img-element */}
+						<img
+							src={faceDataUrl}
+							alt=""
+							style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+						/>
+					</div>
+				)}
+
+				{/* Info text box */}
 				<div
 					style={{
-						width: W,
-						height: VISIBLE_H,
-						position: 'relative',
-						overflow: 'hidden',
+						position: 'absolute',
+						left: 13,
+						top: 340,
+						width: 205,
+						height: 110,
+						background: 'rgba(0,85,165,0.70)',
+						borderRadius: 20,
 						display: 'flex',
-						fontFamily: 'Sarabun',
+						flexDirection: 'column',
+						alignItems: 'center',
+						justifyContent: 'center',
+						gap: 2,
 					}}
 				>
-					{/* Scene — stretched to FULL_H, clips at VISIBLE_H via overflow:hidden */}
-					{/* eslint-disable-next-line @next/next/no-img-element */}
-					<img
-						src={sceneSrc}
-						alt=""
-						style={{ position: 'absolute', top: 0, left: 0, width: W, height: FULL_H }}
-					/>
+					{infoLines.map((line, i) => (
+						<span key={i} style={{ color: 'white', fontWeight: 700, fontSize: 14 }}>
+							{line}
+						</span>
+					))}
+				</div>
 
-					{/* Robot */}
-					{/* eslint-disable-next-line @next/next/no-img-element */}
-					<img
-						src={robotSrc}
-						alt=""
-						style={{ position: 'absolute', left: -12, top: 462, width: 238 }}
-					/>
-
-					{/* Character */}
-					{/* eslint-disable-next-line @next/next/no-img-element */}
-					<img
-						src={charSrc}
-						alt=""
-						style={{
-							position: 'absolute',
-							left: 163,
-							top: 208,
-							width: 276,
-							height: 494,
-							objectFit: 'contain',
-							objectPosition: 'bottom center',
-						}}
-					/>
-
-					{/* Face circle */}
-					{faceDataUrl && (
-						<div
+				{/* Banner */}
+				<div
+					style={{
+						position: 'absolute',
+						left: 0,
+						top: 597,
+						width: W,
+						height: 80,
+						background: '#0055A5',
+						display: 'flex',
+						flexDirection: 'column',
+						alignItems: 'flex-end',
+						justifyContent: 'center',
+						paddingRight: 16,
+					}}
+				>
+					{bannerLines.map((line, i) => (
+						<span
+							key={i}
 							style={{
-								position: 'absolute',
-								left: 256,
-								top: 265,
-								width: 108,
-								height: 108,
-								borderRadius: 54,
-								overflow: 'hidden',
-								border: '3px solid rgba(255,255,255,0.9)',
-								display: 'flex',
+								color: 'white',
+								fontWeight: 700,
+								fontSize: 17,
+								lineHeight: '22px',
 							}}
 						>
-							{/* eslint-disable-next-line @next/next/no-img-element */}
-							<img
-								src={faceDataUrl}
-								alt=""
-								style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-							/>
-						</div>
-					)}
-
-					{/* Info text box */}
-					<div
-						style={{
-							position: 'absolute',
-							left: 13,
-							top: 340,
-							width: 205,
-							height: 110,
-							background: 'rgba(0,85,165,0.70)',
-							borderRadius: 20,
-							display: 'flex',
-							flexDirection: 'column',
-							alignItems: 'center',
-							justifyContent: 'center',
-							gap: 2,
-						}}
-					>
-						{infoLines.map((line, i) => (
-							<span key={i} style={{ color: 'white', fontWeight: 700, fontSize: 14 }}>
-								{line}
-							</span>
-						))}
-					</div>
-
-					{/* Banner */}
-					<div
-						style={{
-							position: 'absolute',
-							left: 0,
-							top: 597,
-							width: W,
-							height: 80,
-							background: '#0055A5',
-							display: 'flex',
-							flexDirection: 'column',
-							alignItems: 'flex-end',
-							justifyContent: 'center',
-							paddingRight: 16,
-						}}
-					>
-						{bannerLines.map((line, i) => (
-							<span
-								key={i}
-								style={{ color: 'white', fontWeight: 700, fontSize: 17, lineHeight: '22px' }}
-							>
-								{line}
-							</span>
-						))}
-					</div>
-
-					{/* Logo */}
-					{/* eslint-disable-next-line @next/next/no-img-element */}
-					<img
-						src={logoSrc}
-						alt=""
-						style={{ position: 'absolute', left: -33, top: 569, width: 208 }}
-					/>
+							{line}
+						</span>
+					))}
 				</div>
-			),
+
+				{/* Logo */}
+				{/* eslint-disable-next-line @next/next/no-img-element */}
+				<img
+					src={logoSrc}
+					alt=""
+					style={{ position: 'absolute', left: -33, top: 569, width: 208 }}
+				/>
+			</div>,
 			{
 				width: W,
 				height: VISIBLE_H,

@@ -14,12 +14,9 @@ export const WaterPlayController = {
 				return res.status(400).json({ message: 'Invalid character. Must be boy or girl.' });
 			}
 			if (!locationId || !VALID_LOCATIONS.includes(locationId)) {
-				return res
-					.status(400)
-					.json({
-						message:
-							'Invalid locationId. Must be arun, phakeaw, yaksuwan, or saochingcha.',
-					});
+				return res.status(400).json({
+					message: 'Invalid locationId. Must be arun, phakeaw, yaksuwan, or saochingcha.',
+				});
 			}
 
 			await WaterPlayService.log({
