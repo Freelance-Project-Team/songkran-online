@@ -8,7 +8,7 @@ type Lang = 'th' | 'en';
 const SCENES: Record<string, string> = {
 	arun: '/assets/playsongkran/scenes/arun-bg.png',
 	phakeaw: '/assets/playsongkran/scenes/phakeaw-bg.png',
-	yaksuwan: '/assets/playsongkran/scenes/yaksuwan-bg.png',
+	airport: '/assets/playsongkran/scenes/airport-bg.png',
 	saochingcha: '/assets/playsongkran/scenes/saochingcha-bg.png',
 };
 
