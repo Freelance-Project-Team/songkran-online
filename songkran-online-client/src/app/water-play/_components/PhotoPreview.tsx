@@ -88,12 +88,30 @@ export function PhotoPreview({
 	const charSrc = CHAR_IMG[character];
 	const location = LOCATION_NAMES[locationId] ?? LOCATION_NAMES.arun;
 
+	/** Convert a blob: URL to a base64 data URL (required for server-side rendering). */
+	const toDataUrl = (blobUrl: string): Promise<string> =>
+		fetch(blobUrl)
+			.then((r) => r.blob())
+			.then(
+				(blob) =>
+					new Promise((resolve, reject) => {
+						const reader = new FileReader();
+						reader.onload = () => resolve(reader.result as string);
+						reader.onerror = reject;
+						reader.readAsDataURL(blob);
+					})
+			);
+
 	/** Generate the share image via the backend API. */
 	const buildShareBlob = async (): Promise<Blob> => {
+		// Blob URLs (blob:https://...) are browser-only — convert to base64 before sending
+		const faceDataUrl =
+			faceUrl && faceUrl.startsWith('blob:') ? await toDataUrl(faceUrl) : faceUrl;
+
 		const res = await fetch('/api/water-play/generate-photo', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ faceDataUrl: faceUrl, locationId, character, userName, lang }),
+			body: JSON.stringify({ faceDataUrl, locationId, character, userName, lang }),
 		});
 		if (!res.ok) throw new Error(`Image generation failed: ${res.status}`);
 		return res.blob();
