@@ -14,7 +14,7 @@ const FULL_H = 852;
 const SCENES: Record<string, string> = {
 	arun: '/assets/playsongkran/scenes/arun-bg.png',
 	phakeaw: '/assets/playsongkran/scenes/phakeaw-bg.png',
-	yaksuwan: '/assets/playsongkran/scenes/yaksuwan-bg.png',
+	airport: '/assets/playsongkran/scenes/airport-bg.png',
 	saochingcha: '/assets/playsongkran/scenes/saochingcha-bg.png',
 };
 
@@ -26,7 +26,7 @@ const CHAR_IMG: Record<'boy' | 'girl', string> = {
 const LOCATION_NAMES: Record<string, { th: string; en: string }> = {
 	arun: { th: 'วัดอรุณราชวราราม', en: 'Wat Arun' },
 	phakeaw: { th: 'วัดพระแก้ว', en: 'Wat Phra Kaew' },
-	yaksuwan: { th: 'วัดยักษ์สุวรรณ', en: 'Wat Yak Suwan' },
+	airport: { th: 'สนามบินสุวรรณภูมิ', en: 'Suvarnabhumi Airport' },
 	saochingcha: { th: 'เสาชิงช้า', en: 'Sao Chingcha' },
 };
 
@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
 		const infoLines =
 			lang === 'th'
 				? [`คุณ ${userName}`, 'ได้มาร่วมเล่นน้ำสงกรานต์', `ที่${location.th}`]
-				: [userName, 'joined Songkran water play', `at ${location.en}`];
+				: [userName, 'joined to splash water', `at ${location.en}`];
 
 		const bannerLines =
 			lang === 'th'
@@ -96,9 +96,10 @@ export async function POST(req: NextRequest) {
 						'สาดสุขแบบไทยสไตล์ร่วมสมัย',
 					]
 				: [
-						'Suvarnabhumi Airport invites everyone',
-						'to join Songkran Festival',
-						'Splash happiness Thai style',
+						'Suvarnabhumi Airport',
+						'invites everyone to join',
+						'Songkran Festival Splash',
+						'into happiness, Thai style',
 					];
 
 		return new ImageResponse(
@@ -125,7 +126,7 @@ export async function POST(req: NextRequest) {
 				<img
 					src={robotSrc}
 					alt=""
-					style={{ position: 'absolute', left: -12, top: 462, width: 238 }}
+					style={{ position: 'absolute', left: 5, top: lang === 'th' ? 462 : 450, width: 238 }}
 				/>
 
 				{/* Character */}
@@ -197,9 +198,9 @@ export async function POST(req: NextRequest) {
 					style={{
 						position: 'absolute',
 						left: 0,
-						top: 597,
+						top: lang === 'th' ? 597 : 582,
 						width: W,
-						height: 80,
+						height: lang === 'th' ? 80 : 95,
 						background: '#0055A5',
 						display: 'flex',
 						flexDirection: 'column',
@@ -214,8 +215,8 @@ export async function POST(req: NextRequest) {
 							style={{
 								color: 'white',
 								fontWeight: 700,
-								fontSize: 17,
-								lineHeight: '22px',
+								fontSize: lang === 'th' ? 17 : 14,
+								lineHeight: lang === 'th' ? '22px' : '18px',
 							}}
 						>
 							{line}
@@ -228,7 +229,7 @@ export async function POST(req: NextRequest) {
 				<img
 					src={logoSrc}
 					alt=""
-					style={{ position: 'absolute', left: -33, top: 569, width: 208 }}
+					style={{ position: 'absolute', left: lang === 'th' ? -55 : -50, top: lang === 'th' ? 568 : 548, width: lang === 'th' ? 270 : 310 }}
 				/>
 			</div>,
 			{

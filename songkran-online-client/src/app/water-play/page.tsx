@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMobile } from '@/src/shared/hooks/useMobile';
+import { useLangStore } from '@/src/shared/stores/lang-store';
 import { SelectCharacter } from './_components/SelectCharacter';
 import { SelectLocation } from './_components/SelectLocation';
 import { TakePhoto } from './_components/TakePhoto';
@@ -43,7 +44,7 @@ function DesktopCanvas({ children, lang }: { children: React.ReactNode; lang: La
 export default function WaterPlayPage() {
 	const router = useRouter();
 	const isMobile = useMobile();
-	const [lang, setLang] = useState<Lang>('th');
+	const { lang, toggleLang } = useLangStore();
 	const [flowStep, setFlowStep] = useState<FlowStep>('character');
 	const [character, setCharacter] = useState<'boy' | 'girl'>('boy');
 	const [faceUrl, setFaceUrl] = useState('');
@@ -52,7 +53,7 @@ export default function WaterPlayPage() {
 
 	const sharedProps = {
 		lang,
-		onToggleLang: () => setLang((l) => (l === 'th' ? 'en' : 'th')),
+		onToggleLang: toggleLang,
 	};
 
 	const scene = (() => {

@@ -113,7 +113,6 @@ export function SelectCharacter({
 				ref={fileInputRef}
 				type="file"
 				accept="image/*"
-				capture="user"
 				className="hidden"
 				onChange={handleFileChange}
 			/>

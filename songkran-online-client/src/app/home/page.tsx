@@ -4,13 +4,14 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMobile } from '@/src/shared/hooks/useMobile';
 import { LangToggleButton } from '@/src/shared/ui/LangToggleButton';
+import { useLangStore } from '@/src/shared/stores/lang-store';
 
 type Lang = 'th' | 'en';
 
 const BUTTONS = [
 	{
 		route: '/newsongkran',
-		img: '/assets/home/new-songkran-btn.png',
+		img: { th: '/assets/home/new-songkran-btn-th.png', en: '/assets/home/new-songkran-btn-en.png' },
 		left: '2.54%',
 		top: '35.21%',
 		width: '48.09%',
@@ -18,7 +19,7 @@ const BUTTONS = [
 	},
 	{
 		route: '/songnampha',
-		img: '/assets/home/songnampha-btn.png',
+		img: { th: '/assets/home/songnampha-btn-th.png', en: '/assets/home/songnampha-btn-en.png' },
 		left: '54.45%',
 		top: '35.21%',
 		width: '39.95%',
@@ -26,7 +27,7 @@ const BUTTONS = [
 	},
 	{
 		route: '/blessing',
-		img: '/assets/home/rodnamdumhua-btn.png',
+		img: { th: '/assets/home/rodnamdumhua-btn-th.png', en: '/assets/home/rodnamdumhua-btn-en.png' },
 		left: '6.62%',
 		top: '57.75%',
 		width: '44.02%',
@@ -34,7 +35,7 @@ const BUTTONS = [
 	},
 	{
 		route: '/water-play',
-		img: '/assets/home/play-water-btn.png',
+		img: { th: '/assets/home/play-water-btn-th.png', en: '/assets/home/play-water-btn-en.png' },
 		left: '52.67%',
 		top: '57.75%',
 		width: '43.26%',
@@ -100,7 +101,7 @@ function HomeScene({
 					onClick={() => handleClick(btn.route, i)}
 				>
 					<img
-						src={btn.img}
+						src={btn.img[lang]}
 						alt=""
 						className="w-full h-full select-none pointer-events-none"
 						style={{ objectFit: 'fill' }}
@@ -147,12 +148,12 @@ function DesktopCanvas(props: Parameters<typeof HomeScene>[0]) {
 
 export default function HomePage() {
 	const router = useRouter();
-	const [lang, setLang] = useState<Lang>('th');
+	const { lang, toggleLang } = useLangStore();
 	const isMobile = useMobile();
 
 	const props = {
 		lang,
-		onToggle: () => setLang((l) => (l === 'th' ? 'en' : 'th')),
+		onToggle: toggleLang,
 		onNavigate: (route: string) => router.push(route),
 	};
 
