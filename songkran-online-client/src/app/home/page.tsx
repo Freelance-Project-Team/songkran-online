@@ -11,7 +11,7 @@ type Lang = 'th' | 'en';
 const BUTTONS = [
 	{
 		route: '/newsongkran',
-		img: { th: '/assets/home/new-songkran-btn-th.png', en: '/assets/home/new-songkran-btn-en.svg' },
+		img: { th: '/assets/home/new-songkran-btn-th.png', en: '/assets/home/new-songkran-btn-en.png' },
 		left: '2.54%',
 		top: '35.21%',
 		width: '48.09%',
@@ -19,7 +19,7 @@ const BUTTONS = [
 	},
 	{
 		route: '/songnampha',
-		img: { th: '/assets/home/songnampha-btn-th.png', en: '/assets/home/songnampha-btn-en.svg' },
+		img: { th: '/assets/home/songnampha-btn-th.png', en: '/assets/home/songnampha-btn-en.png' },
 		left: '54.45%',
 		top: '35.21%',
 		width: '39.95%',
@@ -27,7 +27,7 @@ const BUTTONS = [
 	},
 	{
 		route: '/blessing',
-		img: { th: '/assets/home/rodnamdumhua-btn-th.png', en: '/assets/home/rodnamdumhua-btn-en.svg' },
+		img: { th: '/assets/home/rodnamdumhua-btn-th.png', en: '/assets/home/rodnamdumhua-btn-en.png' },
 		left: '6.62%',
 		top: '57.75%',
 		width: '44.02%',
@@ -35,7 +35,7 @@ const BUTTONS = [
 	},
 	{
 		route: '/water-play',
-		img: { th: '/assets/home/play-water-btn-th.png', en: '/assets/home/play-water-btn-en.svg' },
+		img: { th: '/assets/home/play-water-btn-th.png', en: '/assets/home/play-water-btn-en.png' },
 		left: '52.67%',
 		top: '57.75%',
 		width: '43.26%',
