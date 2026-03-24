@@ -16,6 +16,7 @@ const A = {
 	bgText: '/assets/songnampha/bg-text.png',
 	text: { th: '/assets/songnampha/text-th.png', en: '/assets/songnampha/text-en.png' },
 	flower: '/assets/songnampha/flower.png',
+	nam: '/assets/songnampha/nam.png',
 } as const;
 
 const STYLES = `
@@ -42,6 +43,28 @@ const STYLES = `
 @keyframes snp-sway {
   0%, 100% { transform: rotate(-7deg); }
   50%       { transform: rotate(7deg); }
+}
+@keyframes snp-nam-pop {
+  0%   { transform: translate(-50%,-50%) scale(0)   rotate(-25deg); opacity: 0; filter: drop-shadow(0 0 0px #7ad4f8); }
+  30%  { transform: translate(-50%,-50%) scale(1.6)  rotate(12deg);  opacity: 1; filter: drop-shadow(0 0 16px #7ad4f8); }
+  65%  { transform: translate(-50%,-52%) scale(1.25) rotate(-5deg);  opacity: 1; filter: drop-shadow(0 0 10px #7ad4f8); }
+  100% { transform: translate(-50%,-62%) scale(1)    rotate(3deg);   opacity: 0; filter: drop-shadow(0 0 0px #7ad4f8); }
+}
+@keyframes snp-nam-tl {
+  0%   { transform: translate(-50%,-50%) scale(0.55) rotate(20deg);   opacity: 0.95; }
+  100% { transform: translate(calc(-50% - 85px), calc(-50% - 90px)) scale(0.1) rotate(-25deg); opacity: 0; }
+}
+@keyframes snp-nam-tr {
+  0%   { transform: translate(-50%,-50%) scale(0.5)  rotate(-165deg); opacity: 0.9; }
+  100% { transform: translate(calc(-50% + 80px), calc(-50% - 85px)) scale(0.08) rotate(-205deg); opacity: 0; }
+}
+@keyframes snp-nam-r {
+  0%   { transform: translate(-50%,-50%) scale(0.45) rotate(85deg);   opacity: 0.85; }
+  100% { transform: translate(calc(-50% + 95px), calc(-50% + 30px)) scale(0.08) rotate(115deg); opacity: 0; }
+}
+@keyframes snp-nam-b {
+  0%   { transform: translate(-50%,-50%) scale(0.4)  rotate(-60deg);  opacity: 0.8; }
+  100% { transform: translate(calc(-50% - 40px), calc(-50% + 80px)) scale(0.05) rotate(-90deg); opacity: 0; }
 }
 `;
 
@@ -95,6 +118,35 @@ function WaterRipple() {
 					/>
 				))}
 			</div>
+		</div>
+	);
+}
+
+function WaterSplash() {
+	const splashes: { anim: string; size: string }[] = [
+		{ anim: 'snp-nam-pop 1.5s cubic-bezier(0.34,1.56,0.64,1) both', size: '52%' },
+		{ anim: 'snp-nam-tl  1.2s ease-out 0.1s  both',                 size: '27%' },
+		{ anim: 'snp-nam-tr  1.1s ease-out 0.15s both',                 size: '24%' },
+		{ anim: 'snp-nam-r   1.0s ease-out 0.18s both',                 size: '22%' },
+		{ anim: 'snp-nam-b   0.95s ease-out 0.2s both',                 size: '20%' },
+	];
+	return (
+		<div className="absolute inset-0 pointer-events-none" style={{ zIndex: 6 }}>
+			{splashes.map((s, i) => (
+				<img
+					key={i}
+					src={A.nam}
+					alt=""
+					className="absolute select-none"
+					style={{
+						left: '50%',
+						top: '32%',
+						width: s.size,
+						height: 'auto',
+						animation: s.anim,
+					}}
+				/>
+			))}
 		</div>
 	);
 }
@@ -175,6 +227,7 @@ function SongnamphScene({
 
 			<div className="absolute" style={{ left: '0', top: '38%', right: '0', bottom: '27%' }}>
 				{pourState === 'pouring' && <WaterRipple />}
+			{pourState === 'pouring' && <WaterSplash />}
 
 				{pourState === 'idle' ? (
 					<button
@@ -243,7 +296,7 @@ export default function SongnamphPage() {
 	const handlePour = () => {
 		if (pourState !== 'idle') return;
 		setPourState('pouring');
-		setTimeout(() => setPourState('blessed'), 950);
+		setTimeout(() => setPourState('blessed'), 1500);
 	};
 
 	const props = {
