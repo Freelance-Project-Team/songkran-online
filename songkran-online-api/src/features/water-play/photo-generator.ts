@@ -154,7 +154,7 @@ export async function generatePhoto(params: GeneratePhotoParams): Promise<Buffer
 	${bannerLines.map((line, i) => `<text x="377" y="${bY[i]}" text-anchor="end" font-family="Sarabun" font-weight="700" font-size="${bannerFontSize}" letter-spacing="${lang === 'th' ? 0.5 : 0}" fill="white">${escapeXml(line)}</text>`).join('\n\t')}
 
 	<!-- Logo -->
-	<image href="${logoUri}" x="${lang === 'th' ? -42 : -50}" y="${lang === 'th' ? 565 : 555}" width="${lang === 'th' ? 270 : 310}" height="${lang === 'th' ? 140 : 160}" preserveAspectRatio="xMidYMid meet"/>
+	<image href="${logoUri}" x="${lang === 'th' ? -42 : -50}" y="${lang === 'th' ? 558 : 548}" width="${lang === 'th' ? 270 : 310}" height="${lang === 'th' ? 140 : 160}" preserveAspectRatio="xMidYMid meet"/>
 
 </svg>`;
 
