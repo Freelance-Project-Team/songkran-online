@@ -5,7 +5,7 @@ import { LangToggleButton } from '@/src/shared/ui/LangToggleButton';
 import { GoBackButton } from '@/src/shared/ui/GoBackButton';
 
 type Lang = 'th' | 'en';
-type LocationId = 'arun' | 'phakeaw' | 'yaksuwan' | 'saochingcha';
+type LocationId = 'arun' | 'phakeaw' | 'airport' | 'saochingcha';
 
 const A = {
 	bg: '/assets/playsongkran/locations/bg.png',
@@ -18,57 +18,62 @@ const A = {
 const LOCATIONS: {
 	id: LocationId;
 	img: string;
-	textImg: string;
+	textImg: { th: string; en: string };
 	ariaLabel: string;
 	left: string;
 	top: string;
-	labelTop: string;
-	labelCenterX: string;
-	labelHeight: string;
+	labelTop: { th: string; en: string };
+	labelCenterX: { th: string; en: string };
+	labelHeight: { th: string; en: string };
+	labelMaxWidth: { th: string; en: string };
 }[] = [
 	{
 		id: 'arun',
 		img: '/assets/playsongkran/locations/arun.png',
-		textImg: '/assets/playsongkran/locations/arun-text.png',
+		textImg: { th: '/assets/playsongkran/locations/arun-text-th.png', en: '/assets/playsongkran/locations/arun-text-en.png' },
 		ariaLabel: 'วัดอรุณราชวราราม',
 		left: '8.14%',
 		top: '37.32%',
-		labelTop: '50.94%',
-		labelCenterX: '27.23%',
-		labelHeight: '4.8%', // 36px source
+		labelTop: { th: '51.94%', en: '50%' },
+		labelCenterX: { th: '36.23%', en: '38%' },
+		labelHeight: { th: '4.8%', en: '4.8%' },
+		labelMaxWidth: { th: '70%', en: '65%' },
 	},
 	{
 		id: 'phakeaw',
 		img: '/assets/playsongkran/locations/phakeaw.png',
-		textImg: '/assets/playsongkran/locations/phakeaw-text.png',
+		textImg: { th: '/assets/playsongkran/locations/phakeaw-text-th.png', en: '/assets/playsongkran/locations/phakeaw-text-en.png' },
 		ariaLabel: 'วัดพระแก้ว',
 		left: '54.45%',
 		top: '37.32%',
-		labelTop: '50.94%',
-		labelCenterX: '73.54%',
-		labelHeight: '3.87%', // 29px source → 4.8% × (29/36)
+		labelTop: { th: '51.94%', en: '51.94%' },
+		labelCenterX: { th: '73.54%', en: '70%' },
+		labelHeight: { th: '3.87%', en: '3.87%' },
+		labelMaxWidth: { th: '100%', en: '125%' },
 	},
 	{
-		id: 'yaksuwan',
-		img: '/assets/playsongkran/locations/yaksuwan.png',
-		textImg: '/assets/playsongkran/locations/yaksuwan-text.png',
-		ariaLabel: 'ยักษ์สุวรรณภูมิ',
+		id: 'airport',
+		img: '/assets/playsongkran/locations/airport.png',
+		textImg: { th: '/assets/playsongkran/locations/airport-text-th.png', en: '/assets/playsongkran/locations/airport-text-en.png' },
+		ariaLabel: 'ท่าอากาศยานสุวรรณภูมิ',
 		left: '8.14%',
 		top: '60.09%',
-		labelTop: '73.65%',
-		labelCenterX: '27.23%',
-		labelHeight: '5.47%', // 41px source → 4.8% × (41/36)
+		labelTop: { th: '72.65%', en: '72.65%' },
+		labelCenterX: { th: '41.23%', en: '39%' },
+		labelHeight: { th: '5.47%', en: '5.47%' },
+		labelMaxWidth: { th: '50%', en: '60%' },
 	},
 	{
 		id: 'saochingcha',
 		img: '/assets/playsongkran/locations/saochingcha.png',
-		textImg: '/assets/playsongkran/locations/saochingcha-text.png',
+		textImg: { th: '/assets/playsongkran/locations/saochingcha-text-th.png', en: '/assets/playsongkran/locations/saochingcha-text-en.png' },
 		ariaLabel: 'เสาชิงช้า',
 		left: '54.45%',
 		top: '59.51%',
-		labelTop: '73.89%',
-		labelCenterX: '73.54%',
-		labelHeight: '3.87%', // 29px source → 4.8% × (29/36)
+		labelTop: { th: '73.89%', en: '73.89%' },
+		labelCenterX: { th: '74.54%', en: '70%' },
+		labelHeight: { th: '3.87%', en: '3.87%' },
+		labelMaxWidth: { th: '90%', en: '120%' },
 	},
 ];
 
@@ -180,20 +185,21 @@ export function SelectLocation({
 					key={`text-${loc.id}`}
 					className="absolute select-none pointer-events-none"
 					style={{
-						left: loc.labelCenterX,
-						top: loc.labelTop,
+						left: loc.labelCenterX[lang],
+						top: loc.labelTop[lang],
 						transform: 'translateX(-50%)',
 					}}
 				>
 					<img
-						src={loc.textImg}
+						src={loc.textImg[lang]}
 						alt={loc.ariaLabel}
 						onAnimationEnd={(e) => {
 							if (e.animationName === 'sl-text-pop') setTextPoppingId(null);
 						}}
 						style={{
-							height: loc.labelHeight,
+							height: loc.labelHeight[lang],
 							width: 'auto',
+							maxWidth: loc.labelMaxWidth[lang],
 							display: 'block',
 							animation:
 								textPoppingId === loc.id
