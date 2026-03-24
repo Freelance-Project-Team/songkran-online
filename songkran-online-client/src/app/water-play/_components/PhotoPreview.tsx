@@ -88,7 +88,7 @@ export function PhotoPreview({
 	const charSrc = CHAR_IMG[character];
 	const location = LOCATION_NAMES[locationId] ?? LOCATION_NAMES.arun;
 
-	// Build a 393×852 canvas then crop to 393×597 (above the banner)
+	// Build a 393×852 canvas then crop to 393×677 (includes banner)
 	const buildShareImage = async (): Promise<string> => {
 		const loadImg = (src: string): Promise<HTMLImageElement> =>
 			new Promise((resolve, reject) => {
@@ -101,24 +101,25 @@ export function PhotoPreview({
 
 		const W = 393,
 			H = 852,
-			CROP = 597;
+			CROP = 677; // include banner (597–677) in export
 
 		const canvas = document.createElement('canvas');
 		canvas.width = W;
 		canvas.height = H;
 		const ctx = canvas.getContext('2d')!;
 
-		const [scene, char_, face, robot] = await Promise.all([
+		const [scene, char_, face, robot, logo] = await Promise.all([
 			loadImg(sceneSrc),
 			loadImg(charSrc),
 			faceUrl ? loadImg(faceUrl) : Promise.resolve(null as unknown as HTMLImageElement),
 			loadImg('/assets/playsongkran/preview/aot-robot.png'),
+			loadImg('/assets/login/logo.png'),
 		]);
 
 		// 1. Scene — objectFit:'fill' → stretch to full 393×852
 		ctx.drawImage(scene, 0, 0, W, H);
 
-		// 2. Robot — objectFit:'none', preserve natural aspect ratio
+		// 2. Robot — preserve natural aspect ratio
 		const robotH = Math.round((238 * robot.naturalHeight) / robot.naturalWidth);
 		ctx.drawImage(robot, -12, 462, 238, robotH);
 
@@ -157,11 +158,11 @@ export function PhotoPreview({
 		ctx.font = `bold 14px ${SF}`;
 		ctx.textAlign = 'center';
 		const lh = bH / 4;
-		const lines =
+		const infoLines =
 			lang === 'th'
 				? [`คุณ ${userName}`, 'ได้มาร่วมเล่นน้ำสงกรานต์', `ที่${location.th}`]
 				: [userName, 'joined Songkran water play', `at ${location.en}`];
-		lines.forEach((line, i) => ctx.fillText(line, bL + bW / 2, bT + lh * (i + 1)));
+		infoLines.forEach((line, i) => ctx.fillText(line, bL + bW / 2, bT + lh * (i + 1)));
 		ctx.restore();
 
 		// 5. Face — uniform circle (no squish)
@@ -177,7 +178,42 @@ export function PhotoPreview({
 			ctx.restore();
 		}
 
-		// Crop to above-banner
+		// 6. Banner — blue bar (597–677)
+		const bannerT = 597,
+			bannerH = 80;
+		ctx.fillStyle = '#0055A5';
+		ctx.fillRect(0, bannerT, W, bannerH);
+
+		// 7. Banner text — right-aligned, vertically centered
+		const bannerLines =
+			lang === 'th'
+				? [
+						'ท่าอากาศยานสุวรรณภูมิขอเชิญทุกท่าน',
+						'ร่วมสนุกเทศกาลสงกรานต์',
+						'สาดสุขแบบไทยสไตล์ร่วมสมัย',
+					]
+				: [
+						'Suvarnabhumi Airport invites everyone',
+						'to join Songkran Festival',
+						'Splash happiness Thai style',
+					];
+		ctx.save();
+		ctx.fillStyle = '#fff';
+		ctx.font = `bold 17px ${SF}`;
+		ctx.textAlign = 'right';
+		ctx.textBaseline = 'top';
+		const lineH = 22;
+		const totalTextH = bannerLines.length * lineH;
+		const textStartY = bannerT + (bannerH - totalTextH) / 2;
+		bannerLines.forEach((line, i) => ctx.fillText(line, W - 16, textStartY + i * lineH));
+		ctx.restore();
+
+		// 8. Logo — overlapping banner
+		const logoW = 208;
+		const logoH = Math.round((logoW * logo.naturalHeight) / logo.naturalWidth);
+		ctx.drawImage(logo, -33, 569, logoW, logoH);
+
+		// Crop to include banner
 		const out = document.createElement('canvas');
 		out.width = W;
 		out.height = CROP;
