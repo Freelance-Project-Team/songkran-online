@@ -214,7 +214,7 @@ export function PhotoPreview({
 					className="absolute select-none pointer-events-none"
 					style={{
 						left: px(-12, 'x'),
-						top: px(462, 'y'),
+						top: lang === 'th' ? px(462, 'y') : px(432, 'y'),
 						width: px(238, 'x'),
 						height: 'auto',
 						zIndex: 1,
@@ -285,7 +285,7 @@ export function PhotoPreview({
 						className="text-white leading-snug"
 						style={{ fontSize: 'clamp(12px, 2.1vh, 18px)', fontWeight: 700 }}
 					>
-						{lang === 'th' ? 'ได้มาร่วมเล่นน้ำสงกรานต์' : 'joined Songkran'}
+						{lang === 'th' ? 'ได้มาร่วมเล่นน้ำสงกรานต์' : 'joined to splash water'}
 					</p>
 					<p
 						className="text-white leading-snug"
@@ -300,8 +300,8 @@ export function PhotoPreview({
 					style={{
 						left: 0,
 						right: 0,
-						top: px(597, 'y'),
-						height: px(80, 'y'),
+						top: lang === 'th' ? px(597, 'y') : px(582, 'y'),
+						height: lang === 'th' ? px(80, 'y') : px(95, 'y'),
 						background: '#0055A5',
 						paddingRight: '4%',
 						zIndex: 5,
@@ -312,9 +312,9 @@ export function PhotoPreview({
 						className="text-white text-right"
 						style={{
 							fontFamily: SF,
-							fontSize: '17px',
+							fontSize: lang === 'th' ? '17px' : '14px',
 							fontWeight: 700,
-							lineHeight: '22px',
+							lineHeight: lang === 'th' ? '22px' : '18px',
 						}}
 					>
 						{lang === 'th' ? (
@@ -327,11 +327,13 @@ export function PhotoPreview({
 							</>
 						) : (
 							<>
-								Suvarnabhumi Airport invites everyone
+								Suvarnabhumi Airport
 								<br />
-								to join Songkran Festival
+								invites everyone to join
 								<br />
-								Splash happiness Thai style
+								Songkran Festival Splash
+								<br />
+								into happiness, Thai style
 							</>
 						)}
 					</p>
@@ -342,9 +344,9 @@ export function PhotoPreview({
 					alt="Songkran Festival 2026"
 					className="absolute select-none pointer-events-none"
 					style={{
-						left: px(-33, 'x'),
-						top: px(569, 'y'),
-						width: px(208, 'x'),
+						left: lang === 'th' ? px(-33, 'x') : px(-40, 'x'),
+						top: lang === 'th' ? px(569, 'y') : px(555, 'y'),
+						width: lang === 'th' ? px(208, 'x') : px(248, 'x'),
 						height: 'auto',
 						zIndex: 6,
 						animation: 'pp-fade-in 0.5s ease-out 0.3s both',

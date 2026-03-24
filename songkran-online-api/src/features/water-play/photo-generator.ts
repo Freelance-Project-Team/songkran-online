@@ -93,16 +93,17 @@ export async function generatePhoto(params: GeneratePhotoParams): Promise<Buffer
 
 	const infoLines =
 		lang === 'th'
-			? [`คุณ ${userName}`, 'ได้มาร่วมเล่นน้ำสงกรานต์', `ที่${location.th}`]
-			: [userName, 'joined Songkran water play', `at ${location.en}`];
+			? [`คุณ ${userName}`, 'ได้มาร่วมเล่นน้ำ', `สงกรานต์ที่ ${location.th}`]
+			: [userName, 'joined to splash water', `at ${location.en}`];
 
 	const bannerLines =
 		lang === 'th'
 			? ['ท่าอากาศยานสุวรรณภูมิขอเชิญทุกท่าน', 'ร่วมสนุกเทศกาลสงกรานต์', 'สาดสุขแบบไทยสไตล์ร่วมสมัย']
 			: [
-				'Suvarnabhumi Airport invites everyone',
-				'to join Songkran Festival',
-				'Splash happiness Thai style',
+				'Suvarnabhumi Airport',
+				'invites everyone to join',
+				'Songkran Festival Splash',
+				'into happiness, Thai style',
 			];
 
 	// ── Build SVG ────────────────────────────────────────────────────────────
@@ -120,9 +121,14 @@ export async function generatePhoto(params: GeneratePhotoParams): Promise<Buffer
 		`
 		: '';
 
-	// Banner: y=597, h=80 → 3 lines, font-size 14 (Sarabun renders wider than SF Pro)
-	// line spacing 18px, total 3×18=54, padding-top = (80-54)/2 = 13 → first baseline at 597+13+14=624
-	const bY = [624, 642, 660];
+	// Banner: Thai 3 lines (y=597, h=80), English 4 lines (y=582, h=95)
+	const bannerY = lang === 'th' ? 597 : 582;
+	const bannerH = lang === 'th' ? 80 : 95;
+	const bannerFontSize = lang === 'th' ? 14 : 12;
+	const bannerLineSpacing = lang === 'th' ? 18 : 16;
+	const bannerTotalTextH = bannerLines.length * bannerLineSpacing;
+	const bannerPadTop = (bannerH - bannerTotalTextH) / 2;
+	const bY = bannerLines.map((_, i) => bannerY + bannerPadTop + bannerFontSize + i * bannerLineSpacing);
 
 	const svg = `<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 
@@ -130,7 +136,7 @@ export async function generatePhoto(params: GeneratePhotoParams): Promise<Buffer
 	<image href="${sceneUri}" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="none"/>
 
 	<!-- Robot -->
-	<image href="${robotUri}" x="-12" y="462" width="238" height="250" preserveAspectRatio="xMidYMin meet"/>
+	<image href="${robotUri}" x="-12" y="${lang === 'th' ? 462 : 450}" width="238" height="250" preserveAspectRatio="xMidYMin meet"/>
 
 	<!-- Character -->
 	<image href="${charUri}" x="163" y="208" width="276" height="494" preserveAspectRatio="xMidYMax meet"/>
@@ -144,13 +150,11 @@ export async function generatePhoto(params: GeneratePhotoParams): Promise<Buffer
 	<text x="115.5" y="413" text-anchor="middle" font-family="Sarabun" font-weight="700" font-size="${lang === 'th' ? 14 : 15}" letter-spacing="${lang === 'th' ? 0.5 : 0}" fill="white">${escapeXml(infoLines[2])}</text>
 
 	<!-- Banner -->
-	<rect x="0" y="597" width="${W}" height="80" fill="#0055A5"/>
-	<text x="377" y="${bY[0]}" text-anchor="end" font-family="Sarabun" font-weight="700" font-size="${lang === 'th' ? 14 : 15}" letter-spacing="${lang === 'th' ? 0.5 : 0}" fill="white">${escapeXml(bannerLines[0])}</text>
-	<text x="377" y="${bY[1]}" text-anchor="end" font-family="Sarabun" font-weight="700" font-size="${lang === 'th' ? 14 : 15}" letter-spacing="${lang === 'th' ? 0.5 : 0}" fill="white">${escapeXml(bannerLines[1])}</text>
-	<text x="377" y="${bY[2]}" text-anchor="end" font-family="Sarabun" font-weight="700" font-size="${lang === 'th' ? 14 : 15}" letter-spacing="${lang === 'th' ? 0.5 : 0}" fill="white">${escapeXml(bannerLines[2])}</text>
+	<rect x="0" y="${bannerY}" width="${W}" height="${bannerH}" fill="#0055A5"/>
+	${bannerLines.map((line, i) => `<text x="377" y="${bY[i]}" text-anchor="end" font-family="Sarabun" font-weight="700" font-size="${bannerFontSize}" letter-spacing="${lang === 'th' ? 0.5 : 0}" fill="white">${escapeXml(line)}</text>`).join('\n\t')}
 
 	<!-- Logo -->
-	<image href="${logoUri}" x="-33" y="569" width="208" height="108" preserveAspectRatio="xMidYMid meet"/>
+	<image href="${logoUri}" x="${lang === 'th' ? -33 : -40}" y="${lang === 'th' ? 569 : 570}" width="${lang === 'th' ? 208 : 248}" height="${lang === 'th' ? 108 : 128}" preserveAspectRatio="xMidYMid meet"/>
 
 </svg>`;
 
