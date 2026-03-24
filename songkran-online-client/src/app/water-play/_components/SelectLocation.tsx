@@ -22,10 +22,8 @@ const LOCATIONS: {
 	ariaLabel: string;
 	left: string;
 	top: string;
-	labelTop: { th: string; en: string };
-	labelCenterX: { th: string; en: string };
-	labelHeight: { th: string; en: string };
-	labelMaxWidth: { th: string; en: string };
+	overlayWidth: { th: string; en: string };
+	overlayBottom: { th: string; en: string };
 }[] = [
 	{
 		id: 'arun',
@@ -34,10 +32,8 @@ const LOCATIONS: {
 		ariaLabel: 'วัดอรุณราชวราราม',
 		left: '8.14%',
 		top: '37.32%',
-		labelTop: { th: '51.94%', en: '50%' },
-		labelCenterX: { th: '36.23%', en: '38%' },
-		labelHeight: { th: '4.8%', en: '4.8%' },
-		labelMaxWidth: { th: '70%', en: '65%' },
+		overlayWidth: { th: '100%', en: '85%' },
+		overlayBottom: { th: '5%', en: '8%' },
 	},
 	{
 		id: 'phakeaw',
@@ -46,10 +42,8 @@ const LOCATIONS: {
 		ariaLabel: 'วัดพระแก้ว',
 		left: '54.45%',
 		top: '37.32%',
-		labelTop: { th: '51.94%', en: '51.94%' },
-		labelCenterX: { th: '73.54%', en: '70%' },
-		labelHeight: { th: '3.87%', en: '3.87%' },
-		labelMaxWidth: { th: '100%', en: '125%' },
+		overlayWidth: { th: '70%', en: '85%' },
+		overlayBottom: { th: '8%', en: '8%' },
 	},
 	{
 		id: 'airport',
@@ -58,10 +52,8 @@ const LOCATIONS: {
 		ariaLabel: 'ท่าอากาศยานสุวรรณภูมิ',
 		left: '8.14%',
 		top: '60.09%',
-		labelTop: { th: '72.65%', en: '72.65%' },
-		labelCenterX: { th: '41.23%', en: '39%' },
-		labelHeight: { th: '5.47%', en: '5.47%' },
-		labelMaxWidth: { th: '50%', en: '60%' },
+		overlayWidth: { th: '100%', en: '85%' },
+		overlayBottom: { th: '0%', en: '0%' },
 	},
 	{
 		id: 'saochingcha',
@@ -70,10 +62,8 @@ const LOCATIONS: {
 		ariaLabel: 'เสาชิงช้า',
 		left: '54.45%',
 		top: '59.51%',
-		labelTop: { th: '73.89%', en: '73.89%' },
-		labelCenterX: { th: '74.54%', en: '70%' },
-		labelHeight: { th: '3.87%', en: '3.87%' },
-		labelMaxWidth: { th: '90%', en: '120%' },
+		overlayWidth: { th: '60%', en: '85%' },
+		overlayBottom: { th: '8%', en: '8%' },
 	},
 ];
 
@@ -93,17 +83,7 @@ const STYLES = `
   65%  { transform: scale(0.96); }
   100% { transform: scale(1); }
 }
-@keyframes sl-text-float {
-  0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(-5px); }
-}
-@keyframes sl-text-pop {
-  0%   { transform: scale(1)    translateY(0px); }
-  30%  { transform: scale(1.18) translateY(-4px); }
-  60%  { transform: scale(0.93) translateY(1px); }
-  80%  { transform: scale(1.06) translateY(-1px); }
-  100% { transform: scale(1)    translateY(0px); }
-}
+
 `;
 
 export function SelectLocation({
@@ -120,13 +100,11 @@ export function SelectLocation({
 }) {
 	const [selected, setSelected] = useState<LocationId | null>(null);
 	const [poppingId, setPoppingId] = useState<LocationId | null>(null);
-	const [textPoppingId, setTextPoppingId] = useState<LocationId | null>(null);
 	const [contPop, setContPop] = useState(false);
 
 	const handleSelect = (id: LocationId) => {
 		setSelected(id);
 		setPoppingId(id);
-		setTextPoppingId(id);
 	};
 
 	const handleContinue = () => {
@@ -177,37 +155,21 @@ export function SelectLocation({
 							transition: 'box-shadow 0.25s ease',
 						}}
 					/>
-				</button>
-			))}
-
-			{LOCATIONS.map((loc, i) => (
-				<div
-					key={`text-${loc.id}`}
-					className="absolute select-none pointer-events-none"
-					style={{
-						left: loc.labelCenterX[lang],
-						top: loc.labelTop[lang],
-						transform: 'translateX(-50%)',
-					}}
-				>
 					<img
 						src={loc.textImg[lang]}
 						alt={loc.ariaLabel}
-						onAnimationEnd={(e) => {
-							if (e.animationName === 'sl-text-pop') setTextPoppingId(null);
-						}}
+						className="absolute select-none pointer-events-none"
 						style={{
-							height: loc.labelHeight[lang],
-							width: 'auto',
-							maxWidth: loc.labelMaxWidth[lang],
-							display: 'block',
-							animation:
-								textPoppingId === loc.id
-									? 'sl-text-pop 0.45s ease-out both'
-									: `sl-text-float 2.8s ease-in-out ${i * 0.35}s infinite`,
+							bottom: loc.overlayBottom[lang],
+							left: '50%',
+							transform: 'translateX(-50%)',
+							width: loc.overlayWidth[lang],
+							height: 'auto',
+							maxHeight: '40%',
+							objectFit: 'contain',
 						}}
 					/>
-				</div>
+				</button>
 			))}
 
 			<GoBackButton
