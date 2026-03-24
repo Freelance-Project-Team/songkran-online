@@ -134,6 +134,8 @@ function LoginForm({ onLogin }: { onLogin: () => void }) {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 
+	const isDisabled = !email.trim() || !password.trim();
+
 	return (
 		<div className="flex flex-col gap-[10px] w-full">
 			<div className="bg-white rounded-[15px] h-[45px] flex items-center px-4 gap-3 shadow-sm">
@@ -162,8 +164,9 @@ function LoginForm({ onLogin }: { onLogin: () => void }) {
 
 			<button
 				onClick={onLogin}
+				disabled={isDisabled}
 				style={poppins}
-				className="bg-[#4da8fe] rounded-[15px] h-[45px] w-full flex items-center justify-center text-white text-[16px] font-semibold mt-[10px] hover:bg-[#3a97ed] active:scale-[0.98] transition-all cursor-pointer"
+				className="rounded-[15px] h-[45px] w-full flex items-center justify-center text-white text-[16px] font-semibold mt-[10px] transition-all bg-[#4da8fe] enabled:hover:bg-[#3a97ed] enabled:active:scale-[0.98] enabled:cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
 			>
 				LOG IN
 			</button>
