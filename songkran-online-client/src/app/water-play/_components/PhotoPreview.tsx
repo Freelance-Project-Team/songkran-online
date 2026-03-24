@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { GoBackButton } from '@/src/shared/ui/GoBackButton';
 
 type Lang = 'th' | 'en';
@@ -77,6 +77,7 @@ export function PhotoPreview({
 }) {
 	const [userName, setUserName] = useState('');
 	const [sharing, setSharing] = useState(false);
+	const sharingRef = useRef(false);
 
 	useEffect(() => {
 		if (typeof window !== 'undefined') {
@@ -90,28 +91,15 @@ export function PhotoPreview({
 
 	/**
 	 * Resolve any faceUrl to a compact JPEG data URL.
-	 * - blob: URLs are browser-only and must be converted before sending to the server
-	 * - Resizes to max 400×400 and encodes as JPEG 0.75 to stay well under Vercel's 4.5 MB body limit
+	 * Uses the URL directly as Image.src (works for both blob: and data: URLs, including HEIC on iOS).
+	 * Canvas converts to JPEG, making it safe to send to the server regardless of input format.
 	 */
 	const prepareFaceDataUrl = async (url: string): Promise<string> => {
-		// Step 1: get a data URL (handles both blob: and data: inputs)
-		let dataUrl = url;
-		if (url.startsWith('blob:')) {
-			const blob = await fetch(url).then((r) => r.blob());
-			dataUrl = await new Promise<string>((resolve, reject) => {
-				const reader = new FileReader();
-				reader.onload = () => resolve(reader.result as string);
-				reader.onerror = reject;
-				reader.readAsDataURL(blob);
-			});
-		}
-
-		// Step 2: resize + compress to JPEG so the payload stays small
 		const img = await new Promise<HTMLImageElement>((resolve, reject) => {
 			const i = new Image();
 			i.onload = () => resolve(i);
 			i.onerror = reject;
-			i.src = dataUrl;
+			i.src = url;
 		});
 		const MAX = 400;
 		const scale = Math.min(1, MAX / Math.max(img.width, img.height));
@@ -152,11 +140,15 @@ export function PhotoPreview({
 	};
 
 	const handleNativeShare = async () => {
+		if (sharingRef.current) return;
+		sharingRef.current = true;
 		setSharing(true);
 		try {
 			const blob = await buildShareBlob();
 			const file = new File([blob], 'songkran-2026.png', { type: 'image/png' });
-			if (navigator.share) {
+			const canShareFile =
+				typeof navigator.canShare === 'function' && navigator.canShare({ files: [file] });
+			if (canShareFile) {
 				await navigator.share({
 					title: lang === 'th' ? 'สงกรานต์ 2026' : 'Songkran 2026',
 					text:
@@ -173,9 +165,13 @@ export function PhotoPreview({
 				a.click();
 				URL.revokeObjectURL(url);
 			}
-		} catch {
-			/* cancelled */
+		} catch (err) {
+			// AbortError = user cancelled share sheet — safe to ignore
+			if (err instanceof Error && err.name !== 'AbortError') {
+				console.error('[share]', err);
+			}
 		} finally {
+			sharingRef.current = false;
 			setSharing(false);
 		}
 	};
@@ -218,7 +214,7 @@ export function PhotoPreview({
 					className="absolute select-none pointer-events-none"
 					style={{
 						left: px(-12, 'x'),
-						top: px(462, 'y'),
+						top: lang === 'th' ? px(462, 'y') : px(432, 'y'),
 						width: px(238, 'x'),
 						height: 'auto',
 						zIndex: 1,
@@ -289,7 +285,7 @@ export function PhotoPreview({
 						className="text-white leading-snug"
 						style={{ fontSize: 'clamp(12px, 2.1vh, 18px)', fontWeight: 700 }}
 					>
-						{lang === 'th' ? 'ได้มาร่วมเล่นน้ำสงกรานต์' : 'joined Songkran'}
+						{lang === 'th' ? 'ได้มาร่วมเล่นน้ำสงกรานต์' : 'joined to splash water'}
 					</p>
 					<p
 						className="text-white leading-snug"
@@ -304,8 +300,8 @@ export function PhotoPreview({
 					style={{
 						left: 0,
 						right: 0,
-						top: px(597, 'y'),
-						height: px(80, 'y'),
+						top: lang === 'th' ? px(597, 'y') : px(582, 'y'),
+						height: lang === 'th' ? px(80, 'y') : px(95, 'y'),
 						background: '#0055A5',
 						paddingRight: '4%',
 						zIndex: 5,
@@ -316,9 +312,9 @@ export function PhotoPreview({
 						className="text-white text-right"
 						style={{
 							fontFamily: SF,
-							fontSize: '17px',
+							fontSize: lang === 'th' ? '17px' : '14px',
 							fontWeight: 700,
-							lineHeight: '22px',
+							lineHeight: lang === 'th' ? '22px' : '18px',
 						}}
 					>
 						{lang === 'th' ? (
@@ -331,11 +327,13 @@ export function PhotoPreview({
 							</>
 						) : (
 							<>
-								Suvarnabhumi Airport invites everyone
+								Suvarnabhumi Airport
 								<br />
-								to join Songkran Festival
+								invites everyone to join
 								<br />
-								Splash happiness Thai style
+								Songkran Festival Splash
+								<br />
+								into happiness, Thai style
 							</>
 						)}
 					</p>
@@ -346,9 +344,9 @@ export function PhotoPreview({
 					alt="Songkran Festival 2026"
 					className="absolute select-none pointer-events-none"
 					style={{
-						left: px(-33, 'x'),
-						top: px(569, 'y'),
-						width: px(208, 'x'),
+						left: lang === 'th' ? px(-33, 'x') : px(-40, 'x'),
+						top: lang === 'th' ? px(569, 'y') : px(555, 'y'),
+						width: lang === 'th' ? px(208, 'x') : px(248, 'x'),
 						height: 'auto',
 						zIndex: 6,
 						animation: 'pp-fade-in 0.5s ease-out 0.3s both',

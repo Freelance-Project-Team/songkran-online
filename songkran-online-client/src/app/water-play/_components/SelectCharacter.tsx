@@ -113,7 +113,6 @@ export function SelectCharacter({
 				ref={fileInputRef}
 				type="file"
 				accept="image/*"
-				capture="user"
 				className="hidden"
 				onChange={handleFileChange}
 			/>
@@ -164,7 +163,7 @@ export function SelectCharacter({
 			<img
 				src={A.boy}
 				alt=""
-				onClick={handleBoyClick}
+				onClick={step !== 'select' ? handleBoyClick : undefined}
 				className="absolute select-none"
 				style={{
 					...boyPos,
@@ -180,7 +179,7 @@ export function SelectCharacter({
 			<img
 				src={A.girl}
 				alt=""
-				onClick={handleGirlClick}
+				onClick={step !== 'select' ? handleGirlClick : undefined}
 				className="absolute select-none"
 				style={{
 					...girlPos,
@@ -192,6 +191,23 @@ export function SelectCharacter({
 					zIndex: girlZ,
 				}}
 			/>
+
+			{step === 'select' && (
+				<>
+					<button
+						onClick={handleBoyClick}
+						className="absolute bg-transparent border-0 p-0 cursor-pointer"
+						style={{ left: '0%', top: '32.51%', width: '40%', height: '47.77%', zIndex: 10 }}
+						aria-label="Select boy"
+					/>
+					<button
+						onClick={handleGirlClick}
+						className="absolute bg-transparent border-0 p-0 cursor-pointer"
+						style={{ left: '40%', top: '32.51%', width: '60%', height: '47.77%', zIndex: 10 }}
+						aria-label="Select girl"
+					/>
+				</>
+			)}
 
 			{isFace && (
 				<button
