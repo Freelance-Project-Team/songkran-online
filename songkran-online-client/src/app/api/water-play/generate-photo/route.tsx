@@ -126,7 +126,7 @@ export async function POST(req: NextRequest) {
 				<img
 					src={robotSrc}
 					alt=""
-					style={{ position: 'absolute', left: -12, top: lang === 'th' ? 462 : 450, width: 238 }}
+					style={{ position: 'absolute', left: 5, top: lang === 'th' ? 462 : 450, width: 238 }}
 				/>
 
 				{/* Character */}

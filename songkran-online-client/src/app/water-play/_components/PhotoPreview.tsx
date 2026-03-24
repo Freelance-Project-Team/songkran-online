@@ -213,7 +213,7 @@ export function PhotoPreview({
 					alt=""
 					className="absolute select-none pointer-events-none"
 					style={{
-						left: px(-12, 'x'),
+						left: px(5, 'x'),
 						top: lang === 'th' ? px(462, 'y') : px(432, 'y'),
 						width: px(238, 'x'),
 						height: 'auto',

@@ -136,7 +136,7 @@ export async function generatePhoto(params: GeneratePhotoParams): Promise<Buffer
 	<image href="${sceneUri}" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="none"/>
 
 	<!-- Robot -->
-	<image href="${robotUri}" x="-12" y="${lang === 'th' ? 462 : 450}" width="238" height="250" preserveAspectRatio="xMidYMin meet"/>
+	<image href="${robotUri}" x="5" y="${lang === 'th' ? 462 : 450}" width="238" height="250" preserveAspectRatio="xMidYMin meet"/>
 
 	<!-- Character -->
 	<image href="${charUri}" x="163" y="208" width="276" height="494" preserveAspectRatio="xMidYMax meet"/>
