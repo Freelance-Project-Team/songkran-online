@@ -9,7 +9,7 @@ type LocationId = 'arun' | 'phakeaw' | 'airport' | 'saochingcha';
 
 const A = {
 	bg: '/assets/playsongkran/locations/bg.png',
-	cont: '/assets/playsongkran/continue.png',
+	cont: { th: '/assets/playsongkran/go-next-th.png', en: '/assets/playsongkran/go-next-en.png' },
 } as const;
 
 // labelHeight normalized so all text renders at the same visual size.
@@ -213,7 +213,7 @@ export function SelectLocation({
 			<GoBackButton
 				lang={lang}
 				onBack={onBack}
-				style={{ left: '2%', top: '78%', width: '35%', height: '14.32%' }}
+				style={{ left: '5%', top: '78%', width: '30%', height: '12%' }}
 			/>
 
 			<button
@@ -221,10 +221,10 @@ export function SelectLocation({
 				onAnimationEnd={() => setContPop(false)}
 				className="absolute z-10 p-0 bg-transparent border-0"
 				style={{
-					right: '2%',
+					right: '5%',
 					top: '78%',
-					width: '35%',
-					height: '14.32%',
+					width: '30%',
+					height: '12%',
 					cursor: !selected ? 'default' : 'pointer',
 					opacity: !selected ? 0.45 : 1,
 					transition: 'opacity 0.3s ease',
@@ -233,7 +233,7 @@ export function SelectLocation({
 				aria-label={lang === 'th' ? 'ไปกันต่อ' : 'Continue'}
 			>
 				<img
-					src={A.cont}
+					src={A.cont[lang]}
 					alt=""
 					className="w-full h-full select-none pointer-events-none"
 					style={{ objectFit: 'contain', objectPosition: 'right bottom' }}

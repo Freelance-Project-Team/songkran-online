@@ -38,8 +38,8 @@ export function GoBackButton({
 
 	const liftedSrc =
 		lang === 'en'
-			? '/assets/shared/go-back-btn-2-en.png'
-			: '/assets/shared/go-back-btn-2-th.png';
+			? '/assets/shared/go-back-en.png'
+			: '/assets/shared/go-back-th.png';
 
 	return (
 		<>
@@ -48,17 +48,17 @@ export function GoBackButton({
 				onClick={handleClick}
 				className="absolute z-10 cursor-pointer p-0 bg-transparent border-0"
 				style={{
-					left: '30.8%',
+					left: '35%',
 					top: '75%',
-					width: '38.4%',
-					height: '14.4%',
+					width: '30%',
+					height: '12%',
 					animation: lifting ? 'gb-lift 0.5s ease-out both' : undefined,
 					...style,
 				}}
 				aria-label={lang === 'th' ? 'กลับหน้าหลัก' : 'Back to home'}
 			>
 				<img
-					src="/assets/shared/go-back-btn.png"
+					src="/assets/shared/go-back-default.png"
 					alt=""
 					className="absolute inset-0 w-full h-full select-none pointer-events-none"
 					style={{

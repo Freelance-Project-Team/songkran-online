@@ -13,7 +13,7 @@ const A = {
 	girl: '/assets/playsongkran/women-player.png',
 	selBoy: '/assets/playsongkran/select-boy.png',
 	selGirl: '/assets/playsongkran/select-girl.png',
-	cont: '/assets/playsongkran/continue.png',
+	cont: { th: '/assets/playsongkran/go-next-th.png', en: '/assets/playsongkran/go-next-en.png' },
 } as const;
 
 const STYLES = `
@@ -237,7 +237,7 @@ export function SelectCharacter({
 			<GoBackButton
 				lang={lang}
 				onBack={onBack}
-				style={{ left: '2%', top: '75%', width: '35%', height: '14.32%' }}
+				style={{ left: '5%', top: '75%', width: '30%', height: '12%' }}
 			/>
 
 			<button
@@ -245,10 +245,10 @@ export function SelectCharacter({
 				onAnimationEnd={() => setContPop(false)}
 				className="absolute z-10 p-0 bg-transparent border-0"
 				style={{
-					right: '2%',
+					right: '5%',
 					top: '75%',
-					width: '35%',
-					height: '14.32%',
+					width: '30%',
+					height: '12%',
 					cursor: step === 'select' ? 'default' : 'pointer',
 					opacity: step === 'select' ? 0.45 : 1,
 					transition: 'opacity 0.3s ease',
@@ -257,7 +257,7 @@ export function SelectCharacter({
 				aria-label={lang === 'th' ? 'ไปกันต่อ' : 'Continue'}
 			>
 				<img
-					src={A.cont}
+					src={A.cont[lang]}
 					alt=""
 					className="w-full h-full select-none pointer-events-none"
 					style={{ objectFit: 'contain', objectPosition: 'right bottom' }}
