@@ -84,4 +84,49 @@ export const WaterPlayController = {
 			res.status(500).json({ message: error.message });
 		}
 	},
+
+	generateSharePhoto: async (req: Request, res: Response) => {
+		try {
+			const { faceDataUrl, locationId, character, userName, lang } = req.body;
+
+			if (!character || !VALID_CHARACTERS.includes(character)) {
+				return res.status(400).json({ message: 'Invalid character. Must be boy or girl.' });
+			}
+			if (!locationId || !VALID_LOCATIONS.includes(locationId)) {
+				return res.status(400).json({
+					message: 'Invalid locationId. Must be arun, phakeaw, yaksuwan, or saochingcha.',
+				});
+			}
+
+			const pngBuffer = await generatePhoto({
+				faceDataUrl: faceDataUrl || '',
+				locationId,
+				character,
+				userName: userName || '',
+				lang: lang || 'th',
+			});
+
+			// Save to public/shares
+			const { randomUUID } = require('crypto');
+			const fs = require('fs/promises');
+			const path = require('path');
+
+			const shareId = randomUUID();
+			const sharesDir = path.join(process.cwd(), 'public', 'shares');
+
+			try {
+				await fs.mkdir(sharesDir, { recursive: true });
+			} catch (err) {
+				// Ignore if dir exists
+			}
+
+			const filePath = path.join(sharesDir, `${shareId}.png`);
+			await fs.writeFile(filePath, pngBuffer);
+
+			res.json({ shareId });
+		} catch (error: any) {
+			console.error('[generate-share-photo]', error);
+			res.status(500).json({ message: error.message });
+		}
+	},
 };

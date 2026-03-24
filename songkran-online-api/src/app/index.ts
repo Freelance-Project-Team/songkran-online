@@ -1,4 +1,5 @@
 import express, { Express } from 'express';
+import path from 'path';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
@@ -19,6 +20,7 @@ const allowedOrigins = (process.env.CLIENT_URL ?? '')
 	.filter(Boolean);
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json({ limit: '5mb' }));
+app.use('/public', express.static(path.join(process.cwd(), 'public')));
 app.use((req, res, next) => {
 	const start = Date.now();
 	res.on('finish', () => {

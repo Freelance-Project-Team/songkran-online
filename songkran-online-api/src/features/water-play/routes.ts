@@ -17,4 +17,7 @@ router.get('/stats', WaterPlayController.getStats);
 // POST /water-play/generate-photo — generate share image (PNG)
 router.post('/generate-photo', express.json({ limit: '5mb' }), WaterPlayController.generatePhoto);
 
+// POST /water-play/generate-share-photo — generate share image, save to disk, and return shareId
+router.post('/generate-share-photo', express.json({ limit: '5mb' }), WaterPlayController.generateSharePhoto);
+
 export default router;

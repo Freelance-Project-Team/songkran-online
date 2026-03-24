@@ -123,52 +123,81 @@ export function PhotoPreview({
 		return res.blob();
 	};
 
+	/** Generate the share image URL via the backend API. */
+	const buildShareUrl = async (): Promise<string> => {
+		const faceDataUrl = faceUrl ? await prepareFaceDataUrl(faceUrl) : '';
+
+		const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/water-play/generate-share-photo`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ faceDataUrl, locationId, character, userName, lang }),
+		});
+		if (!res.ok) throw new Error(`Share link generation failed: ${res.status}`);
+		const { shareId } = await res.json();
+		return `${window.location.origin}/share/${shareId}`;
+	};
+
 	const handleSocialShare = async (platform?: 'facebook' | 'line') => {
 		if (sharingRef.current) return;
 		sharingRef.current = true;
 		setSharing(true);
 		try {
-			const blob = await buildShareBlob();
-			const file = new File([blob], 'songkran-2026.png', { type: 'image/png' });
-			const canShareFile =
-				typeof navigator.canShare === 'function' && navigator.canShare({ files: [file] });
-
-			if (canShareFile) {
-				await navigator.share({
-					title: lang === 'th' ? 'สงกรานต์ 2026' : 'Songkran 2026',
-					text:
+			// If requested explicitly for Facebook or LINE, generate the OG page URL
+			if (platform === 'facebook' || platform === 'line') {
+				const shareUrl = await buildShareUrl();
+				
+				if (platform === 'facebook') {
+					window.open(
+						`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
+						'_blank'
+					);
+				} else if (platform === 'line') {
+					const text = encodeURIComponent(
 						lang === 'th'
 							? `ฉันร่วมเล่นน้ำสงกรานต์ที่${location.th}!`
-							: `I joined Songkran at ${location.en}!`,
-					files: [file],
-				});
+							: `I joined Songkran water play at ${location.en}!`
+					);
+					window.open(`https://line.me/R/msg/text/?${text}%20${encodeURIComponent(shareUrl)}`, '_blank');
+				}
 			} else {
-				const url = URL.createObjectURL(blob);
-				const a = document.createElement('a');
-				a.href = url;
-				a.download = 'songkran-2026.png';
-				a.click();
-				URL.revokeObjectURL(url);
+				// For Native Share fallback
+				const blob = await buildShareBlob();
+				const file = new File([blob], 'songkran-2026.png', { type: 'image/png' });
+				const canShareFile =
+					typeof navigator.canShare === 'function' && navigator.canShare({ files: [file] });
 
-				// Provide instruction after download on desktop
-				setTimeout(() => {
-					if (platform === 'facebook') {
-						alert(
+				if (canShareFile) {
+					await navigator.share({
+						title: lang === 'th' ? 'สงกรานต์ 2026' : 'Songkran 2026',
+						text:
 							lang === 'th'
-								? 'บันทึกรูปภาพลงเครื่องแล้ว กรุณานำรูปไปโพสต์บน Facebook ของคุณได้เลย!'
-								: 'Image saved to your device! You can now post it to Facebook.'
-						);
-					} else if (platform === 'line') {
-						alert(
-							lang === 'th'
-								? 'บันทึกรูปภาพลงเครื่องแล้ว กรุณานำรูปไปส่งต่อใน LINE ของคุณได้เลย!'
-								: 'Image saved to your device! You can now send it in LINE.'
-						);
+								? `ฉันร่วมเล่นน้ำสงกรานต์ที่${location.th}!`
+								: `I joined Songkran at ${location.en}!`,
+						files: [file],
+					});
+				} else {
+					// Fallback if Native file share is completely unsupported
+					const shareUrl = await buildShareUrl().catch(() => '');
+					if (shareUrl && typeof navigator.share === 'function') {
+						await navigator.share({
+							title: lang === 'th' ? 'สงกรานต์ 2026' : 'Songkran 2026',
+							text:
+								lang === 'th'
+									? `ฉันร่วมเล่นน้ำสงกรานต์ที่${location.th}!`
+									: `I joined Songkran at ${location.en}!`,
+							url: shareUrl,
+						});
+					} else {
+						const url = URL.createObjectURL(blob);
+						const a = document.createElement('a');
+						a.href = url;
+						a.download = 'songkran-2026.png';
+						a.click();
+						URL.revokeObjectURL(url);
 					}
-				}, 500);
+				}
 			}
 		} catch (err) {
-			// AbortError = user cancelled share sheet — safe to ignore
 			if (err instanceof Error && err.name !== 'AbortError') {
 				console.error('[share]', err);
 			}
