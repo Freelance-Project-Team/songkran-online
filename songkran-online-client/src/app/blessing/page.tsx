@@ -46,7 +46,7 @@ function BlessingCard() {
 			className="absolute z-20"
 			style={{
 				left: '7.38%',
-				top: '19.6%',
+				top: '25%',
 				width: '85.24%',
 				height: '19.37%',
 				animation: 'bl-card-in 0.5s cubic-bezier(0.34,1.56,0.64,1) both',
