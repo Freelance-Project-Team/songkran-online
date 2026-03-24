@@ -258,7 +258,7 @@ export function TakePhoto({
 			))}
 
 			{/* Bottom buttons */}
-			<div className="absolute inset-x-0 bottom-0" style={{ height: '15%', zIndex: 10 }}>
+			<div className="absolute inset-x-0" style={{ bottom: '10.2%', height: '15%', zIndex: 10 }}>
 				<GoBackButton
 					lang={lang}
 					onBack={onBack}

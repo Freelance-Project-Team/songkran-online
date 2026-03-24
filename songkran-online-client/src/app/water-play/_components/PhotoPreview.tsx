@@ -252,7 +252,7 @@ export function PhotoPreview({
 				onClick={handleFacebook}
 				className="absolute overflow-hidden cursor-pointer hover:scale-105 active:scale-95 transition-transform"
 				style={{
-					left: px(103, 'x'), top: px(691, 'y'),
+					left: '38%', top: '80.5%',
 					width: px(50, 'x'), height: px(50, 'y'),
 					borderRadius: '14px',
 					boxShadow: '0 0 0.563px rgba(0,0,0,0.3), 0 1.125px 16.875px rgba(0,0,0,0.08)',
@@ -270,7 +270,7 @@ export function PhotoPreview({
 				onClick={handleLine}
 				className="absolute overflow-hidden cursor-pointer hover:scale-105 active:scale-95 transition-transform"
 				style={{
-					left: px(178, 'x'), top: px(691, 'y'),
+					left: '53%', top: '80.5%',
 					width: px(50, 'x'), height: px(50, 'y'),
 					borderRadius: '14px',
 					zIndex: 7,
@@ -292,7 +292,7 @@ export function PhotoPreview({
 				onClick={handleNativeShare}
 				className="absolute flex items-center justify-center cursor-pointer hover:scale-105 active:scale-95 transition-transform"
 				style={{
-					left: px(253, 'x'), top: px(691, 'y'),
+					left: '68%', top: '80.5%',
 					width: px(50, 'x'), height: px(50, 'y'),
 					borderRadius: '14px',
 					background: '#0055A5',
@@ -310,7 +310,7 @@ export function PhotoPreview({
 				lang={lang}
 				onBack={onBack}
 				style={{
-					left: px(141, 'x'), top: px(752, 'y'),
+					left: '4%', top: '79%',
 					width: px(115, 'x'), height: px(93, 'y'),
 					zIndex: 7,
 				}}
