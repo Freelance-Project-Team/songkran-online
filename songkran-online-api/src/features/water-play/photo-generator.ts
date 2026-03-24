@@ -6,8 +6,7 @@ import axios from 'axios';
 // ─── Constants ──────────────────────────────────────────────────────────────
 
 const W = 393;
-const VISIBLE_H = 677;
-const FULL_H = 852;
+const H = 677;
 
 const SCENES: Record<string, string> = {
 	arun: '/assets/playsongkran/scenes/arun-bg.png',
@@ -73,7 +72,9 @@ export interface GeneratePhotoParams {
 
 export async function generatePhoto(params: GeneratePhotoParams): Promise<Buffer> {
 	const { faceDataUrl, locationId, character, userName, lang } = params;
-	const clientUrl = process.env.CLIENT_URL || '';
+
+	// CLIENT_URL may be comma-separated (for CORS). Use only the first for image fetching.
+	const clientUrl = (process.env.CLIENT_URL || '').split(',')[0].trim();
 
 	// Fetch all static images in parallel (cached after first call)
 	const scenePath = SCENES[locationId] ?? SCENES.arun;
@@ -119,10 +120,14 @@ export async function generatePhoto(params: GeneratePhotoParams): Promise<Buffer
 		`
 		: '';
 
-	const svg = `<svg width="${W}" height="${VISIBLE_H}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	// Banner: y=597, h=80 → 3 lines, font-size 14 (Sarabun renders wider than SF Pro)
+	// line spacing 18px, total 3×18=54, padding-top = (80-54)/2 = 13 → first baseline at 597+13+14=624
+	const bY = [624, 642, 660];
 
-	<!-- Background scene (stretched to ${FULL_H}, clipped at viewport ${VISIBLE_H}) -->
-	<image href="${sceneUri}" x="0" y="0" width="${W}" height="${FULL_H}" preserveAspectRatio="none"/>
+	const svg = `<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+	<!-- Scene background -->
+	<image href="${sceneUri}" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="none"/>
 
 	<!-- Robot -->
 	<image href="${robotUri}" x="-12" y="462" width="238" height="250" preserveAspectRatio="xMidYMin meet"/>
@@ -140,9 +145,9 @@ export async function generatePhoto(params: GeneratePhotoParams): Promise<Buffer
 
 	<!-- Banner -->
 	<rect x="0" y="597" width="${W}" height="80" fill="#0055A5"/>
-	<text x="377" y="621" text-anchor="end" font-family="Sarabun" font-weight="700" font-size="17" fill="white">${escapeXml(bannerLines[0])}</text>
-	<text x="377" y="643" text-anchor="end" font-family="Sarabun" font-weight="700" font-size="17" fill="white">${escapeXml(bannerLines[1])}</text>
-	<text x="377" y="665" text-anchor="end" font-family="Sarabun" font-weight="700" font-size="17" fill="white">${escapeXml(bannerLines[2])}</text>
+	<text x="377" y="${bY[0]}" text-anchor="end" font-family="Sarabun" font-weight="700" font-size="14" fill="white">${escapeXml(bannerLines[0])}</text>
+	<text x="377" y="${bY[1]}" text-anchor="end" font-family="Sarabun" font-weight="700" font-size="14" fill="white">${escapeXml(bannerLines[1])}</text>
+	<text x="377" y="${bY[2]}" text-anchor="end" font-family="Sarabun" font-weight="700" font-size="14" fill="white">${escapeXml(bannerLines[2])}</text>
 
 	<!-- Logo -->
 	<image href="${logoUri}" x="-33" y="569" width="208" height="108" preserveAspectRatio="xMidYMid meet"/>
@@ -151,7 +156,6 @@ export async function generatePhoto(params: GeneratePhotoParams): Promise<Buffer
 
 	// ── Render SVG → PNG ─────────────────────────────────────────────────────
 
-	// Verify font file exists
 	if (!existsSync(FONT_FILE)) {
 		console.error(`[generate-photo] Font file not found: ${FONT_FILE}`);
 	} else {
