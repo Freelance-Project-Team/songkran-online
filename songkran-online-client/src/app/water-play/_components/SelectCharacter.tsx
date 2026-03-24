@@ -198,13 +198,13 @@ export function SelectCharacter({
 					<button
 						onClick={handleBoyClick}
 						className="absolute bg-transparent border-0 p-0 cursor-pointer"
-						style={{ left: '0%', top: '32.51%', width: '50%', height: '47.77%', zIndex: 10 }}
+						style={{ left: '0%', top: '32.51%', width: '40%', height: '47.77%', zIndex: 10 }}
 						aria-label="Select boy"
 					/>
 					<button
 						onClick={handleGirlClick}
 						className="absolute bg-transparent border-0 p-0 cursor-pointer"
-						style={{ left: '50%', top: '32.51%', width: '50%', height: '47.77%', zIndex: 10 }}
+						style={{ left: '40%', top: '32.51%', width: '60%', height: '47.77%', zIndex: 10 }}
 						aria-label="Select girl"
 					/>
 				</>
