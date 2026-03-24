@@ -163,14 +163,12 @@ export function SelectCharacter({
 			<img
 				src={A.boy}
 				alt=""
-				onClick={step !== 'select' ? handleBoyClick : undefined}
-				className="absolute select-none"
+				className="absolute select-none pointer-events-none"
 				style={{
 					...boyPos,
 					objectFit: 'contain',
 					objectPosition: 'bottom center',
 					opacity: step === 'face-girl' ? 0 : 1,
-					cursor: !isFace ? 'pointer' : 'default',
 					transition: CHAR_TRANS,
 					zIndex: boyZ,
 				}}
@@ -179,14 +177,12 @@ export function SelectCharacter({
 			<img
 				src={A.girl}
 				alt=""
-				onClick={step !== 'select' ? handleGirlClick : undefined}
-				className="absolute select-none"
+				className="absolute select-none pointer-events-none"
 				style={{
 					...girlPos,
 					objectFit: 'contain',
 					objectPosition: 'bottom center',
 					opacity: step === 'face-boy' ? 0 : 1,
-					cursor: !isFace ? 'pointer' : 'default',
 					transition: CHAR_TRANS,
 					zIndex: girlZ,
 				}}
@@ -197,14 +193,48 @@ export function SelectCharacter({
 					<button
 						onClick={handleBoyClick}
 						className="absolute bg-transparent border-0 p-0 cursor-pointer"
-						style={{ left: '0%', top: '32.51%', width: '40%', height: '47.77%', zIndex: 10 }}
+						style={{ left: '0%', top: '25%', width: '50%', height: '60%', zIndex: 10 }}
 						aria-label="Select boy"
 					/>
 					<button
 						onClick={handleGirlClick}
 						className="absolute bg-transparent border-0 p-0 cursor-pointer"
-						style={{ left: '40%', top: '32.51%', width: '60%', height: '47.77%', zIndex: 10 }}
+						style={{ left: '50%', top: '25%', width: '50%', height: '60%', zIndex: 10 }}
 						aria-label="Select girl"
+					/>
+				</>
+			)}
+
+			{step === 'confirm-boy' && (
+				<>
+					<button
+						onClick={handleBoyClick}
+						className="absolute bg-transparent border-0 p-0 cursor-pointer"
+						style={{ left: '0%', top: '20%', width: '55%', height: '70%', zIndex: 10 }}
+						aria-label="Confirm boy"
+					/>
+					<button
+						onClick={handleGirlClick}
+						className="absolute bg-transparent border-0 p-0 cursor-pointer"
+						style={{ left: '55%', top: '35%', width: '45%', height: '40%', zIndex: 10 }}
+						aria-label="Switch to girl"
+					/>
+				</>
+			)}
+
+			{step === 'confirm-girl' && (
+				<>
+					<button
+						onClick={handleBoyClick}
+						className="absolute bg-transparent border-0 p-0 cursor-pointer"
+						style={{ left: '0%', top: '35%', width: '45%', height: '40%', zIndex: 10 }}
+						aria-label="Switch to boy"
+					/>
+					<button
+						onClick={handleGirlClick}
+						className="absolute bg-transparent border-0 p-0 cursor-pointer"
+						style={{ left: '45%', top: '20%', width: '55%', height: '70%', zIndex: 10 }}
+						aria-label="Confirm girl"
 					/>
 				</>
 			)}
