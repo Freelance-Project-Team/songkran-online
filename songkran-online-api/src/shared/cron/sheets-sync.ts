@@ -31,7 +31,6 @@ export async function syncToSheets() {
 			getActivityCount('ACTIVITY_ID_SONGNAMPHA'),
 		]);
 
-	// ─── Sheet 1: Summary ───────────────────────────────────────────────────────
 	const summaryRows: (string | number)[][] = [
 		['ประเภท', 'จำนวน', 'อัปเดตล่าสุด'],
 		['เล่นน้ำสงกรานต์', waterPlayStats.total, now],
@@ -40,7 +39,6 @@ export async function syncToSheets() {
 		['สรงน้ำพระ', songnamphaCount, now],
 	];
 
-	// ─── Sheet 2: Water Play by Location ────────────────────────────────────────
 	const locationMap = new Map(
 		waterPlayStats.byLocation.map((l) => [l.locationId, l.count]),
 	);
@@ -63,14 +61,13 @@ export async function syncToSheets() {
 }
 
 export function startSheetsSyncCron() {
-	const schedule = process.env.SHEETS_SYNC_CRON ?? '0 * * * *'; // default: every hour
+	const schedule = process.env.SHEETS_SYNC_CRON ?? '0 * * * *';
 
 	if (!process.env.GOOGLE_SHEETS_SPREADSHEET_ID) {
 		console.log('[sheets-sync] GOOGLE_SHEETS_SPREADSHEET_ID not set — skipping cron');
 		return;
 	}
 
-	// Run once on startup
 	syncToSheets().catch((err) => console.error('[sheets-sync] Initial sync failed:', err));
 
 	cron.schedule(schedule, () => {

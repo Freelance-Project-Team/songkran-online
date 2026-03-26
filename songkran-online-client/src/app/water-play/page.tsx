@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMobile } from '@/src/shared/hooks/useMobile';
 import { useLangStore } from '@/src/shared/stores/lang-store';
@@ -41,11 +41,31 @@ function DesktopCanvas({ children, lang }: { children: React.ReactNode; lang: La
 	);
 }
 
+const PRELOAD_IMAGES = [
+	'/assets/playsongkran/locations/bg.png',
+	'/assets/playsongkran/locations/arun.png',
+	'/assets/playsongkran/locations/phakeaw.png',
+	'/assets/playsongkran/locations/airport.png',
+	'/assets/playsongkran/locations/saochingcha.png',
+	'/assets/playsongkran/locations/arun-text-th.png',
+	'/assets/playsongkran/locations/arun-text-en.png',
+	'/assets/playsongkran/locations/phakeaw-text-th.png',
+	'/assets/playsongkran/locations/phakeaw-text-en.png',
+	'/assets/playsongkran/locations/airport-text-th.png',
+	'/assets/playsongkran/locations/airport-text-en.png',
+	'/assets/playsongkran/locations/saochingcha-text-th.png',
+	'/assets/playsongkran/locations/saochingcha-text-en.png',
+];
+
 export default function WaterPlayPage() {
 	const router = useRouter();
 	const isMobile = useMobile();
 	const { lang, toggleLang } = useLangStore();
 	const [flowStep, setFlowStep] = useState<FlowStep>('character');
+
+	useEffect(() => {
+		PRELOAD_IMAGES.forEach((src) => { new Image().src = src; });
+	}, []);
 	const [character, setCharacter] = useState<'boy' | 'girl'>('boy');
 	const [faceUrl, setFaceUrl] = useState('');
 	const [locationId, setLocationId] = useState('');

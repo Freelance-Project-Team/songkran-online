@@ -153,7 +153,9 @@ export function SelectLocation({
 									? '0 0 0 4px #fff, 0 0 0 8px #4db6e8'
 									: '0 0 0 3px rgba(255,255,255,0.7)',
 							transition: 'box-shadow 0.25s ease',
+							backgroundColor: '#b8dff5',
 						}}
+					onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = '0'; }}
 					/>
 					<img
 						src={loc.textImg[lang]}
