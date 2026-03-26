@@ -5,8 +5,6 @@ import { GoBackButton } from '@/src/shared/ui/GoBackButton';
 
 type Lang = 'th' | 'en';
 
-
-
 const SCENES: Record<string, string> = {
 	arun: '/assets/playsongkran/scenes/arun-bg.png',
 	phakeaw: '/assets/playsongkran/scenes/phakeaw-bg.png',
