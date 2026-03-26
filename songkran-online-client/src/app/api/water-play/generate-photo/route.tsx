@@ -14,7 +14,7 @@ const FULL_H = 852;
 const SCENES: Record<string, string> = {
 	arun: '/assets/playsongkran/scenes/arun-bg.png',
 	phakeaw: '/assets/playsongkran/scenes/phakeaw-bg.png',
-	airport: '/assets/playsongkran/scenes/airport-bg.png',
+	airport: '/assets/playsongkran/scenes/yaksuwan-bg.png',
 	saochingcha: '/assets/playsongkran/scenes/saochingcha-bg.png',
 };
 
