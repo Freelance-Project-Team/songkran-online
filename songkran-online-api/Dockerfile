@@ -18,8 +18,8 @@ COPY . .
 # Generate Prisma Client
 RUN npx prisma generate --schema src/shared/prisma/schema.prisma
 
-# Build TypeScript
-RUN npm run build
+# Build TypeScript (use esbuild to reduce memory usage)
+RUN npm run build:docker
 
 # --- Production Stage ---
 FROM node:22-alpine

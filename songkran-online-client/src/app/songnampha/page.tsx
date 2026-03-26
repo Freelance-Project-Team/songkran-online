@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { API_CONFIG } from '@/src/shared/config/api';
 import { useRouter } from 'next/navigation';
 import { useMobile } from '@/src/shared/hooks/useMobile';
 import { GoBackButton } from '@/src/shared/ui/GoBackButton';
@@ -292,6 +293,11 @@ export default function SongnamphPage() {
 	const isMobile = useMobile();
 	const { lang, toggleLang } = useLangStore();
 	const [pourState, setPourState] = useState<PourState>('idle');
+
+	useEffect(() => {
+		const id = process.env.NEXT_PUBLIC_ACTIVITY_ID_SONGNAMPHA;
+		if (id) fetch(`${API_CONFIG.BASE_URL}/activities/${id}`).catch(() => {});
+	}, []);
 
 	const handlePour = () => {
 		if (pourState !== 'idle') return;
