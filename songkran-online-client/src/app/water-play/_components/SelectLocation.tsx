@@ -5,7 +5,7 @@ import { LangToggleButton } from '@/src/shared/ui/LangToggleButton';
 import { GoBackButton } from '@/src/shared/ui/GoBackButton';
 
 type Lang = 'th' | 'en';
-type LocationId = 'arun' | 'phakeaw' | 'airport' | 'saochingcha';
+type LocationId = 'arun' | 'phakeaw' | 'yaksuwan' | 'saochingcha';
 
 const A = {
 	bg: '/assets/playsongkran/locations/bg.png',
@@ -46,7 +46,7 @@ const LOCATIONS: {
 		overlayBottom: { th: '8%', en: '8%' },
 	},
 	{
-		id: 'airport',
+		id: 'yaksuwan',
 		img: '/assets/playsongkran/locations/airport.png',
 		textImg: { th: '/assets/playsongkran/locations/airport-text-th.png', en: '/assets/playsongkran/locations/airport-text-en.png' },
 		ariaLabel: 'ท่าอากาศยานสุวรรณภูมิ',

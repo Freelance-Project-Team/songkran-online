@@ -147,7 +147,7 @@ export function TakePhoto({
 		if (!ctx) return;
 
 		const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
-		fetch(`${process.env.NEXT_PUBLIC_API_URL}/water-play/log`, {
+		fetch(`${process.env.NEXT_PUBLIC_API_URL ?? 'https://api-songkran-aotsvb.continue-labs.com'}/water-play/log`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
