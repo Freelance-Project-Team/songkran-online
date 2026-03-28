@@ -5,11 +5,11 @@ import { LangToggleButton } from '@/src/shared/ui/LangToggleButton';
 import { GoBackButton } from '@/src/shared/ui/GoBackButton';
 
 type Lang = 'th' | 'en';
-type LocationId = 'arun' | 'phakeaw' | 'airport' | 'saochingcha';
+type LocationId = 'arun' | 'phakeaw' | 'yaksuwan' | 'saochingcha';
 
 const A = {
-	bg: '/assets/playsongkran/locations/bg.png',
-	cont: { th: '/assets/playsongkran/go-next-th.png', en: '/assets/playsongkran/go-next-en.png' },
+	bg: '/assets/playsongkran/locations/bg.webp',
+	cont: { th: '/assets/playsongkran/go-next-th.webp', en: '/assets/playsongkran/go-next-en.webp' },
 } as const;
 
 // labelHeight normalized so all text renders at the same visual size.
@@ -27,8 +27,8 @@ const LOCATIONS: {
 }[] = [
 	{
 		id: 'arun',
-		img: '/assets/playsongkran/locations/arun.png',
-		textImg: { th: '/assets/playsongkran/locations/arun-text-th.png', en: '/assets/playsongkran/locations/arun-text-en.png' },
+		img: '/assets/playsongkran/locations/arun.webp',
+		textImg: { th: '/assets/playsongkran/locations/arun-text-th.webp', en: '/assets/playsongkran/locations/arun-text-en.webp' },
 		ariaLabel: 'วัดอรุณราชวราราม',
 		left: '8.14%',
 		top: '37.32%',
@@ -37,8 +37,8 @@ const LOCATIONS: {
 	},
 	{
 		id: 'phakeaw',
-		img: '/assets/playsongkran/locations/phakeaw.png',
-		textImg: { th: '/assets/playsongkran/locations/phakeaw-text-th.png', en: '/assets/playsongkran/locations/phakeaw-text-en.png' },
+		img: '/assets/playsongkran/locations/phakeaw.webp',
+		textImg: { th: '/assets/playsongkran/locations/phakeaw-text-th.webp', en: '/assets/playsongkran/locations/phakeaw-text-en.webp' },
 		ariaLabel: 'วัดพระแก้ว',
 		left: '54.45%',
 		top: '37.32%',
@@ -46,9 +46,9 @@ const LOCATIONS: {
 		overlayBottom: { th: '8%', en: '8%' },
 	},
 	{
-		id: 'airport',
-		img: '/assets/playsongkran/locations/airport.png',
-		textImg: { th: '/assets/playsongkran/locations/airport-text-th.png', en: '/assets/playsongkran/locations/airport-text-en.png' },
+		id: 'yaksuwan',
+		img: '/assets/playsongkran/locations/airport.webp',
+		textImg: { th: '/assets/playsongkran/locations/airport-text-th.webp', en: '/assets/playsongkran/locations/airport-text-en.webp' },
 		ariaLabel: 'ท่าอากาศยานสุวรรณภูมิ',
 		left: '8.14%',
 		top: '60.09%',
@@ -57,8 +57,8 @@ const LOCATIONS: {
 	},
 	{
 		id: 'saochingcha',
-		img: '/assets/playsongkran/locations/saochingcha.png',
-		textImg: { th: '/assets/playsongkran/locations/saochingcha-text-th.png', en: '/assets/playsongkran/locations/saochingcha-text-en.png' },
+		img: '/assets/playsongkran/locations/saochingcha.webp',
+		textImg: { th: '/assets/playsongkran/locations/saochingcha-text-th.webp', en: '/assets/playsongkran/locations/saochingcha-text-en.webp' },
 		ariaLabel: 'เสาชิงช้า',
 		left: '54.45%',
 		top: '59.51%',
@@ -153,7 +153,9 @@ export function SelectLocation({
 									? '0 0 0 4px #fff, 0 0 0 8px #4db6e8'
 									: '0 0 0 3px rgba(255,255,255,0.7)',
 							transition: 'box-shadow 0.25s ease',
+							backgroundColor: '#b8dff5',
 						}}
+					onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = '0'; }}
 					/>
 					<img
 						src={loc.textImg[lang]}

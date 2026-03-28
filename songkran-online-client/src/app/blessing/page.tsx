@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { API_CONFIG } from '@/src/shared/config/api';
 import { useRouter } from 'next/navigation';
 import { useMobile } from '@/src/shared/hooks/useMobile';
 import { GoBackButton } from '@/src/shared/ui/GoBackButton';
@@ -11,10 +12,10 @@ type Lang = 'th' | 'en';
 type PourState = 'idle' | 'pouring' | 'blessed';
 
 const A = {
-	bg: '/assets/rodnamdumhua/bg.png',
-	scene: '/assets/rodnamdumhua/scene.png',
-	bgText: '/assets/rodnamdumhua/bg-text.png',
-	text: { th: '/assets/rodnamdumhua/text-th.png', en: '/assets/rodnamdumhua/text-en.png' },
+	bg: '/assets/rodnamdumhua/bg.webp',
+	scene: '/assets/rodnamdumhua/scene.webp',
+	bgText: '/assets/rodnamdumhua/bg-text.webp',
+	text: { th: '/assets/rodnamdumhua/text-th.webp', en: '/assets/rodnamdumhua/text-en.webp' },
 } as const;
 
 const STYLES = `
@@ -204,6 +205,11 @@ export default function BlessingPage() {
 	const isMobile = useMobile();
 	const { lang, toggleLang } = useLangStore();
 	const [pourState, setPourState] = useState<PourState>('idle');
+
+	useEffect(() => {
+		const id = process.env.NEXT_PUBLIC_ACTIVITY_ID_RODNAMDUMHUA;
+		if (id) fetch(`${API_CONFIG.BASE_URL}/activities/${id}`).catch(() => {});
+	}, []);
 
 	const handleTap = () => {
 		if (pourState !== 'idle') return;

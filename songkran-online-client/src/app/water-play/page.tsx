@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMobile } from '@/src/shared/hooks/useMobile';
 import { useLangStore } from '@/src/shared/stores/lang-store';
@@ -41,11 +41,40 @@ function DesktopCanvas({ children, lang }: { children: React.ReactNode; lang: La
 	);
 }
 
+const PRELOAD_IMAGES = [
+	'/assets/playsongkran/locations/bg.webp',
+	'/assets/playsongkran/locations/arun.webp',
+	'/assets/playsongkran/locations/phakeaw.webp',
+	'/assets/playsongkran/locations/airport.webp',
+	'/assets/playsongkran/locations/saochingcha.webp',
+	'/assets/playsongkran/locations/arun-text-th.webp',
+	'/assets/playsongkran/locations/arun-text-en.webp',
+	'/assets/playsongkran/locations/phakeaw-text-th.webp',
+	'/assets/playsongkran/locations/phakeaw-text-en.webp',
+	'/assets/playsongkran/locations/airport-text-th.webp',
+	'/assets/playsongkran/locations/airport-text-en.webp',
+	'/assets/playsongkran/locations/saochingcha-text-th.webp',
+	'/assets/playsongkran/locations/saochingcha-text-en.webp',
+	'/assets/playsongkran/boy-player.webp',
+	'/assets/playsongkran/women-player.webp',
+];
+
+const SCENE_IMAGES: Record<string, string> = {
+	arun: '/assets/playsongkran/scenes/arun-bg.webp',
+	phakeaw: '/assets/playsongkran/scenes/phakeaw-bg.webp',
+	yaksuwan: '/assets/playsongkran/scenes/yaksuwan-bg.webp',
+	saochingcha: '/assets/playsongkran/scenes/saochingcha-bg.webp',
+};
+
 export default function WaterPlayPage() {
 	const router = useRouter();
 	const isMobile = useMobile();
 	const { lang, toggleLang } = useLangStore();
 	const [flowStep, setFlowStep] = useState<FlowStep>('character');
+
+	useEffect(() => {
+		PRELOAD_IMAGES.forEach((src) => { new Image().src = src; });
+	}, []);
 	const [character, setCharacter] = useState<'boy' | 'girl'>('boy');
 	const [faceUrl, setFaceUrl] = useState('');
 	const [locationId, setLocationId] = useState('');
@@ -77,6 +106,8 @@ export default function WaterPlayPage() {
 					character={character}
 					onBack={() => setFlowStep('character')}
 					onComplete={(id) => {
+						const sceneSrc = SCENE_IMAGES[id];
+						if (sceneSrc) new Image().src = sceneSrc;
 						setLocationId(id);
 						setFlowStep('photo');
 					}}

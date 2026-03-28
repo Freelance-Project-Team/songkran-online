@@ -2,10 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-const BG = '/assets/loading/bg.png';
-const AOT_LOGO = '/assets/loading/aot-logo.png';
-const CLOUD_L = '/assets/loading/cloud-left.png';
-const CLOUD_R = '/assets/loading/cloud-right.png';
+const BG = '/assets/loading/bg.webp';
+const AOT_LOGO = '/assets/loading/aot-logo.webp';
+const CLOUD_L = '/assets/loading/cloud-left.webp';
+const CLOUD_R = '/assets/loading/cloud-right.webp';
 const PLANE = '/assets/loading/plane-3.svg';
 
 const PLANE_FRONT_MS = 1400;

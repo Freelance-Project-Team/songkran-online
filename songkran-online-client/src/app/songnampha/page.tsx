@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { API_CONFIG } from '@/src/shared/config/api';
 import { useRouter } from 'next/navigation';
 import { useMobile } from '@/src/shared/hooks/useMobile';
 import { GoBackButton } from '@/src/shared/ui/GoBackButton';
@@ -11,12 +12,12 @@ type Lang = 'th' | 'en';
 type PourState = 'idle' | 'pouring' | 'blessed';
 
 const A = {
-	bg: '/assets/shared/bg.png',
-	munk: '/assets/songnampha/munk.png',
-	bgText: '/assets/songnampha/bg-text.png',
-	text: { th: '/assets/songnampha/text-th.png', en: '/assets/songnampha/text-en.png' },
-	flower: '/assets/songnampha/flower.png',
-	nam: '/assets/songnampha/nam.png',
+	bg: '/assets/shared/bg.webp',
+	munk: '/assets/songnampha/munk.webp',
+	bgText: '/assets/songnampha/bg-text.webp',
+	text: { th: '/assets/songnampha/text-th.webp', en: '/assets/songnampha/text-en.webp' },
+	flower: '/assets/songnampha/flower.webp',
+	nam: '/assets/songnampha/nam.webp',
 } as const;
 
 const STYLES = `
@@ -292,6 +293,11 @@ export default function SongnamphPage() {
 	const isMobile = useMobile();
 	const { lang, toggleLang } = useLangStore();
 	const [pourState, setPourState] = useState<PourState>('idle');
+
+	useEffect(() => {
+		const id = process.env.NEXT_PUBLIC_ACTIVITY_ID_SONGNAMPHA;
+		if (id) fetch(`${API_CONFIG.BASE_URL}/activities/${id}`).catch(() => {});
+	}, []);
 
 	const handlePour = () => {
 		if (pourState !== 'idle') return;

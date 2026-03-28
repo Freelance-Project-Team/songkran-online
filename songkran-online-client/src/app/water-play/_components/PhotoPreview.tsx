@@ -6,21 +6,21 @@ import { GoBackButton } from '@/src/shared/ui/GoBackButton';
 type Lang = 'th' | 'en';
 
 const SCENES: Record<string, string> = {
-	arun: '/assets/playsongkran/scenes/arun-bg.png',
-	phakeaw: '/assets/playsongkran/scenes/phakeaw-bg.png',
-	airport: '/assets/playsongkran/scenes/airport-bg.png',
-	saochingcha: '/assets/playsongkran/scenes/saochingcha-bg.png',
+	arun: '/assets/playsongkran/scenes/arun-bg.webp',
+	phakeaw: '/assets/playsongkran/scenes/phakeaw-bg.webp',
+	yaksuwan: '/assets/playsongkran/scenes/yaksuwan-bg.webp',
+	saochingcha: '/assets/playsongkran/scenes/saochingcha-bg.webp',
 };
 
 const CHAR_IMG: Record<'boy' | 'girl', string> = {
-	boy: '/assets/playsongkran/boy-player.png',
-	girl: '/assets/playsongkran/women-player.png',
+	boy: '/assets/playsongkran/boy-player.webp',
+	girl: '/assets/playsongkran/women-player.webp',
 };
 
 const LOCATION_NAMES: Record<string, { th: string; en: string }> = {
 	arun: { th: 'วัดอรุณราชวราราม', en: 'Wat Arun' },
 	phakeaw: { th: 'วัดพระแก้ว', en: 'Wat Phra Kaew' },
-	airport: { th: 'สนามบินสุวรรณภูมิ', en: 'Suvarnabhumi Airport' },
+	yaksuwan: { th: 'สนามบินสุวรรณภูมิ', en: 'Suvarnabhumi Airport' },
 	saochingcha: { th: 'เสาชิงช้า', en: 'Sao Chingcha' },
 };
 
@@ -239,7 +239,7 @@ export function PhotoPreview({
 				/>
 
 				<img
-					src="/assets/login/bg.png"
+					src="/assets/login/bg.webp"
 					alt=""
 					className="absolute left-0 right-0 select-none pointer-events-none"
 					style={{
@@ -254,7 +254,7 @@ export function PhotoPreview({
 				/>
 
 				<img
-					src="/assets/playsongkran/preview/aot-robot.png"
+					src="/assets/playsongkran/preview/aot-robot.webp"
 					alt=""
 					className="absolute select-none pointer-events-none"
 					style={{
@@ -385,7 +385,7 @@ export function PhotoPreview({
 				</div>
 
 				<img
-					src="/assets/login/logo.png"
+					src="/assets/login/logo.webp"
 					alt="Songkran Festival 2026"
 					className="absolute select-none pointer-events-none"
 					style={{
@@ -442,7 +442,7 @@ export function PhotoPreview({
 				aria-label="Share on LINE"
 			>
 				<img
-					src="/assets/login/line.png"
+					src="/assets/login/line.webp"
 					alt=""
 					className="absolute max-w-none"
 					style={{ height: '144.26%', left: '-26.02%', top: '-22.13%', width: '286.43%' }}

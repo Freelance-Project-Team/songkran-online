@@ -38,8 +38,8 @@ export function GoBackButton({
 
 	const liftedSrc =
 		lang === 'en'
-			? '/assets/shared/go-back-en.png'
-			: '/assets/shared/go-back-th.png';
+			? '/assets/shared/go-back-en.webp'
+			: '/assets/shared/go-back-th.webp';
 
 	return (
 		<>
@@ -58,7 +58,7 @@ export function GoBackButton({
 				aria-label={lang === 'th' ? 'กลับหน้าหลัก' : 'Back to home'}
 			>
 				<img
-					src="/assets/shared/go-back-default.png"
+					src="/assets/shared/go-back-default.webp"
 					alt=""
 					className="absolute inset-0 w-full h-full select-none pointer-events-none"
 					style={{
