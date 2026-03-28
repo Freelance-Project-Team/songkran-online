@@ -6,15 +6,15 @@ import { GoBackButton } from '@/src/shared/ui/GoBackButton';
 type Lang = 'th' | 'en';
 
 const SCENES: Record<string, string> = {
-	arun: '/assets/playsongkran/scenes/arun-bg.png',
-	phakeaw: '/assets/playsongkran/scenes/phakeaw-bg.png',
-	yaksuwan: '/assets/playsongkran/scenes/yaksuwan-bg.png',
-	saochingcha: '/assets/playsongkran/scenes/saochingcha-bg.png',
+	arun: '/assets/playsongkran/scenes/arun-bg.webp',
+	phakeaw: '/assets/playsongkran/scenes/phakeaw-bg.webp',
+	yaksuwan: '/assets/playsongkran/scenes/yaksuwan-bg.webp',
+	saochingcha: '/assets/playsongkran/scenes/saochingcha-bg.webp',
 };
 
 const CHAR_IMG: Record<'boy' | 'girl', string> = {
-	boy: '/assets/playsongkran/boy-player.png',
-	girl: '/assets/playsongkran/women-player.png',
+	boy: '/assets/playsongkran/boy-player.webp',
+	girl: '/assets/playsongkran/women-player.webp',
 };
 
 const CHAR_POS = { left: '20%', top: '21%', width: '60%', height: '65%' };
@@ -255,7 +255,7 @@ export function TakePhoto({
 			{guns.map((gun) => (
 				<img
 					key={gun.id}
-					src={`/assets/playsongkran/scenes/water-gun-${gun.side}.png`}
+					src={`/assets/playsongkran/scenes/water-gun-${gun.side}.webp`}
 					alt=""
 					className="absolute select-none pointer-events-none"
 					style={{
@@ -288,7 +288,7 @@ export function TakePhoto({
 					aria-label="ถ่ายรูป"
 				>
 					<img
-						src={`/assets/playsongkran/scenes/camera-${camState === 'cam1' ? '1' : '2'}.png`}
+						src={`/assets/playsongkran/scenes/camera-${camState === 'cam1' ? '1' : '2'}.webp`}
 						alt=""
 						className="w-full h-full object-contain select-none pointer-events-none"
 						style={{

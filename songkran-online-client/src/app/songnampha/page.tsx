@@ -12,12 +12,12 @@ type Lang = 'th' | 'en';
 type PourState = 'idle' | 'pouring' | 'blessed';
 
 const A = {
-	bg: '/assets/shared/bg.png',
-	munk: '/assets/songnampha/munk.png',
-	bgText: '/assets/songnampha/bg-text.png',
-	text: { th: '/assets/songnampha/text-th.png', en: '/assets/songnampha/text-en.png' },
-	flower: '/assets/songnampha/flower.png',
-	nam: '/assets/songnampha/nam.png',
+	bg: '/assets/shared/bg.webp',
+	munk: '/assets/songnampha/munk.webp',
+	bgText: '/assets/songnampha/bg-text.webp',
+	text: { th: '/assets/songnampha/text-th.webp', en: '/assets/songnampha/text-en.webp' },
+	flower: '/assets/songnampha/flower.webp',
+	nam: '/assets/songnampha/nam.webp',
 } as const;
 
 const STYLES = `

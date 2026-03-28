@@ -6,20 +6,20 @@ import LoadingScreen from './loading-screen';
 import { useMobile, useIsSmallPhone } from '@/src/shared/hooks/useMobile';
 
 const ASSETS = {
-	bg: '/assets/login/bg.png',
+	bg: '/assets/login/bg.webp',
 	wave: '/assets/login/wave.svg',
-	pastelCity: '/assets/login/pastel-city.png',
-	childrenLeft: '/assets/login/children-left.png',
-	childrenRight: '/assets/login/children-right.png',
-	kite: '/assets/login/kite.png',
-	bottomBar: '/assets/login/bottom-bar.png',
-	temple: '/assets/login/temple.png',
-	flowers: '/assets/login/flowers.png',
-	logo: '/assets/login/logo.png',
+	pastelCity: '/assets/login/pastel-city.webp',
+	childrenLeft: '/assets/login/children-left.webp',
+	childrenRight: '/assets/login/children-right.webp',
+	kite: '/assets/login/kite.webp',
+	bottomBar: '/assets/login/bottom-bar.webp',
+	temple: '/assets/login/temple.webp',
+	flowers: '/assets/login/flowers.webp',
+	logo: '/assets/login/logo.webp',
 	mail: '/assets/login/mail.svg',
 	lock: '/assets/login/lock.svg',
 	google: '/assets/login/google.jpg',
-	line: '/assets/login/line.png',
+	line: '/assets/login/line.webp',
 };
 
 const poppins = { fontFamily: 'Poppins, sans-serif' };

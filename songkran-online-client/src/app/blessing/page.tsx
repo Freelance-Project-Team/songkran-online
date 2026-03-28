@@ -12,10 +12,10 @@ type Lang = 'th' | 'en';
 type PourState = 'idle' | 'pouring' | 'blessed';
 
 const A = {
-	bg: '/assets/rodnamdumhua/bg.png',
-	scene: '/assets/rodnamdumhua/scene.png',
-	bgText: '/assets/rodnamdumhua/bg-text.png',
-	text: { th: '/assets/rodnamdumhua/text-th.png', en: '/assets/rodnamdumhua/text-en.png' },
+	bg: '/assets/rodnamdumhua/bg.webp',
+	scene: '/assets/rodnamdumhua/scene.webp',
+	bgText: '/assets/rodnamdumhua/bg-text.webp',
+	text: { th: '/assets/rodnamdumhua/text-th.webp', en: '/assets/rodnamdumhua/text-en.webp' },
 } as const;
 
 const STYLES = `

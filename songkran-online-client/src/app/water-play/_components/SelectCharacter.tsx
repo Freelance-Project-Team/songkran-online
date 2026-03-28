@@ -8,12 +8,12 @@ type Lang = 'th' | 'en';
 type Step = 'select' | 'confirm-boy' | 'confirm-girl' | 'face-boy' | 'face-girl';
 
 const A = {
-	bg: '/assets/playsongkran/bg.png',
-	boy: '/assets/playsongkran/boy-player.png',
-	girl: '/assets/playsongkran/women-player.png',
-	selBoy: '/assets/playsongkran/select-boy.png',
-	selGirl: '/assets/playsongkran/select-girl.png',
-	cont: { th: '/assets/playsongkran/go-next-th.png', en: '/assets/playsongkran/go-next-en.png' },
+	bg: '/assets/playsongkran/bg.webp',
+	boy: '/assets/playsongkran/boy-player.webp',
+	girl: '/assets/playsongkran/women-player.webp',
+	selBoy: '/assets/playsongkran/select-boy.webp',
+	selGirl: '/assets/playsongkran/select-girl.webp',
+	cont: { th: '/assets/playsongkran/go-next-th.webp', en: '/assets/playsongkran/go-next-en.webp' },
 } as const;
 
 const STYLES = `

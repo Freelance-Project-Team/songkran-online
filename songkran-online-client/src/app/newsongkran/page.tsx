@@ -12,10 +12,10 @@ type Lang = 'th' | 'en';
 type PourState = 'idle' | 'pouring' | 'blessed';
 
 const A = {
-	bg: '/assets/shared/bg.png',
-	scene: '/assets/newsongkran/scene.png',
-	bgText: '/assets/newsongkran/bg-text.png',
-	text: { th: '/assets/newsongkran/text-th.png', en: '/assets/newsongkran/text-en.png' },
+	bg: '/assets/shared/bg.webp',
+	scene: '/assets/newsongkran/scene.webp',
+	bgText: '/assets/newsongkran/bg-text.webp',
+	text: { th: '/assets/newsongkran/text-th.webp', en: '/assets/newsongkran/text-en.webp' },
 } as const;
 
 const STYLES = `

@@ -11,7 +11,7 @@ type Lang = 'th' | 'en';
 const BUTTONS = [
 	{
 		route: '/newsongkran',
-		img: { th: '/assets/home/new-songkran-btn-th.png', en: '/assets/home/new-songkran-btn-en.png' },
+		img: { th: '/assets/home/new-songkran-btn-th.webp', en: '/assets/home/new-songkran-btn-en.webp' },
 		left: '2.54%',
 		top: '35.21%',
 		width: '48.09%',
@@ -19,7 +19,7 @@ const BUTTONS = [
 	},
 	{
 		route: '/songnampha',
-		img: { th: '/assets/home/songnampha-btn-th.png', en: '/assets/home/songnampha-btn-en.png' },
+		img: { th: '/assets/home/songnampha-btn-th.webp', en: '/assets/home/songnampha-btn-en.webp' },
 		left: '54.45%',
 		top: '35.21%',
 		width: '39.95%',
@@ -27,7 +27,7 @@ const BUTTONS = [
 	},
 	{
 		route: '/blessing',
-		img: { th: '/assets/home/rodnamdumhua-btn-th.png', en: '/assets/home/rodnamdumhua-btn-en.png' },
+		img: { th: '/assets/home/rodnamdumhua-btn-th.webp', en: '/assets/home/rodnamdumhua-btn-en.webp' },
 		left: '6.62%',
 		top: '57.75%',
 		width: '44.02%',
@@ -35,7 +35,7 @@ const BUTTONS = [
 	},
 	{
 		route: '/water-play',
-		img: { th: '/assets/home/play-water-btn-th.png', en: '/assets/home/play-water-btn-en.png' },
+		img: { th: '/assets/home/play-water-btn-th.webp', en: '/assets/home/play-water-btn-en.webp' },
 		left: '52.67%',
 		top: '57.75%',
 		width: '43.26%',
@@ -78,7 +78,7 @@ function HomeScene({
 			<style>{STYLES}</style>
 
 			<img
-				src="/assets/home/home-bg.png"
+				src="/assets/home/home-bg.webp"
 				alt=""
 				className="absolute inset-0 w-full h-full select-none pointer-events-none"
 				style={{ objectFit: 'fill' }}
@@ -131,7 +131,7 @@ function DesktopCanvas(props: Parameters<typeof HomeScene>[0]) {
 			<SceneFrame {...props} />
 			<div className="w-110 shrink-0 flex flex-col items-center justify-center bg-white px-10 py-12 shadow-2xl overflow-y-auto z-10">
 				<img
-					src="/assets/login/logo.png"
+					src="/assets/login/logo.webp"
 					alt="Amazing Songkran Festival 2026"
 					className="w-56 object-contain mb-6 select-none"
 				/>

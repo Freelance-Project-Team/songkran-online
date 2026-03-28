@@ -42,20 +42,29 @@ function DesktopCanvas({ children, lang }: { children: React.ReactNode; lang: La
 }
 
 const PRELOAD_IMAGES = [
-	'/assets/playsongkran/locations/bg.png',
-	'/assets/playsongkran/locations/arun.png',
-	'/assets/playsongkran/locations/phakeaw.png',
-	'/assets/playsongkran/locations/airport.png',
-	'/assets/playsongkran/locations/saochingcha.png',
-	'/assets/playsongkran/locations/arun-text-th.png',
-	'/assets/playsongkran/locations/arun-text-en.png',
-	'/assets/playsongkran/locations/phakeaw-text-th.png',
-	'/assets/playsongkran/locations/phakeaw-text-en.png',
-	'/assets/playsongkran/locations/airport-text-th.png',
-	'/assets/playsongkran/locations/airport-text-en.png',
-	'/assets/playsongkran/locations/saochingcha-text-th.png',
-	'/assets/playsongkran/locations/saochingcha-text-en.png',
+	'/assets/playsongkran/locations/bg.webp',
+	'/assets/playsongkran/locations/arun.webp',
+	'/assets/playsongkran/locations/phakeaw.webp',
+	'/assets/playsongkran/locations/airport.webp',
+	'/assets/playsongkran/locations/saochingcha.webp',
+	'/assets/playsongkran/locations/arun-text-th.webp',
+	'/assets/playsongkran/locations/arun-text-en.webp',
+	'/assets/playsongkran/locations/phakeaw-text-th.webp',
+	'/assets/playsongkran/locations/phakeaw-text-en.webp',
+	'/assets/playsongkran/locations/airport-text-th.webp',
+	'/assets/playsongkran/locations/airport-text-en.webp',
+	'/assets/playsongkran/locations/saochingcha-text-th.webp',
+	'/assets/playsongkran/locations/saochingcha-text-en.webp',
+	'/assets/playsongkran/boy-player.webp',
+	'/assets/playsongkran/women-player.webp',
 ];
+
+const SCENE_IMAGES: Record<string, string> = {
+	arun: '/assets/playsongkran/scenes/arun-bg.webp',
+	phakeaw: '/assets/playsongkran/scenes/phakeaw-bg.webp',
+	yaksuwan: '/assets/playsongkran/scenes/yaksuwan-bg.webp',
+	saochingcha: '/assets/playsongkran/scenes/saochingcha-bg.webp',
+};
 
 export default function WaterPlayPage() {
 	const router = useRouter();
@@ -97,6 +106,8 @@ export default function WaterPlayPage() {
 					character={character}
 					onBack={() => setFlowStep('character')}
 					onComplete={(id) => {
+						const sceneSrc = SCENE_IMAGES[id];
+						if (sceneSrc) new Image().src = sceneSrc;
 						setLocationId(id);
 						setFlowStep('photo');
 					}}
