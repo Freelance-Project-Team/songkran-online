@@ -14,7 +14,7 @@ const FULL_H = 852;
 const SCENES: Record<string, string> = {
 	arun: '/assets/playsongkran/scenes/arun-bg.png',
 	phakeaw: '/assets/playsongkran/scenes/phakeaw-bg.png',
-	airport: '/assets/playsongkran/scenes/yaksuwan-bg.png',
+	yaksuwan: '/assets/playsongkran/scenes/yaksuwan-bg.png',
 	saochingcha: '/assets/playsongkran/scenes/saochingcha-bg.png',
 };
 
@@ -26,7 +26,7 @@ const CHAR_IMG: Record<'boy' | 'girl', string> = {
 const LOCATION_NAMES: Record<string, { th: string; en: string }> = {
 	arun: { th: 'วัดอรุณราชวราราม', en: 'Wat Arun' },
 	phakeaw: { th: 'วัดพระแก้ว', en: 'Wat Phra Kaew' },
-	airport: { th: 'สนามบินสุวรรณภูมิ', en: 'Suvarnabhumi Airport' },
+	yaksuwan: { th: 'สนามบินสุวรรณภูมิ', en: 'Suvarnabhumi Airport' },
 	saochingcha: { th: 'เสาชิงช้า', en: 'Sao Chingcha' },
 };
 
